@@ -1,0 +1,8 @@
+{
+    "dashborad":{
+        "income":"مجموع الدخل",
+        "totalCustomers":"مجموع المستخدمين",
+        "routes":"الرحلات",
+        "growthRate":"معدل النمو"
+    }
+}
