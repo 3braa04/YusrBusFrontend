@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, CommandIcon } from "lucide-react"
+import { CameraIcon, ChartBarIcon, CircleHelpIcon, CommandIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, FileTextIcon, FolderIcon, LayoutDashboardIcon, ListIcon, SearchIcon, Settings2Icon, UsersIcon } from "lucide-react"
 
 const data = {
   user: {
@@ -176,11 +176,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-<<<<<<< HEAD
     <Sidebar collapsible="offcanvas" side="right" {...props}>
-=======
-    <Sidebar collapsible="offcanvas" {...props}>
->>>>>>> b6796c1705b4533d32a7e76bca31927cc97344e8
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
