@@ -9,7 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+<<<<<<< HEAD
 import { TrendingDownIcon, TrendingUpIcon } from "lucide-react"
+=======
+import { TrendingUpIcon, TrendingDownIcon } from "lucide-react"
+>>>>>>> b6796c1705b4533d32a7e76bca31927cc97344e8
 
 export function SectionCards() {
   return (
