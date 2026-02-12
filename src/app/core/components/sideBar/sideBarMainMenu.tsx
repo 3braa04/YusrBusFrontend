@@ -1,7 +1,3 @@
-"use client"
-
-import * as React from "react"
-
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -9,28 +5,28 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Link } from "react-router-dom"
 
-export function NavSecondary({
+export function SideBarMainMenu({
   items,
-  ...props
 }: {
   items: {
     title: string
     url: string
-    icon: React.ReactNode
+    icon?: React.ReactNode
   }[]
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+}) {
   return (
-    <SidebarGroup {...props}>
-      <SidebarGroupContent>
+    <SidebarGroup className="mt-10">
+      <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <a href={item.url}>
+                <Link to={item.url}>
                   {item.icon}
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

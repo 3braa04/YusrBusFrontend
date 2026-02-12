@@ -1,4 +1,4 @@
-import { ModeToggle } from '@/components/mode-toggle';
+import { ThemeToggle } from '@/app/core/components/theme/themeToggle';
 import { Link } from 'react-router-dom';
 
 const Landing = () => {
@@ -6,7 +6,7 @@ const Landing = () => {
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
       
       <div className="absolute top-5 right-5">
-        <ModeToggle />
+        <ThemeToggle />
       </div>
 
       <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-400">

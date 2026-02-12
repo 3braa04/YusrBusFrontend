@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/sidebar"
 import { EllipsisVerticalIcon, CircleUserRoundIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
 
-export function NavUser({
+export function SideBarUserData({
   user,
 }: {
   user: {
