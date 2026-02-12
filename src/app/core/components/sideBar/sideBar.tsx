@@ -63,7 +63,7 @@ const data = {
 
 export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" side="right" {...props}>
+    <Sidebar collapsible="icon" side="right" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
