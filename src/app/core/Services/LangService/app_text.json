@@ -5,7 +5,10 @@
             "income":"مجموع الدخل",
             "totalCustomers":"مجموع المستخدمين",
             "routes":"الرحلات",
-            "growthRate":"معدل النمو"
+            "growthRate":"معدل النمو",
+            "charts":{
+                "last3months":""
+            }
         }
     }
 }
