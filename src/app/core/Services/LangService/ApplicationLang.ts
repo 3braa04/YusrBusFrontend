@@ -1,4 +1,4 @@
-import AppText from './ar_app_text.json'
+import AppText from './app_text.json'
 import { enLangs } from './enLangs';
 import { LangConstants } from './LangConstants';
 
@@ -12,10 +12,9 @@ export default class ApplicationLang
     {
         return localStorage.getItem(LangConstants.langKey);
     }
-    static getArabic() {
-        // const userLang:string = this.getUserLang();
-        // if(userLang == enLangs.ar)
-
-        return AppText ;
+    static getAppLangText() {
+        const userLang:string = this.getUserLang() || 'ar';
+        return AppText[userLang as keyof typeof AppText] ;
     }
 }
+
