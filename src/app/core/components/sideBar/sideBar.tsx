@@ -81,7 +81,7 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SideBarMainMenu items={data.navMain} />
-        <SideBarSecondaryMenu items={data.navSecondary} className="mt-auto" />
+        <SideBarSecondaryMenu items={data.navSecondary} className="pt-10 mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <SideBarUserData user={data.user} />
