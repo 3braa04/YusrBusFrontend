@@ -10,6 +10,8 @@ import useAppInitialization from "../hooks/useAppInitialization";
 import { Skeleton } from "../components/ui/skeleton";
 
 function App() {
+  throw new Error("error");
+  
   const { isLoading } = useAppInitialization();
 
   if(isLoading)
