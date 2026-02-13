@@ -10,6 +10,7 @@ import useAppInitialization from "../hooks/useAppInitialization";
 import { Skeleton } from "../components/ui/skeleton";
 import RoutesService from "./core/Services/constants/RoutesService";
 import PrfilePage from "./features/profile/PrfilePage";
+import Branches from "./features/branches/branches";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -38,7 +39,7 @@ function AppBody() {
                 element={<h1>passengers is working!</h1>}
               />
               <Route path="/routes" element={<h1>routes is working!</h1>} />
-              <Route path="/branches" element={<h1>branches is working!</h1>} />
+              <Route path="/branches" element={<Branches/>} />
               <Route path="/users" element={<h1>users is working!</h1>} />
               <Route path="/settings" element={<h1>settings is working!</h1>} />
 
