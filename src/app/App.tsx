@@ -10,7 +10,7 @@ import useAppInitialization from "../hooks/useAppInitialization";
 import { Skeleton } from "../components/ui/skeleton";
 import RoutesService from "./core/Services/constants/RoutesService";
 import PrfilePage from "./features/profile/PrfilePage";
-import Branches from "./features/branches/branches";
+import Branches from "./features/branches/presentation/branches";
 
 function App() {  
   const { isLoading } = useAppInitialization();

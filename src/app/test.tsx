@@ -1,4 +1,5 @@
 import { useState } from "react";
+import EditBranchDialog from "./features/branches/presentation/components/edit_branch_dialog";
 
 export default function Testing()
 {
@@ -7,6 +8,7 @@ export default function Testing()
     return <div>
         <button onClick={()=>setName(`${name == "Ahmed"? "Yaroup" : "Ahmed"}`)}>Click me</button>
         <h3>{name}</h3>
+        <EditBranchDialog/>
     </div>;
 
 
