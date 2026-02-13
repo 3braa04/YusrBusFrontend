@@ -9,9 +9,7 @@ import Testing from "./test";
 import useAppInitialization from "../hooks/useAppInitialization";
 import { Skeleton } from "../components/ui/skeleton";
 
-function App() {
-  throw new Error("error");
-  
+function App() {  
   const { isLoading } = useAppInitialization();
 
   if(isLoading)
