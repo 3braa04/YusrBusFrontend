@@ -8,6 +8,8 @@ import MainPage from "./features/main/mainPage";
 import Testing from "./test";
 import useAppInitialization from "../hooks/useAppInitialization";
 import { Skeleton } from "../components/ui/skeleton";
+import RoutesService from "./core/Services/constants/RoutesService";
+import PrfilePage from "./features/profile/PrfilePage";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -39,6 +41,8 @@ function AppBody() {
               <Route path="/branches" element={<h1>branches is working!</h1>} />
               <Route path="/users" element={<h1>users is working!</h1>} />
               <Route path="/settings" element={<h1>settings is working!</h1>} />
+
+              <Route path={RoutesService.Profile} element={ <PrfilePage/> }/>
             </Route>
 
             {/* 404 Route */}

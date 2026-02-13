@@ -19,6 +19,12 @@
             "branches":"الفروع",
             "users":"المستخدمون",
             "settings":"الاعدادات"
+        },
+        "sideBarUserData":{
+            "account":"الحساب",
+            "billing":"الفواتير",
+            "notifications":"الاشعارات",
+            "logout":"تسجيل الخروج"
         }
     }
 }

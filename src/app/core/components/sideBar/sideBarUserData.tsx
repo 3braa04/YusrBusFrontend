@@ -19,6 +19,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { EllipsisVerticalIcon, CircleUserRoundIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
+import ApplicationLang from "../../Services/LangService/ApplicationLang"
+import { Link } from "react-router-dom"
+import RoutesService from "../../Services/constants/RoutesService"
 
 export function SideBarUserData({
   user,
@@ -30,11 +33,11 @@ export function SideBarUserData({
   }
 }) {
   const { isMobile } = useSidebar()
-
+  const sideBarUserDataLang = ApplicationLang.getAppLangText().sideBarUserData;
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
+        <DropdownMenu dir="rtl">
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
@@ -78,24 +81,26 @@ export function SideBarUserData({
               <DropdownMenuItem>
                 <CircleUserRoundIcon
                 />
-                Account
+                <Link to={RoutesService.Profile}>
+                {sideBarUserDataLang.account}
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCardIcon
                 />
-                Billing
+                {sideBarUserDataLang.billing}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <BellIcon
                 />
-                Notifications
+                {sideBarUserDataLang.notifications}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOutIcon
               />
-              Log out
+              {sideBarUserDataLang.logout}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
