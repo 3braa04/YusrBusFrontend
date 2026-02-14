@@ -5,19 +5,18 @@ import {
   ContextMenuLabel,
   ContextMenuSeparator,
 } from "@/components/ui/context-menu";
-
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import EditBranchDialog from "./edit_branch_dialog";
 import { useState } from "react";
+import EditBranchDialog from "./edit_branch_dialog";
 
 export default function BranchesContextContent() {
+  
   const [willOpenDialog, setOpenDialogState] = useState(false);
-  console.log(willOpenDialog);
 
   return (
     <>

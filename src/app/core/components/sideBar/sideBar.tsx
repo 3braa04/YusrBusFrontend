@@ -1,17 +1,5 @@
-import * as React from "react";
-import { SideBarSecondaryMenu } from "@/app/core/components/sideBar/sideBarSecondaryMenu";
-import { SideBarUserData } from "@/app/core/components/sideBar/sideBarUserData";
-import {
-  LayoutDashboardIcon,
-  BusFrontIcon,
-  UsersIcon,
-  MapPinnedIcon,
-  Building2Icon,
-  UserCogIcon,
-  Settings2Icon,
-  CommandIcon,
-} from "lucide-react";
-import { SideBarMainMenu } from "./sideBarMainMenu";
+import { SideBarSecondaryMenu } from "@/app/core/components/SideBar/sideBarSecondaryMenu";
+import { SideBarUserData } from "@/app/core/components/SideBar/sideBarUserData";
 import {
   Sidebar,
   SidebarContent,
@@ -21,7 +9,19 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import {
+  Building2Icon,
+  BusFrontIcon,
+  CommandIcon,
+  LayoutDashboardIcon,
+  MapPinnedIcon,
+  Settings2Icon,
+  UserCogIcon,
+  UsersIcon,
+} from "lucide-react";
+import * as React from "react";
 import ApplicationLang from "../../Services/LangService/ApplicationLang";
+import { SideBarMainMenu } from "./sideBarMainMenu";
 const appLang = ApplicationLang.getAppLangText();  
 const appLangSections = appLang.sections;
 const data = {

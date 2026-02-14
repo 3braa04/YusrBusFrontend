@@ -1,10 +1,10 @@
-import { 
-  SidebarInset, 
-  SidebarProvider, 
-  SidebarTrigger
+import {
+    SidebarInset,
+    SidebarProvider,
+    SidebarTrigger
 } from '@/components/ui/sidebar';
-import { SideBar } from '../../core/components/sideBar/sideBar';
 import { Outlet } from "react-router-dom";
+import { SideBar } from '../../core/components/SideBar/sideBar';
 
 const MainPage = () => {
   return (
