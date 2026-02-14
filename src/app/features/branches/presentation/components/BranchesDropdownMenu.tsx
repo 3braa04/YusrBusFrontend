@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
-import EditBranchDialog from "./edit_branch_dialog";
+import type BranchDTO from "../../data/branch_dto";
+import EditBranchDialog from "./ChangeBranchDialog";
 
 
-export default function BranchesDropdownMenu()
+export default function BranchesDropdownMenu({branch}: {branch: BranchDTO})
 {
     const [isEditDialogOpen, setOpenEditDialogState] = useState(false);
 
@@ -35,10 +36,7 @@ export default function BranchesDropdownMenu()
             <Dialog open={isEditDialogOpen} onOpenChange={setOpenEditDialogState}>
                 <form>
                     <DialogContent dir="rtl" className="sm:max-w-sm">
-                    <DialogHeader>
-                        <DialogTitle>تعديل الفرع</DialogTitle>
-                    </DialogHeader>
-                    <EditBranchDialog />
+                    <EditBranchDialog branch={branch} type="update" />
                     </DialogContent>
                 </form>
             </Dialog>

@@ -7,14 +7,13 @@ import {
 } from "@/components/ui/context-menu";
 import {
   Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
+  DialogContent
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import EditBranchDialog from "./edit_branch_dialog";
+import type BranchDTO from "../../data/branch_dto";
+import EditBranchDialog from "./ChangeBranchDialog";
 
-export default function BranchesContextContent() {
+export default function BranchesContextContent({branch}: {branch: BranchDTO}) {
   
   const [willOpenDialog, setOpenDialogState] = useState(false);
 
@@ -40,10 +39,7 @@ export default function BranchesContextContent() {
       <Dialog open={willOpenDialog} onOpenChange={setOpenDialogState}>
         <form>
           <DialogContent dir="rtl" className="sm:max-w-sm">
-            <DialogHeader>
-              <DialogTitle>تعديل الفرع</DialogTitle>
-            </DialogHeader>
-            <EditBranchDialog />
+            <EditBranchDialog branch={branch} type="update" />
           </DialogContent>
         </form>
       </Dialog>
