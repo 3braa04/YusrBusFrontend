@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { ThemeToggle } from "../Theme/themeToggle"
+import { ThemeToggle } from "../theme/themeToggle"
 
 export function SideBarSecondaryMenu({
   items,

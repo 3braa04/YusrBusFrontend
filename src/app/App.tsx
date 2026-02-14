@@ -2,7 +2,6 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Skeleton } from "../components/ui/skeleton";
 import { TooltipProvider } from "../components/ui/tooltip";
 import useAppInitialization from "../hooks/useAppInitialization";
-import { ThemeProvider } from "./core/components/Theme/themeProvider";
 import RoutesService from "./core/Services/constants/RoutesService";
 import Branches from "./features/branches/presentation/branches";
 import DashboardPage from "./features/dashboard/dashboardPage";
@@ -11,6 +10,7 @@ import LoginPage from "./features/login/loginPage";
 import MainPage from "./features/main/mainPage";
 import PrfilePage from "./features/profile/PrfilePage";
 import Testing from "./test";
+import { ThemeProvider } from "./core/components/theme/themeProvider";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -24,6 +24,7 @@ function App() {
 function AppBody() {
   return (
     <TooltipProvider>
+      
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Router>
           <Routes>

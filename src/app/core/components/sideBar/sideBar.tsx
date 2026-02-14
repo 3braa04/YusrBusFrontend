@@ -1,5 +1,4 @@
-import { SideBarSecondaryMenu } from "@/app/core/components/SideBar/sideBarSecondaryMenu";
-import { SideBarUserData } from "@/app/core/components/SideBar/sideBarUserData";
+
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +21,8 @@ import {
 import * as React from "react";
 import ApplicationLang from "../../Services/LangService/ApplicationLang";
 import { SideBarMainMenu } from "./sideBarMainMenu";
+import { SideBarSecondaryMenu } from "./sideBarSecondaryMenu";
+import { SideBarUserData } from "./sideBarUserData";
 const appLang = ApplicationLang.getAppLangText();  
 const appLangSections = appLang.sections;
 const data = {
