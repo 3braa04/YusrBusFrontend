@@ -73,7 +73,7 @@ export default function ChangeBranchDialog({ branch, type }: { branch: BranchDTO
         <DialogClose asChild>
           <Button variant="outline">إلغاء</Button>
         </DialogClose>
-        <Button type="submit">حفظ التغييرات</Button>
+        <Button type="button">حفظ التغييرات</Button>
       </DialogFooter>
     </>
   );

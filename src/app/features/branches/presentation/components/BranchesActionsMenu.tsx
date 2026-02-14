@@ -12,12 +12,14 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import type BranchDTO from "../../data/branch_dto";
 import EditBranchDialog from "./ChangeBranchDialog";
+import DeleteBranchDialog from "./DeleteBranchDialog";
 
 type ListType = "dropdown" | "context";
 
 export default function BranchesActionsMenu({branch, type}: {branch: BranchDTO, type: ListType})
 {
     const [isEditDialogOpen, setOpenEditDialogState] = useState(false);
+    const [isDeleteDialogOpen, setOpenDeleteDialogState] = useState(false);
 
     return (
         <>
@@ -36,7 +38,11 @@ export default function BranchesActionsMenu({branch, type}: {branch: BranchDTO, 
                         setOpenEditDialogState(true);
                     }}
                     >تعديل</DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">
+                    <DropdownMenuItem className="text-destructive"
+                        onSelect={() => {
+                            setOpenDeleteDialogState(true);
+                        }}
+                    >
                         حذف
                     </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -45,26 +51,42 @@ export default function BranchesActionsMenu({branch, type}: {branch: BranchDTO, 
             
             {type === "context" && (
                 <ContextMenuContent>
+
                     <ContextMenuGroup>
-                    <ContextMenuLabel>الإجراءات</ContextMenuLabel>
-                    <ContextMenuSeparator></ContextMenuSeparator>
 
-                    <ContextMenuItem
-                        onSelect={() => {
-                        setOpenEditDialogState(true);
-                        }}
-                    >
-                        تعديل
-                    </ContextMenuItem>
+                        <ContextMenuLabel>الإجراءات</ContextMenuLabel>
+                        <ContextMenuSeparator></ContextMenuSeparator>
 
-                    <ContextMenuItem className="text-destructive">حذف</ContextMenuItem>
+                        <ContextMenuItem
+                            onSelect={() => {
+                            setOpenEditDialogState(true);
+                            }}
+                        >
+                            تعديل
+                        </ContextMenuItem>
+
+                        <ContextMenuItem className="text-destructive"
+                            onSelect={() => {
+                                setOpenDeleteDialogState(true);
+                            }}
+                        >
+                            حذف
+                        </ContextMenuItem>
+
                     </ContextMenuGroup>
+
                 </ContextMenuContent>
             )}
 
             <Dialog open={isEditDialogOpen} onOpenChange={setOpenEditDialogState}>
                 <DialogContent dir="rtl" className="sm:max-w-sm">
                 <EditBranchDialog branch={branch} type="update" />
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setOpenDeleteDialogState}>
+                <DialogContent dir="rtl" className="sm:max-w-sm">
+                    <DeleteBranchDialog/>
                 </DialogContent>
             </Dialog>
         </>
