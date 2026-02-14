@@ -1,4 +1,3 @@
-import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
 import { Button } from "@/components/ui/button";
 import {
     ContextMenuContent,
@@ -11,12 +10,13 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
-import type BranchDTO from "../../data/branch_dto";
-import ChangeBranchDialog from "./ChangeBranchDialog";
+import DeleteDialog from "../../../../core/components/Dialogs/DeleteDialog";
+import type { Passenger } from "../../Data/Passenger";
+import ChangePassengerDialog from "./ChangePassengerDialog";
 
 type ListType = "dropdown" | "context";
 
-export default function BranchesActionsMenu({branch, type}: {branch: BranchDTO, type: ListType})
+export default function PassengersActionsMenu({passenger, type}: {passenger: Passenger, type: ListType})
 {
     const [isEditDialogOpen, setOpenEditDialogState] = useState(false);
     const [isDeleteDialogOpen, setOpenDeleteDialogState] = useState(false);
@@ -79,12 +79,12 @@ export default function BranchesActionsMenu({branch, type}: {branch: BranchDTO, 
             )}
 
             <Dialog open={isEditDialogOpen} onOpenChange={setOpenEditDialogState}>
-                <ChangeBranchDialog branch={branch} type="update" />
+                <ChangePassengerDialog passenger={passenger} type="update" />
             </Dialog>
 
             <Dialog open={isDeleteDialogOpen} onOpenChange={setOpenDeleteDialogState}>
                 <DialogContent dir="rtl" className="sm:max-w-sm">
-                    <DeleteDialog entityName="الفرع"/>
+                    <DeleteDialog entityName="الخط"/>
                 </DialogContent>
             </Dialog>
         </>

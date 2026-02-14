@@ -3,11 +3,11 @@ import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle
 import { Separator } from "@/components/ui/separator";
 import { OctagonAlert } from "lucide-react";
 
-export default function DeleteBranchDialog() {
+export default function DeleteDialog({entityName}: {entityName: string}) {
   return (
     <>
         <DialogHeader>
-            <DialogTitle>حذف الفرع</DialogTitle>
+            <DialogTitle>حذف {entityName}</DialogTitle>
             <DialogDescription></DialogDescription>
         </DialogHeader>
 
@@ -22,7 +22,7 @@ export default function DeleteBranchDialog() {
         </span>
 
         <span className="text-center text-[15px]">
-        لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف الفرع نهائياً
+        لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف {entityName} نهائياً
         وإزالته من خوادمنا.
         </span>
 

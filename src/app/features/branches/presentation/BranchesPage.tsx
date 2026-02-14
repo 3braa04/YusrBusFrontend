@@ -14,7 +14,7 @@ import BranchesActionsMenu from "./components/BranchesActionsMenu";
 import ChangeBranchDialog from "./components/ChangeBranchDialog";
 
 
-export default function Branches()
+export default function BranchesPage()
 {
   return (
 
