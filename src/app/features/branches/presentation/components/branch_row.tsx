@@ -13,12 +13,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import BranchesContextContent from "./branches_context_content";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import EditBranchDialog from "./edit_branch_dialog";
 
 type BrancRowProps = {
   branch: BranchDTO;
 };
 export default function BranchRow({ branch }: BrancRowProps) {
+
+  const [isEditDialogOpen, setOpenEditDialogState] = useState(false);
+
   return (
+    <>
     <ContextMenu key={branch.id} dir="rtl">
       <ContextMenuTrigger asChild>
         <TableRow
@@ -35,7 +42,11 @@ export default function BranchRow({ branch }: BrancRowProps) {
               <DropdownMenuContent align="start">
                 <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
                 <DropdownMenuSeparator></DropdownMenuSeparator>
-                <DropdownMenuItem>تعديل</DropdownMenuItem>
+                <DropdownMenuItem 
+                onSelect={() => {
+                  setOpenEditDialogState(true);
+                }}
+                >تعديل</DropdownMenuItem>
                 <DropdownMenuItem className="text-destructive">
                   حذف
                 </DropdownMenuItem>
@@ -59,5 +70,18 @@ export default function BranchRow({ branch }: BrancRowProps) {
 
       <BranchesContextContent />
     </ContextMenu>
+
+    <Dialog open={isEditDialogOpen} onOpenChange={setOpenEditDialogState}>
+        <form>
+          <DialogContent dir="rtl" className="sm:max-w-sm">
+            <DialogHeader>
+              <DialogTitle>تعديل الفرع</DialogTitle>
+            </DialogHeader>
+            <EditBranchDialog />
+          </DialogContent>
+        </form>
+      </Dialog>
+      
+    </>
   );
 }

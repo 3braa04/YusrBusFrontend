@@ -38,7 +38,6 @@ export default function BranchesContextContent() {
         </ContextMenuGroup>
       </ContextMenuContent>
 
-            {/* TODO: Fix it to be rtl */}
       <Dialog open={willOpenDialog} onOpenChange={setOpenDialogState}>
         <form>
           <DialogContent dir="rtl" className="sm:max-w-sm">
