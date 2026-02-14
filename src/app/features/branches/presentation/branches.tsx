@@ -5,13 +5,12 @@ import {
 import { Building, MapPin } from "lucide-react";
 import SearchInput from "../../../core/components/Input/SearchInput";
 import BranchRow from "../../../core/components/Table/TableBodyRow";
+import TableCard from "../../../core/components/Table/TableCard";
 import TableHeader from "../../../core/components/Table/TableHeader";
 import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
 import { SampleBranchsList } from "../data/branch_dto";
-import BranchesContextContent from "./components/BranchesContextContent";
-import BranchesDropdownMenu from "./components/BranchesDropdownMenu";
-import TableCard from "../../../core/components/Table/TableCard";
+import BranchesActionsMenu from "./components/BranchesActionsMenu";
 import ChangeBranchDialog from "./components/ChangeBranchDialog";
 
 
@@ -49,8 +48,8 @@ export default function Branches()
                   {rowName: branch.name, rowStyles: "font-semibold"},
                   {rowName: branch.cityName, rowStyles: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800"},
                 ]}
-                dropdownMenu={<BranchesDropdownMenu branch={branch} />}
-                contextMenuContent={<BranchesContextContent branch={branch} />}
+                dropdownMenu={<BranchesActionsMenu type="dropdown" branch={branch} />}
+                contextMenuContent={<BranchesActionsMenu type="context" branch={branch} />}
                 />
             ))}
 
