@@ -41,7 +41,7 @@ export default function TablePagination({
 
           <DropdownMenu dir="rtl">
             <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="w-full justify-start gap-2 text-base">
+                <SidebarMenuButton className="w-full h-5 justify-start gap-2 text-base">
                   <span>{currentPage}</span>
                 </SidebarMenuButton>
             </DropdownMenuTrigger>

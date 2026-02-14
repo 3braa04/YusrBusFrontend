@@ -1,5 +1,5 @@
 import { useState } from "react";
-import EditBranchDialog from "./features/branches/presentation/components/edit_branch_dialog";
+import EditBranchDialog from "./features/branches/presentation/components/ChangeBranchDialog";
 
 export default function Testing()
 {

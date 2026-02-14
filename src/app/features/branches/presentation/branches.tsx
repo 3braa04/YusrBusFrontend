@@ -12,6 +12,7 @@ import { SampleBranchsList } from "../data/branch_dto";
 import BranchesContextContent from "./components/BranchesContextContent";
 import BranchesDropdownMenu from "./components/BranchesDropdownMenu";
 import TableCard from "../../../core/components/Table/TableCard";
+import ChangeBranchDialog from "./components/ChangeBranchDialog";
 
 
 export default function Branches()
@@ -20,7 +21,7 @@ export default function Branches()
 
     <div className="px-5 py-3">
 
-      <TableHeader title="إدارة الفروع" buttonTitle="إضافة فرع جديد"/>
+      <TableHeader title="إدارة الفروع" buttonTitle="إضافة فرع جديد" createComp={<ChangeBranchDialog branch={undefined} type="create" />} />
 
       <TableCard cards={[
         {title: "إجمالي الفروع", data: SampleBranchsList.length.toString(), icon:<Building className="h-4 w-4 text-muted-foreground" />},
@@ -48,8 +49,8 @@ export default function Branches()
                   {rowName: branch.name, rowStyles: "font-semibold"},
                   {rowName: branch.cityName, rowStyles: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800"},
                 ]}
-                dropdownMenu={<BranchesDropdownMenu />}
-                contextMenuContent={<BranchesContextContent />}
+                dropdownMenu={<BranchesDropdownMenu branch={branch} />}
+                contextMenuContent={<BranchesContextContent branch={branch} />}
                 />
             ))}
 
