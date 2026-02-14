@@ -1,9 +1,8 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import { Skeleton } from "../components/ui/skeleton";
 import { TooltipProvider } from "../components/ui/tooltip";
 import useAppInitialization from "../hooks/useAppInitialization";
 import RoutesService from "./core/Services/constants/RoutesService";
-import Branches from "./features/branches/presentation/branches";
 import DashboardPage from "./features/dashboard/dashboardPage";
 import LandingPage from "./features/landing/landingPage";
 import LoginPage from "./features/login/loginPage";
@@ -11,6 +10,8 @@ import MainPage from "./features/main/mainPage";
 import PrfilePage from "./features/profile/PrfilePage";
 import Testing from "./test";
 import { ThemeProvider } from "./core/components/theme/themeProvider";
+import BranchesPage from "./features/branches/presentation/branchesPage";
+import RoutesPage from "./features/Routes/Presentation/RoutesPage";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -39,8 +40,8 @@ function AppBody() {
                 path="/passengers"
                 element={<h1>passengers is working!</h1>}
               />
-              <Route path="/routes" element={<h1>routes is working!</h1>} />
-              <Route path="/branches" element={<Branches/>} />
+              <Route path="/routes" element={<RoutesPage/>} />
+              <Route path="/branches" element={<BranchesPage/>} />
               <Route path="/users" element={<h1>users is working!</h1>} />
               <Route path="/settings" element={<h1>settings is working!</h1>} />
 

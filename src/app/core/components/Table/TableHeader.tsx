@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { PlusIcon } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
@@ -20,11 +20,7 @@ export default function TableHeader({ title, buttonTitle, createComp }: { title:
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setOpenDialogState}>
-        <form>
-          <DialogContent dir="rtl" className="sm:max-w-sm">
-            {createComp}
-          </DialogContent>
-        </form>
+        {createComp}
       </Dialog>
     </>
   );
