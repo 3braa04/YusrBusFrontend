@@ -13,7 +13,7 @@ import { ThemeProvider } from "./core/components/theme/themeProvider";
 import RoutesPage from "./features/Routes/Presentation/RoutesPage";
 import PassengersPage from "./features/Passengers/Presentation/PassengersPage";
 import BranchesPage from "./features/branches/presentation/BranchesPage";
-import UsersScreen from "./features/Users/UsersScreen";
+import UsersPage from "./features/Users/UsersPage";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -44,7 +44,7 @@ function AppBody() {
               />
               <Route path="/routes" element={<RoutesPage/>} />
               <Route path="/branches" element={<BranchesPage/>} />
-              <Route path="/users" element={<UsersScreen/>} />
+              <Route path="/users" element={<UsersPage/>} />
               <Route path="/settings" element={<h1>settings is working!</h1>} />
 
               <Route path={RoutesService.Profile} element={ <PrfilePage/> }/>
