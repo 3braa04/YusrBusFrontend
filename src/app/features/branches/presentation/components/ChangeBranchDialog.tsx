@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle
@@ -25,6 +26,7 @@ export default function ChangeBranchDialog({ branch, type }: { branch: BranchDTO
     <>
       <DialogHeader>
         <DialogTitle>{type === 'create'? 'إضافة' : 'تعديل'} الفرع</DialogTitle>
+        <DialogDescription></DialogDescription>
       </DialogHeader>
 
       <Separator></Separator>

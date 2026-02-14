@@ -10,8 +10,8 @@ export default function TableHeaderRows({tableHeadRows}: {tableHeadRows: TableHe
     <TableHeader className="bg-muted">
       <TableRow>
 
-        {tableHeadRows.map((row) => (
-          <TableHead className={row.rowStyles}>{row.rowName}</TableHead>
+        {tableHeadRows.map((row, i) => (
+          <TableHead key={i} className={row.rowStyles}>{row.rowName}</TableHead>
         ))}
 
       </TableRow>

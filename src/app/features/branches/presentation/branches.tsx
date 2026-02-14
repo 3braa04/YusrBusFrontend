@@ -43,8 +43,8 @@ export default function Branches()
 
           <TableBody>
 
-            {SampleBranchsList.map((branch,index) => (
-                <BranchRow key={index} tableRows={[
+            {SampleBranchsList.map((branch,i) => (
+                <BranchRow key={i} tableRows={[
                   {rowName: `#${branch.id}`, rowStyles: ""},
                   {rowName: branch.name, rowStyles: "font-semibold"},
                   {rowName: branch.cityName, rowStyles: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800"},

@@ -12,8 +12,8 @@ export default function TableCard({cards}: {cards: CardProps[]})
   return (
     <div className="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-      {cards.map((card) => (
-        <Card className="shadow-sm">
+      {cards.map((card, i) => (
+        <Card key={i} className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               {card.title}

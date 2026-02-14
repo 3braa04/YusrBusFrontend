@@ -37,11 +37,9 @@ export default function BranchesContextContent({branch}: {branch: BranchDTO}) {
       </ContextMenuContent>
 
       <Dialog open={willOpenDialog} onOpenChange={setOpenDialogState}>
-        <form>
           <DialogContent dir="rtl" className="sm:max-w-sm">
             <EditBranchDialog branch={branch} type="update" />
           </DialogContent>
-        </form>
       </Dialog>
     </>
   );

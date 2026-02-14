@@ -8,14 +8,12 @@ type TableBodyRow = {
 }
 
 interface GenericRowProps {
-  key: number;
   tableRows: TableBodyRow[];
   dropdownMenu: ReactNode;     
   contextMenuContent: ReactNode;
 }
 
 export default function TableBodyRow({ 
-  key,
   tableRows, 
   dropdownMenu, 
   contextMenuContent 
@@ -23,18 +21,18 @@ export default function TableBodyRow({
 
   return (
     <>
-      <ContextMenu key={key} dir="rtl">
+      <ContextMenu dir="rtl">
 
         <ContextMenuTrigger asChild>
 
-          <TableRow key={key} className="hover:bg-secondary/50 transition-colors">
+          <TableRow className="hover:bg-secondary/50 transition-colors">
             
             <TableCell>
               {dropdownMenu}
             </TableCell>
 
-            {tableRows.map((row) => (
-              <TableCell>
+            {tableRows.map((row, i) => (
+              <TableCell key={i}>
                 <span className={row.rowStyles}>
                   {row.rowName}
                 </span>
