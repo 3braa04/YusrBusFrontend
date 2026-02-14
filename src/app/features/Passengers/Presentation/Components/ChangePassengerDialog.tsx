@@ -34,7 +34,7 @@ export default function ChangePassengerDialog({ passenger, type }: { passenger: 
     <DialogContent dir="rtl" className="sm:max-w-xl">
       
       <DialogHeader>
-        <DialogTitle>{type === 'create' ? 'إضافة' : 'تعديل'} الراكب</DialogTitle>
+        <DialogTitle>{type === 'create' ? 'إضافة' : 'تعديل'} راكب</DialogTitle>
         <DialogDescription></DialogDescription>
       </DialogHeader>
 

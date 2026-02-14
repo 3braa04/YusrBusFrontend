@@ -27,7 +27,7 @@ export default function ChangeBranchDialog({ branch, type }: { branch: BranchDTO
     <DialogContent dir="rtl" className="sm:max-w-sm">
 
       <DialogHeader>
-        <DialogTitle>{type === 'create'? 'إضافة' : 'تعديل'} الفرع</DialogTitle>
+        <DialogTitle>{type === 'create'? 'إضافة' : 'تعديل'} فرع</DialogTitle>
         <DialogDescription></DialogDescription>
       </DialogHeader>
 

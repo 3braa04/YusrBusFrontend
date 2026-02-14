@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import type User from "../Data/User";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type BranchDialogType = "create" | "update";
 
@@ -40,13 +41,18 @@ export default function ChangeUserDialog({ user, type }: { user: User | undefine
           <Input defaultValue={user?.username} />
         </Field>
 
-        <Field orientation="horizontal">
-          <Checkbox id="isActive" name="isActive" />
-          <FieldContent>
-            <FieldTitle>هل المستخدم نشط</FieldTitle>
-            <FieldDescription></FieldDescription>
-          </FieldContent>
+        <Field>
+          <Label>حالة المستخدم</Label>
+          <Select dir="rtl" defaultValue={user?.isActive? "نشط" : "غير نشط"}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="نشط">نشط</SelectItem>
+                <SelectItem value="غير نشط">غير نشط</SelectItem>
+              </SelectContent>
+            </Select>
         </Field>
+
+        
 
       </FieldGroup>
 

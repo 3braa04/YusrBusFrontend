@@ -47,7 +47,7 @@ export default function UsersPage() {
               <TableBodyRow key={i} tableRows={[
                 { rowName: `#${user.id}`, rowStyles: "" },
                 { rowName: user.username, rowStyles: "font-semibold" },
-                { rowName: user.isActive?'نشط':'غير نشط', rowStyles: "" },
+                { rowName: user.isActive?'نشط':'غير نشط', rowStyles: `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.isActive? 'bg-green-300' : 'bg-red-300'} text-slate-800` },
               ]}
               dropdownMenu={<UsersActionsMenu type="dropdown" user={user} />}
               contextMenuContent={<UsersActionsMenu type="context" user={user} />}

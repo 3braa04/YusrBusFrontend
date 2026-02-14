@@ -84,7 +84,7 @@ export default function PassengersActionsMenu({passenger, type}: {passenger: Pas
 
             <Dialog open={isDeleteDialogOpen} onOpenChange={setOpenDeleteDialogState}>
                 <DialogContent dir="rtl" className="sm:max-w-sm">
-                    <DeleteDialog entityName="الخط"/>
+                    <DeleteDialog entityName="راكب"/>
                 </DialogContent>
             </Dialog>
         </>

@@ -51,7 +51,7 @@ export default function ChangeRouteDialog({ route, type }: { route: Route | unde
     <DialogContent dir="rtl" className="sm:max-w-xl">
       
       <DialogHeader>
-        <DialogTitle>{type === 'create' ? 'إضافة' : 'تعديل'} الخط</DialogTitle>
+        <DialogTitle>{type === 'create' ? 'إضافة' : 'تعديل'} خط</DialogTitle>
         <DialogDescription></DialogDescription>
       </DialogHeader>
 
