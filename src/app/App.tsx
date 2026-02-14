@@ -11,6 +11,7 @@ import MainPage from "./features/main/mainPage";
 import PrfilePage from "./features/profile/PrfilePage";
 import Testing from "./test";
 import { ThemeProvider } from "./core/components/theme/themeProvider";
+import UsersScreen from "./features/Users/UsersScreen";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -41,7 +42,7 @@ function AppBody() {
               />
               <Route path="/routes" element={<h1>routes is working!</h1>} />
               <Route path="/branches" element={<Branches/>} />
-              <Route path="/users" element={<h1>users is working!</h1>} />
+              <Route path="/users" element={<UsersScreen/>} />
               <Route path="/settings" element={<h1>settings is working!</h1>} />
 
               <Route path={RoutesService.Profile} element={ <PrfilePage/> }/>
