@@ -1,4 +1,4 @@
 export default class ApiConstants{
-    static baseUrl:string = "example.com";
+    static baseUrl:string = "https://localhost:7226";
     
 }

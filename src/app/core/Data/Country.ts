@@ -1,7 +1,7 @@
 export class Country
 {
-    public Name! : string;
-    public Code! : string;
+    public name! : string;
+    public code! : string;
 
     constructor(init?: Partial<Country>) { Object.assign(this, init); }
 }
