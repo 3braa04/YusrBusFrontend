@@ -1,4 +1,4 @@
-export default class BranchDTO {
+export default class Branch {
   public id: number = 0;
   public name: string = "";
   public cityId: number = 0;
@@ -11,7 +11,7 @@ export default class BranchDTO {
     this.cityName = CityName;
   }
 }
-export const SampleBranchsList: BranchDTO[] = [
+export const SampleBranchsList: Branch[] = [
 { id: 1, name: "فرع المدينة المنورة", cityId: 104, cityName: "المدينة المنورة" },
   { id: 2, name: "فرع مكة المكرمة", cityId: 103, cityName: "مكة" },
   { id: 3, name: "فرع جدة", cityId: 102, cityName: "جدة" },

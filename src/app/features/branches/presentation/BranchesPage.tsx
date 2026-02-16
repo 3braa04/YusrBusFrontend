@@ -9,7 +9,7 @@ import TableCard from "../../../core/components/Table/TableCard";
 import TableHeader from "../../../core/components/Table/TableHeader";
 import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
-import { SampleBranchsList } from "../data/branch_dto";
+import { SampleBranchsList } from "../data/Branch";
 import BranchesActionsMenu from "./components/BranchesActionsMenu";
 import ChangeBranchDialog from "./components/ChangeBranchDialog";
 

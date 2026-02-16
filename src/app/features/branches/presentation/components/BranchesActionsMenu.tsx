@@ -1,17 +1,17 @@
 import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
 import { Button } from "@/components/ui/button";
 import {
-    ContextMenuContent,
-    ContextMenuGroup,
-    ContextMenuItem,
-    ContextMenuLabel,
-    ContextMenuSeparator,
+  ContextMenuContent,
+  ContextMenuGroup,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
-import type BranchDTO from "../../data/branch_dto";
+import type BranchDTO from "../../data/Branch";
 import ChangeBranchDialog from "./ChangeBranchDialog";
 
 type ListType = "dropdown" | "context";

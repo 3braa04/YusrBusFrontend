@@ -1,9 +1,6 @@
-export type RequestResult<T> = {
-    data: T | null;
-    status: number
-}
+import type { RequestResult } from "./RequestResult";
 
-export class YusrApiHelper 
+export default class YusrApiHelper 
 {
     static async Get<T>(url: string, options?: RequestInit): Promise<RequestResult<T>> 
     {
@@ -75,5 +72,3 @@ export class YusrApiHelper
         return { data,status: response.status };
     }
 }
-
-export default YusrApiHelper;

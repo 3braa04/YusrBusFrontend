@@ -18,7 +18,7 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import type BranchDTO from "../../data/branch_dto";
+import type BranchDTO from "../../data/Branch";
 
 type BranchDialogType = "create" | "update";
 
