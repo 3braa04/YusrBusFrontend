@@ -1,5 +1,6 @@
 export type RequestResult<T> = {
-    data: T | null; error: string | null; status: number
+    data: T | null;
+    status: number
 }
 
 export class YusrApiHelper 
@@ -60,28 +61,18 @@ export class YusrApiHelper
     {
         if (!response.ok) 
         {
-            let errorText = response.statusText;
-
-            try
-            {
-                const errorBody = await response.text();
-                if (errorBody) errorText += ` - ${errorBody}`;
-            } 
-            catch 
-            {
-
-            }
-
-            return { data: null, error: errorText, status: response.status };
+            const errorText = response.statusText;
+            console.log(`[Status: ${response.status}]\nThere was an Error:\n${errorText}`);
+            return {data:null, status:response.status}
         }
 
         if (response.status === 204) 
         {
-            return { data: null, error: null, status: 204 };
+            return { data: null, status: 204 };
         }
 
         const data = await response.json() as T;
-        return { data, error: null, status: response.status };
+        return { data,status: response.status };
     }
 }
 
