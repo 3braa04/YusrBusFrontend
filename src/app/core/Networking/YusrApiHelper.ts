@@ -66,9 +66,9 @@ export class YusrApiHelper
             return {data:null, status:response.status}
         }
 
-        if (response.status === 204) 
+        if (response.status === 404) 
         {
-            return { data: null, status: 204 };
+            return { data: null, status: 404 };
         }
 
         const data = await response.json() as T;
