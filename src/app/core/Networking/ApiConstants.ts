@@ -1,4 +1,3 @@
 export default class ApiConstants{
-    static baseUrl:string = "https://localhost:7226";
-    
+    static baseUrl:string = "http://yusrbus.runasp.net/api";
 }

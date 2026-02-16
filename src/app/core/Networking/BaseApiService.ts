@@ -8,7 +8,7 @@ import YusrApiHelper from "./YusrApiHelper";
 
     async Filter(pageNumber: number, rowsPerPage: number): Promise<RequestResult<T>> 
     {
-        return await YusrApiHelper.Post(`${ApiConstants.baseUrl}/${this.routeName}/Filter&pageNumber=${pageNumber}&rowsPerPage=${rowsPerPage}`);
+        return await YusrApiHelper.Post(`${ApiConstants.baseUrl}/${this.routeName}/Filter?pageNumber=${pageNumber}&rowsPerPage=${rowsPerPage}`);
     }
 
     async Get(id: number): Promise<RequestResult<T>>

@@ -1,7 +1,22 @@
 import { ThemeToggle } from '@/app/core/components/theme/themeToggle';
+import type { Country } from '@/app/core/Data/Country';
+import CountriesApiService from '@/app/core/Networking/Services/CountriesApiService';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Landing = () => {
+
+  const [response, setResponse] = useState<any>(null);
+
+  useEffect(() => {
+    const dataFetch = async () => {
+      const service = new CountriesApiService();
+      const result = await service.Filter(1, 100);
+      setResponse(result.data);
+    }
+    dataFetch();
+  }, []);
+
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
       
@@ -15,6 +30,20 @@ const Landing = () => {
       <p className="mt-4 text-gray-600 dark:text-gray-400">
         Your journey, simplified.
       </p>
+
+      <div className="mt-6">
+        {response?.data ? (
+          <ul className="space-y-2">
+            {response.data.map((country: Country) => (
+              <li key={country.id} className="p-2 bg-white dark:bg-gray-800 rounded shadow">
+                {country.name}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Loading countries...</p>
+        )}
+      </div>
       
       <Link to="/login">
         <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 my-5 rounded-lg transition-all">

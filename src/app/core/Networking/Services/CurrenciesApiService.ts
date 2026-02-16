@@ -9,6 +9,6 @@ export default class CurrenciesApiService
     
     async Filter(pageNumber: number, rowsPerPage: number): Promise<RequestResult<Currency>> 
     {
-        return await YusrApiHelper.Post(`${ApiConstants.baseUrl}/${this.routeName}/Filter&pageNumber=${pageNumber}&rowsPerPage=${rowsPerPage}`);
+        return await YusrApiHelper.Post(`${ApiConstants.baseUrl}/${this.routeName}/Filter?pageNumber=${pageNumber}&rowsPerPage=${rowsPerPage}`);
     }
 }
