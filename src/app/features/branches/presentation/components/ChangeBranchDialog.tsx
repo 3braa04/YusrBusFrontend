@@ -18,11 +18,72 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import type BranchDTO from "../../data/Branch";
+import type Branch from "../../data/Branch";
+import { useEffect, useState } from "react";
+import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
+import type { City } from "@/app/core/Data/City";
+import CitiesApiService from "@/app/core/Networking/Services/CitiesApiService";
+import { Loader2 } from "lucide-react";
 
 type BranchDialogType = "create" | "update";
 
-export default function ChangeBranchDialog({ branch, type }: { branch: BranchDTO | undefined, type: BranchDialogType }) {
+interface Props {
+  branch?: Branch;
+  type: BranchDialogType;
+  onSuccess?: (newData: Branch) => void;
+}
+
+export default function ChangeBranchDialog({ branch, type, onSuccess }: Props) 
+{
+  const [loading, setLoading] = useState(false);
+  const [cities, setCities] = useState<City[]>([]);
+  const [fetchingCities, setFetchingCities] = useState(false);
+  const [formData, setFormData] = useState<Partial<Branch>>({
+    id: 0,
+    name: "",
+    cityId: 0,
+  });
+  
+  useEffect(() => {
+    const loadCities = async () => {
+      setFetchingCities(true);
+      const citiesService = new CitiesApiService();
+      const result = await citiesService.Filter(1, 100);
+      
+      if (result.data && Array.isArray(result.data.data)) {
+        setCities(result.data.data);
+      }
+      setFetchingCities(false);
+    };
+
+    loadCities();
+  }, []);
+
+  useEffect(() => {
+    if (branch) {
+      setFormData(branch);
+    } else {
+      setFormData({ id: 0, name: "", cityName: "" });
+    }
+  }, [branch]);
+
+  async function Save() 
+  {
+    setLoading(true);
+    const service = new BranchesApiService();
+    
+    const result = type === "create" 
+      ? await service.Add(formData as Branch) 
+      : await service.Update(formData as Branch);
+
+    setLoading(false);
+
+    if (result.status === 200 || result.status === 201) 
+    {
+      onSuccess?.(result.data as Branch);
+    } 
+  }
+
   return (
     <DialogContent dir="rtl" className="sm:max-w-sm">
 
@@ -41,6 +102,7 @@ export default function ChangeBranchDialog({ branch, type }: { branch: BranchDTO
             id="branchId" 
             name="branchId" 
             disabled={true}
+            value={formData.id || ""}
             defaultValue={branch?.id} 
           />
         </Field>
@@ -50,21 +112,27 @@ export default function ChangeBranchDialog({ branch, type }: { branch: BranchDTO
           <Input 
             id="branchName" 
             name="branchName" 
-            defaultValue={branch?.name} 
+            value={formData.name || ""} 
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
         </Field>
         
         <Field>
           <Label htmlFor="branchCity">المدينة</Label>
-          <Select dir="rtl" defaultValue={branch?.cityName}>
+          <Select dir="rtl" 
+            value={formData.cityId?.toString()} 
+            onValueChange={(val) => setFormData({ ...formData, cityId: Number(val) })}
+            disabled={fetchingCities}
+          >
             <SelectTrigger>
               <SelectValue placeholder="اختر المدينة" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="المدينة المنورة">المدينة المنورة</SelectItem>
-              <SelectItem value="مكة">مكة</SelectItem>
-              <SelectItem value="جدة">جدة</SelectItem>
-              <SelectItem value="الرياض">الرياض</SelectItem>
+              {cities.map((city) => (
+                <SelectItem key={city.id} value={city.id.toString()}>
+                  {city.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </Field>
@@ -75,7 +143,10 @@ export default function ChangeBranchDialog({ branch, type }: { branch: BranchDTO
         <DialogClose asChild>
           <Button variant="outline">إلغاء</Button>
         </DialogClose>
-        <Button type="button">حفظ التغييرات</Button>
+        <Button disabled={loading || fetchingCities} onClick={Save}>
+          {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+          حفظ التغييرات
+        </Button>
       </DialogFooter>
     
     </DialogContent>

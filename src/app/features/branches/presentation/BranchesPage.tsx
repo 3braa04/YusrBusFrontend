@@ -9,21 +9,66 @@ import TableCard from "../../../core/components/Table/TableCard";
 import TableHeader from "../../../core/components/Table/TableHeader";
 import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
-import { SampleBranchsList } from "../data/Branch";
+import Branch from "../data/Branch";
 import BranchesActionsMenu from "./components/BranchesActionsMenu";
 import ChangeBranchDialog from "./components/ChangeBranchDialog";
+import { useEffect, useState } from "react";
+import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
+import type { FilterResult } from "@/app/core/Data/FilterResult";
 
 
 export default function BranchesPage()
 {
+  const [branches, setBranches] = useState<FilterResult<Branch>>();
+
+  const handleDataChange = (newData: Branch) => {
+    setBranches((prev) => {
+      if (!prev) return prev;
+
+      const exists = prev.data?.find(b => b.id === newData.id);
+      
+      if (exists) {
+        return {
+          ...prev,
+          data: prev.data?.map(b => b.id === newData.id ? newData : b) ?? null
+        };
+      } 
+      
+      return {
+        ...prev,
+        count: prev.count + 1,
+        data: [newData, ...(prev.data ?? [])]
+      };
+    });
+  };
+  
+  useEffect(() => {
+    const dataFetch = async () => {
+      const service = new BranchesApiService();
+      const result = await service.Filter(1, 100);
+
+      if(result.data)
+        setBranches(result.data);
+    }
+    dataFetch();
+  }, []);
+
   return (
 
     <div className="px-5 py-3">
 
-      <TableHeader title="إدارة الفروع" buttonTitle="إضافة فرع جديد" createComp={<ChangeBranchDialog branch={undefined} type="create" />} />
+      <TableHeader title="إدارة الفروع" buttonTitle="إضافة فرع جديد" 
+        createComp={
+          <ChangeBranchDialog 
+            branch={undefined} 
+            type="create" 
+            onSuccess={handleDataChange}
+          />
+        } 
+      />
 
       <TableCard cards={[
-        {title: "إجمالي الفروع", data: SampleBranchsList.length.toString(), icon:<Building className="h-4 w-4 text-muted-foreground" />},
+        {title: "إجمالي الفروع", data: (branches?.count ?? 0).toString(), icon:<Building className="h-4 w-4 text-muted-foreground" />},
         {title: "المدن المغطاة", data: (4).toString(), icon:<MapPin className="h-4 w-4 text-muted-foreground" />},
       ]}/>
 
@@ -42,14 +87,14 @@ export default function BranchesPage()
 
           <TableBody>
 
-            {SampleBranchsList.map((branch,i) => (
+            {branches?.data?.map((branch,i) => (
                 <BranchRow key={i} tableRows={[
                   {rowName: `#${branch.id}`, rowStyles: ""},
                   {rowName: branch.name, rowStyles: "font-semibold"},
                   {rowName: branch.cityName, rowStyles: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800"},
                 ]}
-                dropdownMenu={<BranchesActionsMenu type="dropdown" branch={branch} />}
-                contextMenuContent={<BranchesActionsMenu type="context" branch={branch} />}
+                dropdownMenu={<BranchesActionsMenu type="dropdown" branch={branch} onSuccess={handleDataChange} />}
+                contextMenuContent={<BranchesActionsMenu type="context" branch={branch} onSuccess={handleDataChange} />}
                 />
             ))}
 
@@ -57,7 +102,7 @@ export default function BranchesPage()
 
         </Table>
         
-        <TablePagination pageSize={10} totalNumber={100} />
+        <TablePagination pageSize={100} totalNumber={branches?.count ?? 0} />
 
       </div>
     </div>

@@ -11,15 +11,26 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
-import type BranchDTO from "../../data/Branch";
+import type Branch from "../../data/Branch";
 import ChangeBranchDialog from "./ChangeBranchDialog";
 
 type ListType = "dropdown" | "context";
 
-export default function BranchesActionsMenu({branch, type}: {branch: BranchDTO, type: ListType})
+interface Props {
+    branch: Branch;
+    type: ListType;
+    onSuccess?: (newData: Branch) => void;
+}
+
+export default function BranchesActionsMenu({ branch, type, onSuccess }: Props)
 {
     const [isEditDialogOpen, setOpenEditDialogState] = useState(false);
     const [isDeleteDialogOpen, setOpenDeleteDialogState] = useState(false);
+
+    const handleUpdateSuccess = (newData: Branch) => {
+        setOpenEditDialogState(false); 
+        onSuccess?.(newData);
+    };
 
     return (
         <>
@@ -79,7 +90,7 @@ export default function BranchesActionsMenu({branch, type}: {branch: BranchDTO, 
             )}
 
             <Dialog open={isEditDialogOpen} onOpenChange={setOpenEditDialogState}>
-                <ChangeBranchDialog branch={branch} type="update" />
+                <ChangeBranchDialog branch={branch} type="update" onSuccess={handleUpdateSuccess} />
             </Dialog>
 
             <Dialog open={isDeleteDialogOpen} onOpenChange={setOpenDeleteDialogState}>

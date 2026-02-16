@@ -12,7 +12,7 @@ const Landing = () => {
     const dataFetch = async () => {
       const service = new CountriesApiService();
       const result = await service.Filter(1, 100);
-      setResponse(result.data);
+      setResponse(result.data?.data);
     }
     dataFetch();
   }, []);
@@ -32,9 +32,9 @@ const Landing = () => {
       </p>
 
       <div className="mt-6">
-        {response?.data ? (
+        {response ? (
           <ul className="space-y-2">
-            {response.data.map((country: Country) => (
+            {response.map((country: Country) => (
               <li key={country.id} className="p-2 bg-white dark:bg-gray-800 rounded shadow">
                 {country.name}
               </li>

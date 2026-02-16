@@ -1,4 +1,4 @@
-import type { RequestResult } from "./RequestResult";
+import type { RequestResult } from "../Data/RequestResult";
 
 export default class YusrApiHelper 
 {

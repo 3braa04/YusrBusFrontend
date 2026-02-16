@@ -1,11 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { PlusIcon } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import React from "react";
+import { useState, type ReactElement, type ReactNode } from "react";
 
 export default function TableHeader({ title, buttonTitle, createComp }: { title: string, buttonTitle: string, createComp: ReactNode }) 
 {
   const [isDialogOpen, setOpenDialogState] = useState(false);
+
+  // we intercept the success event to close the dialog
+  const contentWithClose = React.isValidElement(createComp) 
+    ? React.cloneElement(createComp as ReactElement<any>, {
+        onSuccess: (data: any) => {
+          setOpenDialogState(false);
+          (createComp.props as any).onSuccess?.(data);
+        }
+      })
+    : createComp;
 
   return (
     <>
@@ -20,7 +31,7 @@ export default function TableHeader({ title, buttonTitle, createComp }: { title:
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setOpenDialogState}>
-        {createComp}
+        {contentWithClose}
       </Dialog>
     </>
   );
