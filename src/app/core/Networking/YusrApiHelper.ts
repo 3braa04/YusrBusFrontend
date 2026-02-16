@@ -14,7 +14,7 @@ export class YusrApiHelper
         return YusrApiHelper.handleResponse<T>(response);
     }
 
-    static async Post<T>(url: string, body?: any, options?: RequestInit): Promise<RequestResult<T>> 
+    static async Post<T>(url: string, body?: unknown, options?: RequestInit): Promise<RequestResult<T>> 
     {
         const isFormData = body instanceof FormData;
         const headers = {
@@ -31,7 +31,7 @@ export class YusrApiHelper
         return YusrApiHelper.handleResponse<T>(response);
     }
 
-    static async Put<T>(url: string, body?: any, options?: RequestInit): Promise<RequestResult<T>> 
+    static async Put<T>(url: string, body?: unknown, options?: RequestInit): Promise<RequestResult<T>> 
     {
         const isFormData = body instanceof FormData;
         const headers = {
