@@ -18,7 +18,7 @@ import useDialog from "@/app/core/Hooks/useDialog";
 export default function BranchesPage() {
   const { branches, refreash } = useBranches();
   const {
-    activeBranch,
+    selectedRow,
     isEditDialogOpen,
     isDeleteDialogOpen,
     setIsEditDialogOpen,
@@ -29,10 +29,10 @@ export default function BranchesPage() {
 
   const Delete = async () => {
     const service = new BranchesApiService();
-    const res = await service.Delete(activeBranch?.id ?? 0);
+    const res = await service.Delete(selectedRow?.id ?? 0);
 
     if (res.status === 200) {
-      refreash(undefined, activeBranch?.id);
+      refreash(undefined, selectedRow?.id);
       setIsDeleteDialogOpen(false);
     }
   };
@@ -116,8 +116,8 @@ export default function BranchesPage() {
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <ChangeBranchDialog
-              branch={activeBranch || undefined}
-              type={activeBranch ? "update" : "create"}
+              branch={selectedRow || undefined}
+              type={selectedRow ? "update" : "create"}
               onSuccess={(data) => {
                 refreash(data);
                 setIsEditDialogOpen(false);
@@ -134,7 +134,7 @@ export default function BranchesPage() {
             <DialogContent dir="rtl" className="sm:max-w-sm">
               <DeleteDialog
                 entityName="الخط"
-                id={activeBranch?.id ?? 0}
+                id={selectedRow?.id ?? 0}
                 onDelete={Delete}
               />
             </DialogContent>
