@@ -18,51 +18,29 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import type Branch from "../../data/Branch";
+import type Branch from "../data/Branch";
 import { useState } from "react";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
-import { Loader2 } from "lucide-react";
-import useCities from "../../Logic/useCities";
+import useCities from "../Logic/useCities";
+import type { DialogType } from "@/app/core/components/Dialogs/DialogType";
+import SaveButton from "../../../core/components/Buttons/SaveButton";
 
-type BranchDialogType = "create" | "update";
 
 interface Props {
   branch?: Branch;
-  type: BranchDialogType;
+  type: DialogType;
   onSuccess?: (newData: Branch) => void;
 }
 
 export default function ChangeBranchDialog({ branch, type, onSuccess }: Props) 
 {
-  const {cities, fetchingCities} = useCities();
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<Partial<Branch>>({
     id: branch?.id,
     name: branch?.name,
     cityId: branch?.cityId,
   });
-  
 
-
-
-
-
-  async function Save() 
-  {
-    setLoading(true);
-    const service = new BranchesApiService();
-    
-    const result = type === "create" 
-      ? await service.Add(formData as Branch) 
-      : await service.Update(formData as Branch);
-
-    setLoading(false);
-
-    if (result.status === 200 || result.status === 201) 
-    {
-      onSuccess?.(result.data as Branch);
-    } 
-  }
+  const {cities, fetchingCities} = useCities();
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-sm">
@@ -123,10 +101,7 @@ export default function ChangeBranchDialog({ branch, type, onSuccess }: Props)
         <DialogClose asChild>
           <Button variant="outline">إلغاء</Button>
         </DialogClose>
-        <Button disabled={loading || fetchingCities} onClick={Save}>
-          {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
-          حفظ التغييرات
-        </Button>
+        <SaveButton formData={formData as Branch} dialogType={type} service={new BranchesApiService()} disable={() => fetchingCities} onSuccess={onSuccess}/>
       </DialogFooter>
     
     </DialogContent>

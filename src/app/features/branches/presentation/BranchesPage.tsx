@@ -10,18 +10,18 @@ import TableHeader from "../../../core/components/Table/TableHeader";
 import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
 import Branch from "../data/Branch";
-import ChangeBranchDialog from "./components/ChangeBranchDialog";
-import { useEffect, useState } from "react";
+import ChangeBranchDialog from "./ChangeBranchDialog";
+import { useState } from "react";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
-import type { FilterResult } from "@/app/core/Data/FilterResult";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
 import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
+import useBranches from "@/app/core/Hooks/useBranches";
 
 
 export default function BranchesPage()
 {
-  const [branches, setBranches] = useState<FilterResult<Branch>>();
+  const {branches, refreash} = useBranches();
   const [activeBranch, setActiveBranch] = useState<Branch | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -36,55 +36,18 @@ export default function BranchesPage()
     setIsDeleteDialogOpen(true);
   };
 
-  const handleDataChange = (newData: Branch) => {
-    setBranches((prev) => {
-      if (!prev) return prev;
-
-      const exists = prev.data?.find(b => b.id === newData.id);
-      
-      if (exists) {
-        return {
-          ...prev,
-          data: prev.data?.map(b => b.id === newData.id ? newData : b) ?? null
-        };
-      } 
-      
-      return {
-        ...prev,
-        count: prev.count + 1,
-        data: [newData, ...(prev.data ?? [])]
-      };
-    });
-  };
-
   const Delete = async () =>
   {
     var service = new BranchesApiService();
     var res = await service.Delete(activeBranch?.id ?? 0);
     
     if (res.status === 200){
-      setBranches((prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          count: prev.count - 1,
-          data: prev.data?.filter((b) => b.id !== activeBranch?.id) ?? null,
-        };
-      });
+      refreash(undefined, activeBranch?.id);
       setIsDeleteDialogOpen(false);
     }
   }
   
-  useEffect(() => {
-    const dataFetch = async () => {
-      const service = new BranchesApiService();
-      const result = await service.Filter(1, 100);
-
-      if(result.data)
-        setBranches(result.data);
-    }
-    dataFetch();
-  }, []);
+  
 
   return (
 
@@ -95,7 +58,7 @@ export default function BranchesPage()
           <ChangeBranchDialog 
             branch={undefined} 
             type="create" 
-            onSuccess={handleDataChange}
+            onSuccess={(newData) => refreash(newData)}
           />
         } 
       />
@@ -151,7 +114,7 @@ export default function BranchesPage()
               branch={activeBranch || undefined} 
               type={activeBranch ? "update" : "create"} 
               onSuccess={(data) => {
-                handleDataChange(data);
+                refreash(data);
                 setIsEditDialogOpen(false);
               }} 
             />
