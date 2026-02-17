@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import type Branch from "../../data/Branch";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
 import { Loader2 } from "lucide-react";
 import useCities from "../../Logic/useCities";
@@ -37,21 +37,13 @@ export default function ChangeBranchDialog({ branch, type, onSuccess }: Props)
   const {cities, fetchingCities} = useCities();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<Partial<Branch>>({
-    id: 0,
-    name: "",
-    cityId: 0,
+    id: branch?.id,
+    name: branch?.name,
+    cityId: branch?.cityId,
   });
   
 
 
-  useEffect(() => {
-    if (branch) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFormData(branch);
-    } else {
-      setFormData({ id: 0, name: "", cityName: "" });
-    }
-  }, [branch]);
 
 
 
