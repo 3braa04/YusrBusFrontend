@@ -19,11 +19,10 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import type Branch from "../../data/Branch";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
-import type { City } from "@/app/core/Data/City";
-import CitiesApiService from "@/app/core/Networking/Services/CitiesApiService";
 import { Loader2 } from "lucide-react";
+import useCities from "../../Logic/useCities";
 
 type BranchDialogType = "create" | "update";
 
@@ -35,37 +34,18 @@ interface Props {
 
 export default function ChangeBranchDialog({ branch, type, onSuccess }: Props) 
 {
+  const {cities, fetchingCities} = useCities();
   const [loading, setLoading] = useState(false);
-  const [cities, setCities] = useState<City[]>([]);
-  const [fetchingCities, setFetchingCities] = useState(false);
   const [formData, setFormData] = useState<Partial<Branch>>({
-    id: 0,
-    name: "",
-    cityId: 0,
+    id: branch?.id,
+    name: branch?.name,
+    cityId: branch?.cityId,
   });
   
-  useEffect(() => {
-    const loadCities = async () => {
-      setFetchingCities(true);
-      const citiesService = new CitiesApiService();
-      const result = await citiesService.Filter(1, 100);
-      
-      if (result.data && Array.isArray(result.data.data)) {
-        setCities(result.data.data);
-      }
-      setFetchingCities(false);
-    };
 
-    loadCities();
-  }, []);
 
-  useEffect(() => {
-    if (branch) {
-      setFormData(branch);
-    } else {
-      setFormData({ id: 0, name: "", cityName: "" });
-    }
-  }, [branch]);
+
+
 
   async function Save() 
   {
