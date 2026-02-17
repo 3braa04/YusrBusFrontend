@@ -10,6 +10,7 @@ import ChangeUserDialog from "./Components/ChangeUserDialog";
 import UsersActionsMenu from "./Components/UsersActionsMenu";
 import { sampleUsersList } from "./Data/User";
 
+
 export default function UsersPage() {
   return (
     <div className="px-5 py-3">
