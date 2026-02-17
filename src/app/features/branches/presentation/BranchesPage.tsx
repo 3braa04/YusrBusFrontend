@@ -10,16 +10,24 @@ import TableHeader from "../../../core/components/Table/TableHeader";
 import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
 import Branch from "../data/Branch";
-import BranchesActionsMenu from "./components/BranchesActionsMenu";
 import ChangeBranchDialog from "./components/ChangeBranchDialog";
 import { useEffect, useState } from "react";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
 import type { FilterResult } from "@/app/core/Data/FilterResult";
+import { Dialog } from "@/components/ui/dialog";
+import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
 
 
 export default function BranchesPage()
 {
   const [branches, setBranches] = useState<FilterResult<Branch>>();
+  const [activeBranch, setActiveBranch] = useState<Branch | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  const openEditDialog = (branch: Branch) => {
+    setActiveBranch(branch);
+    setIsEditDialogOpen(true);
+  };
 
   const handleDataChange = (newData: Branch) => {
     setBranches((prev) => {
@@ -93,8 +101,16 @@ export default function BranchesPage()
                   {rowName: branch.name, rowStyles: "font-semibold"},
                   {rowName: branch.cityName, rowStyles: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800"},
                 ]}
-                dropdownMenu={<BranchesActionsMenu type="dropdown" branch={branch} onSuccess={handleDataChange} />}
-                contextMenuContent={<BranchesActionsMenu type="context" branch={branch} onSuccess={handleDataChange} />}
+                dropdownMenu={<TableRowActionsMenu type="dropdown"
+                    onEditClicked={() => openEditDialog(branch)}
+                    onDeleteClicked={() => {/* similarly handle delete */}}
+                  />
+                }
+                contextMenuContent={<TableRowActionsMenu type="context" 
+                    onEditClicked={() => openEditDialog(branch)}
+                    onDeleteClicked={() => {/* similarly handle delete */}}
+                  />
+                }
                 />
             ))}
 
@@ -103,6 +119,19 @@ export default function BranchesPage()
         </Table>
         
         <TablePagination pageSize={100} totalNumber={branches?.count ?? 0} />
+
+        {isEditDialogOpen && (
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <ChangeBranchDialog 
+              branch={activeBranch || undefined} 
+              type={activeBranch ? "update" : "create"} 
+              onSuccess={(data) => {
+                handleDataChange(data);
+                setIsEditDialogOpen(false);
+              }} 
+            />
+          </Dialog>
+        )}
 
       </div>
     </div>
