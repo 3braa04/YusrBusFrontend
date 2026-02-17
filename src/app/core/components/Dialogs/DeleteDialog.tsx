@@ -1,38 +1,64 @@
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { OctagonAlert } from "lucide-react";
+import { Loader2, OctagonAlert } from "lucide-react";
+import { useState } from "react";
 
-export default function DeleteDialog({entityName}: {entityName: string}) {
-  return (
-    <>
-        <DialogHeader>
-            <DialogTitle>حذف {entityName}</DialogTitle>
-            <DialogDescription></DialogDescription>
-        </DialogHeader>
+interface Props {
+    entityName: string;
+    id: number;
+    onDelete?: () => Promise<void>;
+}
 
-        <Separator></Separator>
+export default function DeleteDialog({entityName, id, onDelete}: Props) 
+{
+    const [loading, setLoading] = useState(false);
 
-        <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
-            <OctagonAlert className="h-7 w-7 text-destructive" />
-        </div>
-           
-        <span className="font-bold text-center text-xl">
-            هل أنت متأكد؟          
-        </span>
+    async function handleDelete() 
+    {
+        if (!onDelete) return;
 
-        <span className="text-center text-[15px]">
-        لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف {entityName} نهائياً
-        وإزالته من خوادمنا.
-        </span>
+        setLoading(true);
+        await onDelete();
+        setLoading(false);
+    }
 
-        <DialogFooter>
-            <DialogClose asChild>
-            <Button variant="outline">إلغاء</Button>
-            </DialogClose>
-            <Button type="button" className="bg-destructive">حذف</Button>
-        </DialogFooter>
+    return (
+        <>
+            <DialogHeader>
+                <DialogTitle>حذف {entityName}</DialogTitle>
+                <DialogDescription></DialogDescription>
+            </DialogHeader>
 
-    </>
-  );
+            <Separator></Separator>
+
+            <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
+                <OctagonAlert className="h-7 w-7 text-destructive" />
+            </div>
+            
+            <span className="font-bold text-center text-xl">
+                هل أنت متأكد من حذف {entityName} رقم {id}؟          
+            </span>
+
+            <span className="text-center text-[15px]">
+            لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف {entityName} نهائياً
+            وإزالته من خوادمنا.
+            </span>
+
+            <DialogFooter>
+                <DialogClose asChild>
+                <Button variant="outline">إلغاء</Button>
+                </DialogClose>
+                <Button 
+                    variant="destructive" 
+                    onClick={handleDelete} 
+                    disabled={loading}
+                >
+                    {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+                    تأكيد الحذف
+                </Button>
+            </DialogFooter>
+
+        </>
+    );
 }

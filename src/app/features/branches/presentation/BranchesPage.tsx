@@ -14,8 +14,9 @@ import ChangeBranchDialog from "./components/ChangeBranchDialog";
 import { useEffect, useState } from "react";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
 import type { FilterResult } from "@/app/core/Data/FilterResult";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
+import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
 
 
 export default function BranchesPage()
@@ -23,10 +24,16 @@ export default function BranchesPage()
   const [branches, setBranches] = useState<FilterResult<Branch>>();
   const [activeBranch, setActiveBranch] = useState<Branch | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const openEditDialog = (branch: Branch) => {
     setActiveBranch(branch);
     setIsEditDialogOpen(true);
+  };
+
+  const openDeleteDialog = (branch: Branch) => {
+    setActiveBranch(branch);
+    setIsDeleteDialogOpen(true);
   };
 
   const handleDataChange = (newData: Branch) => {
@@ -49,6 +56,24 @@ export default function BranchesPage()
       };
     });
   };
+
+  const Delete = async () =>
+  {
+    var service = new BranchesApiService();
+    var res = await service.Delete(activeBranch?.id ?? 0);
+    
+    if (res.status === 200){
+      setBranches((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          count: prev.count - 1,
+          data: prev.data?.filter((b) => b.id !== activeBranch?.id) ?? null,
+        };
+      });
+      setIsDeleteDialogOpen(false);
+    }
+  }
   
   useEffect(() => {
     const dataFetch = async () => {
@@ -103,12 +128,12 @@ export default function BranchesPage()
                 ]}
                 dropdownMenu={<TableRowActionsMenu type="dropdown"
                     onEditClicked={() => openEditDialog(branch)}
-                    onDeleteClicked={() => {/* similarly handle delete */}}
+                    onDeleteClicked={() => openDeleteDialog(branch)}
                   />
                 }
                 contextMenuContent={<TableRowActionsMenu type="context" 
                     onEditClicked={() => openEditDialog(branch)}
-                    onDeleteClicked={() => {/* similarly handle delete */}}
+                    onDeleteClicked={() => openDeleteDialog(branch)}
                   />
                 }
                 />
@@ -130,6 +155,18 @@ export default function BranchesPage()
                 setIsEditDialogOpen(false);
               }} 
             />
+          </Dialog>
+        )}
+
+        {isDeleteDialogOpen && (
+          <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+              <DialogContent dir="rtl" className="sm:max-w-sm">
+                  <DeleteDialog 
+                    entityName="الخط" 
+                    id={activeBranch?.id ?? 0}
+                    onDelete={Delete}
+                  />
+              </DialogContent>
           </Dialog>
         )}
 
