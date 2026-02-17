@@ -29,10 +29,11 @@ export default function TableHeader({ title, buttonTitle, createComp }: { title:
           {buttonTitle}
         </Button>
       </div>
-
+      {isDialogOpen &&
       <Dialog open={isDialogOpen} onOpenChange={setOpenDialogState}>
         {contentWithClose}
       </Dialog>
+      }
     </>
   );
 }

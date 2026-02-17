@@ -88,16 +88,18 @@ export default function BranchesActionsMenu({ branch, type, onSuccess }: Props)
 
                 </ContextMenuContent>
             )}
-
+            {isEditDialogOpen && 
             <Dialog open={isEditDialogOpen} onOpenChange={setOpenEditDialogState}>
                 <ChangeBranchDialog branch={branch} type="update" onSuccess={handleUpdateSuccess} />
             </Dialog>
-
+            }
+            {isDeleteDialogOpen && 
             <Dialog open={isDeleteDialogOpen} onOpenChange={setOpenDeleteDialogState}>
                 <DialogContent dir="rtl" className="sm:max-w-sm">
                     <DeleteDialog entityName="الفرع"/>
                 </DialogContent>
             </Dialog>
+            }
         </>
     );
 }
