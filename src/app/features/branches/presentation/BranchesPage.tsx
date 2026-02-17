@@ -1,3 +1,9 @@
+import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
+import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
+import useBranches from "@/app/core/Hooks/useBranches";
+import useDialog from "@/app/core/Hooks/useDialog";
+import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
 import { Building, MapPin } from "lucide-react";
 import SearchInput from "../../../core/components/Input/SearchInput";
@@ -8,12 +14,6 @@ import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
 import Branch from "../data/Branch";
 import ChangeBranchDialog from "./ChangeBranchDialog";
-import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
-import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
-import useBranches from "@/app/core/Hooks/useBranches";
-import useDialog from "@/app/core/Hooks/useDialog";
 
 export default function BranchesPage() {
   const { branches, refreash } = useBranches();
@@ -26,16 +26,6 @@ export default function BranchesPage() {
     openEditDialog,
     openDeleteDialog,
   } = useDialog<Branch>();
-
-  const Delete = async () => {
-    const service = new BranchesApiService();
-    const res = await service.Delete(selectedRow?.id ?? 0);
-
-    if (res.status === 200) {
-      refreash(undefined, selectedRow?.id);
-      setIsDeleteDialogOpen(false);
-    }
-  };
 
   return (
     <div className="px-5 py-3">
@@ -135,7 +125,8 @@ export default function BranchesPage() {
               <DeleteDialog
                 entityName="الخط"
                 id={selectedRow?.id ?? 0}
-                onDelete={Delete}
+                service={new BranchesApiService()}
+                onSuccess={() => { refreash(undefined, selectedRow?.id); setIsDeleteDialogOpen(false); }}
               />
             </DialogContent>
           </Dialog>

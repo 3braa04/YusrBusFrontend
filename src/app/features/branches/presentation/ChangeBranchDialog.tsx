@@ -1,3 +1,5 @@
+import type { DialogType } from "@/app/core/components/Dialogs/DialogType";
+import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -18,12 +20,10 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import type Branch from "../data/Branch";
 import { useState } from "react";
-import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
-import useCities from "../../../core/Hooks/useCities";
-import type { DialogType } from "@/app/core/components/Dialogs/DialogType";
 import SaveButton from "../../../core/components/Buttons/SaveButton";
+import useCities from "../../../core/Hooks/useCities";
+import type Branch from "../data/Branch";
 
 
 interface Props {

@@ -3,23 +3,30 @@ import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle
 import { Separator } from "@/components/ui/separator";
 import { Loader2, OctagonAlert } from "lucide-react";
 import { useState } from "react";
+import type BaseApiService from "../../Networking/BaseApiService";
 
-interface Props {
+interface Props<T> {
     entityName: string;
     id: number;
-    onDelete?: () => Promise<void>;
+    service: BaseApiService<T>,
+    onSuccess?: () => void;
 }
 
-export default function DeleteDialog({entityName, id, onDelete}: Props) 
+export default function DeleteDialog<T>({entityName, id, service, onSuccess}: Props<T>) 
 {
     const [loading, setLoading] = useState(false);
 
-    async function handleDelete() 
+    async function Delete() 
     {
-        if (!onDelete) return;
-
         setLoading(true);
-        await onDelete();
+
+        const res = await service.Delete(id);
+        
+        if (res.status === 200) 
+        {
+            onSuccess?.();
+        }
+
         setLoading(false);
     }
 
@@ -51,7 +58,7 @@ export default function DeleteDialog({entityName, id, onDelete}: Props)
                 </DialogClose>
                 <Button 
                     variant="destructive" 
-                    onClick={handleDelete} 
+                    onClick={Delete} 
                     disabled={loading}
                 >
                     {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
