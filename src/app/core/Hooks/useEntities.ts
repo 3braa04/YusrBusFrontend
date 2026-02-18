@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
-import BranchesApiService from "../Networking/Services/BranchesApiService";
-import type Branch from "@/app/features/branches/data/Branch";
+import type { BaseEntity } from "../Data/BaseEntity";
 import type { FilterResult } from "../Data/FilterResult";
+import BaseApiService from "../Networking/BaseApiService";
 
-export default function useBranches() 
+export default function useEntities<T extends BaseEntity>(service: BaseApiService<T>) 
 {
-  const [branches, setBranches] = useState<FilterResult<Branch>>();
+  const [entities, setEntities] = useState<FilterResult<T>>();
 
   useEffect(() => {
     const dataFetch = async () => {
-      const service = new BranchesApiService();
       const result = await service.Filter(1, 100);
 
-      if (result.data) setBranches(result.data);
+      if (result.data) setEntities(result.data);
     };
     dataFetch();
   }, []);
 
-  const refreash = (newData?: Branch, deletedId?: number) => 
+  const refreash = (newData?: T, deletedId?: number) => 
   {
     if(deletedId)
     {
-      setBranches((prev) => {
+      setEntities((prev) => {
         if (!prev) return prev;
         return {
           ...prev,
@@ -33,7 +32,7 @@ export default function useBranches()
 
     else if (newData)
     {
-      setBranches((prev) => {
+      setEntities((prev) => {
         if (!prev) return prev;
 
         const exists = prev.data?.find(b => b.id === newData.id);
@@ -54,5 +53,5 @@ export default function useBranches()
     }   
   };
 
-  return {branches, refreash};
+  return {entities, refreash};
 }

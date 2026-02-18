@@ -1,6 +1,7 @@
-export class Route
-{
-    public id! : number;
+import { BaseEntity } from "@/app/core/Data/BaseEntity";
+
+export class Route extends BaseEntity
+{ 
     public name! : string;
     public fromCityId! : number;
     public toCityId! : number;
@@ -9,12 +10,11 @@ export class Route
     public toCityName! : string;
     public routeStations! : RouteStation[];
 
-    constructor(init?: Partial<Route>) { Object.assign(this, init); }
+    constructor(init?: Partial<Route>) { super(); Object.assign(this, init); }
 }
 
-export class RouteStation
+export class RouteStation extends BaseEntity
 {
-    public id! : number;
     public routeId! : number;
     public period! : number;
     public index! : number;
@@ -22,11 +22,5 @@ export class RouteStation
 
     public cityName! : string;
 
-    constructor(init?: Partial<RouteStation>) { Object.assign(this, init); }
+    constructor(init?: Partial<RouteStation>) { super(); Object.assign(this, init); }
 }
-
-export const SampleRoutesList: Route[] = [
-    { id: 1, name: "خط المدينة المنورة", fromCityId: 104, toCityId: 105, fromCityName: "المدينة المنورة", toCityName: "المدينة المنورة", routeStations: [] },
-    { id: 2, name: "خط المدينة المنورة", fromCityId: 104, toCityId: 105, fromCityName: "المدينة المنورة", toCityName: "المدينة المنورة", routeStations: [] },
-    { id: 3, name: "خط المدينة المنورة", fromCityId: 104, toCityId: 105, fromCityName: "المدينة المنورة", toCityName: "المدينة المنورة", routeStations: [] },
-];

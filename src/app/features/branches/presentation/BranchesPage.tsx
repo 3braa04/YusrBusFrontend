@@ -1,6 +1,5 @@
 import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
 import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
-import useBranches from "@/app/core/Hooks/useBranches";
 import useDialog from "@/app/core/Hooks/useDialog";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -14,9 +13,10 @@ import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
 import Branch from "../data/Branch";
 import ChangeBranchDialog from "./ChangeBranchDialog";
+import useEntities from "@/app/core/Hooks/useEntities";
 
 export default function BranchesPage() {
-  const { branches, refreash } = useBranches();
+  const { entities, refreash } = useEntities<Branch>(new BranchesApiService());
   const {
     selectedRow,
     isEditDialogOpen,
@@ -45,7 +45,7 @@ export default function BranchesPage() {
         cards={[
           {
             title: "إجمالي الفروع",
-            data: (branches?.count ?? 0).toString(),
+            data: (entities?.count ?? 0).toString(),
             icon: <Building className="h-4 w-4 text-muted-foreground" />,
           },
           {
@@ -70,7 +70,7 @@ export default function BranchesPage() {
           />
 
           <TableBody>
-            {branches?.data?.map((branch, i) => (
+            {entities?.data?.map((branch, i) => (
               <BranchRow
                 key={i}
                 tableRows={[
@@ -101,7 +101,7 @@ export default function BranchesPage() {
           </TableBody>
         </Table>
 
-        <TablePagination pageSize={100} totalNumber={branches?.count ?? 0} />
+        <TablePagination pageSize={100} totalNumber={entities?.count ?? 0} />
 
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -123,10 +123,13 @@ export default function BranchesPage() {
           >
             <DialogContent dir="rtl" className="sm:max-w-sm">
               <DeleteDialog
-                entityName="الخط"
+                entityName="الفرع"
                 id={selectedRow?.id ?? 0}
                 service={new BranchesApiService()}
-                onSuccess={() => { refreash(undefined, selectedRow?.id); setIsDeleteDialogOpen(false); }}
+                onSuccess={() => {
+                  refreash(undefined, selectedRow?.id);
+                  setIsDeleteDialogOpen(false);
+                }}
               />
             </DialogContent>
           </Dialog>
