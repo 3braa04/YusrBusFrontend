@@ -1,8 +1,8 @@
+import { ThemeProvider } from "next-themes";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Skeleton } from "../components/ui/skeleton";
 import { TooltipProvider } from "../components/ui/tooltip";
 import useAppInitialization from "../hooks/useAppInitialization";
-import { ThemeProvider } from "./core/components/theme/themeProvider";
 import RoutesService from "./core/Services/constants/RoutesService";
 import BranchesPage from "./features/branches/presentation/BranchesPage";
 import DashboardPage from "./features/dashboard/dashboardPage";
@@ -12,9 +12,9 @@ import MainPage from "./features/main/mainPage";
 import PassengersPage from "./features/Passengers/Presentation/PassengersPage";
 import PrfilePage from "./features/profile/PrfilePage";
 import RoutesPage from "./features/Routes/Presentation/RoutesPage";
+import TripsPage from "./features/Trips/Presentation/TripsPage";
 import UsersPage from "./features/Users/Presentation/UsersPage";
 import Testing from "./test";
-import TripsScreen from "./features/Trips/TripsPage";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -38,7 +38,7 @@ function AppBody() {
 
             <Route element={<MainPage />}>
               <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/trips" element={<TripsScreen/>} />
+              <Route path="/trips" element={<TripsPage/>} />
               <Route
                 path="/passengers"
                 element={<PassengersPage/>}

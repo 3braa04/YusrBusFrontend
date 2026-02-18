@@ -12,7 +12,7 @@ export default function Bus({
   }
 
   return (
-    <div className="border-2 border-gray-300 rounded-lg p-6 bg-white shadow-md max-w-md mx-auto">
+    <div className="border-2 border-gray-300 rounded-lg p-6 bg-white shadow-md max-w-md mx-auto rotate-90">
       <div className="flex flex-col items-center space-y-4">
         {rows.map((rowSeats, rowIndex) => {
           const isLastRow = rowIndex === rows.length - 1;

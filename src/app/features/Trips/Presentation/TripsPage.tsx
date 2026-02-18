@@ -15,8 +15,9 @@ import TableHeader from "../../../core/components/Table/TableHeader";
 import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
 import type { Trip } from "../Data/Trip";
+import ChangeTripDialog from "./ChangeTripDialog";
 
-export default function RoutesPage() {
+export default function TripsPage() {
   const { entities, refreash, isLoading } = useEntities<Trip>(
     new TripsApiService(),
   );
@@ -36,7 +37,7 @@ export default function RoutesPage() {
         title="إدارة الرحلات"
         buttonTitle="إضافة رحلة جديدة"
         createComp={
-          <ChangeRouteDialog
+          <ChangeTripDialog
             entity={undefined}
             mode="create"
             onSuccess={(newData) => refreash(newData)}
@@ -61,6 +62,8 @@ export default function RoutesPage() {
           <EmptyTablePreview mode="loading" />
         ) : entities?.count == 0 ? (
           <EmptyTablePreview mode="empty" />
+        ) : entities == undefined ? (
+          <EmptyTablePreview mode="error" />
         ) : (
           <Table>
             <TableHeaderRows
@@ -79,14 +82,17 @@ export default function RoutesPage() {
                   key={i}
                   tableRows={[
                     { rowName: `#${trip.id}`, rowStyles: "" },
-                    { rowName: trip.name, rowStyles: "font-semibold" },
                     {
-                      rowName: trip.fromCityName,
+                      rowName: trip.mainCaptainName,
+                      rowStyles: "font-semibold",
+                    },
+                    {
+                      rowName: trip.secondaryCaptainName ?? "",
                       rowStyles:
                         "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
                     },
                     {
-                      rowName: trip.toCityName,
+                      rowName: trip.busName ?? "",
                       rowStyles:
                         "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
                     },
@@ -114,7 +120,7 @@ export default function RoutesPage() {
 
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-            <ChangeRouteDialog
+            <ChangeTripDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
               onSuccess={(data) => {

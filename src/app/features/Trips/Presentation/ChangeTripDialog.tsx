@@ -1,8 +1,9 @@
 import SaveButton from "@/app/core/components/Buttons/SaveButton";
 import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
-import useCities from "@/app/core/Hooks/useCities";
-import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
+import useRoutes from "@/app/core/Hooks/useRoutes";
+import TripsApiService from "@/app/core/Networking/Services/TripsApiService";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   DialogClose,
   DialogContent,
@@ -14,21 +15,20 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Trash2 } from "lucide-react";
+import { format } from "date-fns";
+import { arSA } from "date-fns/locale";
+import { ChevronDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { arSA as arSADayPicker } from "react-day-picker/locale";
 import type { Trip } from "../Data/Trip";
-import TripsApiService from "@/app/core/Networking/Services/TripsApiService";
 
 export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChangeDialogProps<Trip>) {
   const [formData, setFormData] = useState<Partial<Trip>>({});
+
+  const {routes, fetchingRoutes} = useRoutes();
 
   useEffect(() => {
     if (mode === "update" && entity?.id) 
@@ -39,12 +39,13 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
 
         setFormData({
           id: res.data?.id,
-          name: res.data?.name,
-          fromCityId: res.data?.fromCityId,
-          toCityId: res.data?.toCityId,
-          fromCityName: res.data?.fromCityName,
-          toCityName: res.data?.toCityName,
-          routeStations: res.data?.routeStations || [],
+          mainCaptainName: res.data?.mainCaptainName,
+          secondaryCaptainName: res.data?.secondaryCaptainName,
+          busName: res.data?.busName,
+          routeId: res.data?.routeId,
+          startDate: res.data?.startDate,
+          route: res.data?.route,
+          tickets: res.data?.tickets,
         });
       };
 
@@ -52,12 +53,10 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
     }
   }, [entity?.id]); // Only runs when the route ID changes (opening a different route)
 
-  const { cities, fetchingCities } = useCities();
-
   return (
-    <DialogContent dir="rtl" className="sm:max-w-xl">
+    <DialogContent dir="rtl" className="sm:max-w-3xl">
       <DialogHeader>
-        <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} خط</DialogTitle>
+        <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} رحلة</DialogTitle>
         <DialogDescription></DialogDescription>
       </DialogHeader>
 
@@ -65,165 +64,106 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
 
       <FieldGroup>
         <Field>
-          <Label>رقم الخط</Label>
-          <Input disabled defaultValue={entity?.id} />
-        </Field>
-
-        <Field>
-          <Label>اسم الخط</Label>
-          <Input
-            value={formData.name || ""}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, name: e.target.value }))
-            }
-          />
+          <Label>رقم الرحلة</Label>
+          <Input disabled value={entity?.id} />
         </Field>
 
         <div className="flex gap-3">
           <Field>
-            <Label>من المدينة</Label>
-            <Select
-              dir="rtl"
-              value={formData.fromCityId?.toString() || ""}
-              onValueChange={(val) => {
-                const selectedCity = cities.find(
-                  (c) => c.id.toString() === val,
-                );
-                if (selectedCity) {
-                  setFormData((prev) => ({
-                    ...prev,
-                    fromCityId: selectedCity.id,
-                    fromCityName: selectedCity.name,
-                  }));
-                }
-              }}
-              disabled={fetchingCities}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="اختر المدينة" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.id} value={city.id.toString()}>
-                    {city.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label>اسم قائد الحافلة</Label>
+            <Input
+              value={formData.mainCaptainName || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, mainCaptainName: e.target.value }))
+              }
+            />
           </Field>
 
           <Field>
-            <Label>إلى المدينة</Label>
-            <Select
+            <Label>اسم مساعد قائد الحافلة</Label>
+            <Input
+              value={formData.mainCaptainName || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, mainCaptainName: e.target.value }))
+              }
+            />
+          </Field>
+
+          <Field>
+            <Label>الحافلة</Label>
+            <Input
+              value={formData.busName || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, busName: e.target.value }))
+              }
+            />
+          </Field>
+        </div>
+          
+        <Field>
+          <Label>الخط</Label>
+          <Select
               dir="rtl"
-              value={formData.toCityId?.toString() || ""}
+              value={formData.routeId?.toString() || ""}
               onValueChange={(val) => {
-                const selectedCity = cities.find(
+                const selectedCountry = routes.find(
                   (c) => c.id.toString() === val,
                 );
-                if (selectedCity) {
+                if (selectedCountry) {
                   setFormData((prev) => ({
                     ...prev,
-                    toCityId: selectedCity.id,
-                    toCityName: selectedCity.name,
+                    routeId: selectedCountry.id,
+                    route: selectedCountry,
                   }));
                 }
               }}
-              disabled={fetchingCities}
+              disabled={fetchingRoutes}
             >
               <SelectTrigger>
-                <SelectValue placeholder="اختر المدينة" />
+                <SelectValue placeholder="اختر خطًا" />
               </SelectTrigger>
               <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.id} value={city.id.toString()}>
-                    {city.name}
+                {routes.map((route) => (
+                  <SelectItem key={route.id} value={route.id.toString()}>
+                    {route.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </Field>
-        </div>
+        </Field>
+        
+        <Field>
+          <Label>تاريخ الرحلة</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                data-empty={!formData?.startDate}
+                className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+              >
+                {formData?.startDate ? (
+                  format(formData?.startDate, "PPP", { locale: arSA })
+                ) : (
+                  <span>إختر تاريخا</span>
+                )}
+                <ChevronDownIcon />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                captionLayout="dropdown"
+                mode="single"
+                selected={formData?.startDate}
+                onSelect={(date) => 
+                  setFormData((prev) => ({ ...prev, startDate: date }))
+                }
+                defaultMonth={formData?.startDate}
+                locale={arSADayPicker}
+              />
+            </PopoverContent>
+          </Popover>
+        </Field>
 
-        <Separator />
-
-        <div className="space-y-3">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-sm font-bold">محطات الخط</h3>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addStation}
-            >
-              <Plus className="h-4 w-4 ml-2" /> إضافة محطة
-            </Button>
-          </div>
-
-          {(formData.routeStations?.length ?? 0) > 0 && (
-            <div className="flex gap-3 px-3 mb-1 text-muted-foreground text-xs font-medium">
-              <div className="flex-1">المدينة</div>
-              <div>مدة الوصول (دقيقة)</div>
-              <div className="w-10">{/* Empty for trash icon */}</div>
-            </div>
-          )}
-
-          {(formData.routeStations?.length ?? 0) === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-6 border-2 border-dashed rounded-lg">
-              لا توجد محطات مضافة لهذا الخط بعد.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {formData.routeStations?.map((station, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-3 p-2 border rounded-md hover:bg-secondary/5 transition-colors"
-                >
-                  <Field className="flex-1 cursor-pointer">
-                    <Select
-                      dir="rtl"
-                      value={station.cityId?.toString() || ""}
-                      onValueChange={(val) =>
-                        updateStation(index, "cityId", val)
-                      }
-                      disabled={fetchingCities}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="اختر المدينة" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {cities.map((city) => (
-                          <SelectItem key={city.id} value={city.id.toString()}>
-                            {city.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-
-                  <Field className="w-24">
-                    <Input
-                      type="number"
-                      value={station.period}
-                      onChange={(e) =>
-                        updateStation(index, "period", parseInt(e.target.value))
-                      }
-                    />
-                  </Field>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-10 text-destructive hover:bg-destructive/10"
-                    onClick={() => removeStation(index)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </FieldGroup>
 
       <DialogFooter>
@@ -231,10 +171,9 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
           <Button variant="outline">إلغاء</Button>
         </DialogClose>
         <SaveButton
-          formData={formData as Route}
+          formData={formData as Trip}
           dialogMode={mode}
-          service={new RoutesApiService()}
-          disable={() => fetchingCities}
+          service={new TripsApiService()}
           onSuccess={onSuccess}
         />
       </DialogFooter>
