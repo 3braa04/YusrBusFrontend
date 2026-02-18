@@ -78,7 +78,7 @@ export default function ChangeRouteDialog({ entity, mode, onSuccess }: CummonCha
   const updateStation = (
     index: number,
     field: keyof RouteStation,
-    value: any,
+    value: unknown,
   ) => {
     setFormData((prev) => {
       const updatedStations = [...(prev.routeStations || [])];
