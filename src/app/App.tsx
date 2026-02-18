@@ -14,6 +14,7 @@ import PrfilePage from "./features/profile/PrfilePage";
 import RoutesPage from "./features/Routes/Presentation/RoutesPage";
 import UsersPage from "./features/Users/Presentation/UsersPage";
 import Testing from "./test";
+import TripsScreen from "./features/Trips/TripsPage";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -37,7 +38,7 @@ function AppBody() {
 
             <Route element={<MainPage />}>
               <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/trips" element={<h1>trips is working!</h1>} />
+              <Route path="/trips" element={<TripsScreen/>} />
               <Route
                 path="/passengers"
                 element={<PassengersPage/>}
