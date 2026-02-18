@@ -1,7 +1,10 @@
-import {
-  Table,
-  TableBody,
-} from "@/components/ui/table";
+import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
+import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
+import useDialog from "@/app/core/Hooks/useDialog";
+import useEntities from "@/app/core/Hooks/useEntities";
+import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Table, TableBody } from "@/components/ui/table";
 import { Building } from "lucide-react";
 import SearchInput from "../../../core/components/Input/SearchInput";
 import BranchRow from "../../../core/components/Table/TableBodyRow";
@@ -9,63 +12,135 @@ import TableCard from "../../../core/components/Table/TableCard";
 import TableHeader from "../../../core/components/Table/TableHeader";
 import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
-import { SamplePassengersList } from "../Data/Passenger";
-import ChangePassengerDialog from "./Components/ChangePassengerDialog";
-import PassengersActionsMenu from "./Components/PassengersActionsMenu";
+import { Passenger } from "../Data/Passenger";
+import ChangePassengerDialog from "./ChangePassengerDialog";
 
-export default function PassengersPage()
-{
+export default function PassengersPage() {
+  const { entities, refreash } = useEntities<Passenger>(
+    new PassengersApiService(),
+  );
+  const {
+    selectedRow,
+    isEditDialogOpen,
+    isDeleteDialogOpen,
+    setIsEditDialogOpen,
+    setIsDeleteDialogOpen,
+    openEditDialog,
+    openDeleteDialog,
+  } = useDialog<Passenger>();
+
   return (
-
     <div className="px-5 py-3">
+      <TableHeader
+        title="إدارة الركاب"
+        buttonTitle="إضافة راكب جديد"
+        createComp={
+          <ChangePassengerDialog
+            entity={undefined}
+            mode="create"
+            onSuccess={(newData) => refreash(newData)}
+          />
+        }
+      />
 
-      <TableHeader title="إدارة الركاب" buttonTitle="إضافة راكب جديد" createComp={<ChangePassengerDialog passenger={undefined} type="create" />} />
+      <TableCard
+        cards={[
+          {
+            title: "إجمالي الركاب",
+            data: (entities?.count ?? 0).toString(),
+            icon: <Building className="h-4 w-4 text-muted-foreground" />,
+          },
+        ]}
+      />
 
-      <TableCard cards={[
-        {title: "إجمالي الركاب", data: SamplePassengersList.length.toString(), icon:<Building className="h-4 w-4 text-muted-foreground" />},
-      ]}/>
-
-      <SearchInput/>
+      <SearchInput />
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
-
         <Table>
-
-          <TableHeaderRows tableHeadRows={[
-            {rowName: "", rowStyles: "text-left w-12.5"},
-            {rowName: "رقم الراكب", rowStyles: "w-30"},
-            {rowName: "اسم الراكب", rowStyles: ""},
-            {rowName: "الجنس", rowStyles: ""},
-            {rowName: "رقم الجوال", rowStyles: ""},
-            {rowName: "البريد الإلكتروني", rowStyles: ""},
-            {rowName: "الجنسية", rowStyles: ""},
-          ]}/>
+          <TableHeaderRows
+            tableHeadRows={[
+              { rowName: "", rowStyles: "text-left w-12.5" },
+              { rowName: "رقم الراكب", rowStyles: "w-30" },
+              { rowName: "اسم الراكب", rowStyles: "" },
+              { rowName: "الجنس", rowStyles: "" },
+              { rowName: "رقم الجوال", rowStyles: "" },
+              { rowName: "البريد الإلكتروني", rowStyles: "" },
+              { rowName: "الجنسية", rowStyles: "" },
+            ]}
+          />
 
           <TableBody>
-
-            {SamplePassengersList.map((passenger,i) => (
-                <BranchRow key={i} tableRows={[
-                  {rowName: `#${passenger.id}`, rowStyles: ""},
-                  {rowName: passenger.name, rowStyles: "font-semibold"},
-                  {rowName: passenger.gender === 0? 'ذكر' : 'أنثى', 
-                    rowStyles: `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${passenger.gender === 0? 'bg-blue-300' : 'bg-pink-300'} text-slate-800`},
-                  {rowName: passenger.phoneNumber ?? '-', rowStyles: ""},
-                  {rowName: passenger.email ?? '-', rowStyles: ""},
-                  {rowName: passenger.nationality?.Name ?? '-', rowStyles: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-300 text-slate-800"},
+            {entities?.data?.map((passenger, i) => (
+              <BranchRow
+                key={i}
+                tableRows={[
+                  { rowName: `#${passenger.id}`, rowStyles: "" },
+                  { rowName: passenger.name, rowStyles: "font-semibold" },
+                  {
+                    rowName: passenger.gender === 0 ? "ذكر" : "أنثى",
+                    rowStyles: `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${passenger.gender === 0 ? "bg-blue-300" : "bg-pink-300"} text-slate-800`,
+                  },
+                  { rowName: passenger.phoneNumber ?? "-", rowStyles: "" },
+                  { rowName: passenger.email ?? "-", rowStyles: "" },
+                  {
+                    rowName: passenger.nationality?.name ?? "-",
+                    rowStyles:
+                      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-300 text-slate-800",
+                  },
                 ]}
-                dropdownMenu={<PassengersActionsMenu type="dropdown" passenger={passenger} />}
-                contextMenuContent={<PassengersActionsMenu type="context" passenger={passenger} />}
-                />
+                dropdownMenu={
+                  <TableRowActionsMenu
+                    type="dropdown"
+                    onEditClicked={() => openEditDialog(passenger)}
+                    onDeleteClicked={() => openDeleteDialog(passenger)}
+                  />
+                }
+                contextMenuContent={
+                  <TableRowActionsMenu
+                    type="context"
+                    onEditClicked={() => openEditDialog(passenger)}
+                    onDeleteClicked={() => openDeleteDialog(passenger)}
+                  />
+                }
+              />
             ))}
-
           </TableBody>
-
         </Table>
-        
-        <TablePagination pageSize={10} totalNumber={100} />
 
+        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
+
+        {isEditDialogOpen && (
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <ChangePassengerDialog
+              entity={selectedRow || undefined}
+              mode={selectedRow ? "update" : "create"}
+              onSuccess={(data) => {
+                refreash(data);
+                setIsEditDialogOpen(false);
+              }}
+            />
+          </Dialog>
+        )}
+
+        {isDeleteDialogOpen && (
+          <Dialog
+            open={isDeleteDialogOpen}
+            onOpenChange={setIsDeleteDialogOpen}
+          >
+            <DialogContent dir="rtl" className="sm:max-w-sm">
+              <DeleteDialog
+                entityName="الراكب"
+                id={selectedRow?.id ?? 0}
+                service={new PassengersApiService()}
+                onSuccess={() => {
+                  refreash(undefined, selectedRow?.id);
+                  setIsDeleteDialogOpen(false);
+                }}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </div>
-    
   );
-};
+}

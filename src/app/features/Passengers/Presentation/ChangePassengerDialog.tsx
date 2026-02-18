@@ -1,0 +1,254 @@
+import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
+import useCountries from "@/app/core/Hooks/useCountries";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Field, FieldGroup } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { format } from "date-fns";
+import { arSA } from "date-fns/locale";
+import { ChevronDownIcon } from "lucide-react";
+import { useState } from "react";
+import { arSA as arSADayPicker } from "react-day-picker/locale";
+import type { Gender, Passenger } from "../Data/Passenger";
+import SaveButton from "@/app/core/components/Buttons/SaveButton";
+import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
+
+export default function ChangePassengerDialog({
+  entity,
+  mode,
+  onSuccess,
+}: CummonChangeDialogProps<Passenger>) {
+
+  const [formData, setFormData] = useState<Partial<Passenger>>(entity || {});
+  const {countries, fetchingCountries} = useCountries();
+
+  return (
+    <DialogContent dir="rtl" className="sm:max-w-xl">
+      <DialogHeader>
+        <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} راكب</DialogTitle>
+        <DialogDescription></DialogDescription>
+      </DialogHeader>
+
+      <Separator />
+
+      <FieldGroup>
+        <Field>
+          <Label>رقم الراكب</Label>
+          <Input disabled value={formData?.id} />
+        </Field>
+
+        <Field>
+          <Label>اسم الراكب</Label>
+          <Input
+            value={formData?.name}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+          />
+        </Field>
+
+        <div className="flex gap-3">
+          <Field>
+            <Label>الجنس</Label>
+            <Select
+              dir="rtl"
+              value={formData.gender?.toString() || ""}
+              onValueChange={(e) => {
+                setFormData((prev) => ({ 
+                  ...prev, 
+                  gender: Number(e) as Gender 
+                }));
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="اختر" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">ذكر</SelectItem>
+                <SelectItem value="1">أنثى</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+
+          <Field>
+            <Label>الجنسية</Label>
+            <Select
+              dir="rtl"
+              value={formData.nationalityId?.toString() || ""}
+              onValueChange={(val) => {
+                const selectedCountry = countries.find(
+                  (c) => c.id.toString() === val,
+                );
+                if (selectedCountry) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    nationalityId: selectedCountry.id,
+                    nationality: selectedCountry,
+                  }));
+                }
+              }}
+              disabled={fetchingCountries}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="اختر دولة" />
+              </SelectTrigger>
+              <SelectContent>
+                {countries.map((country) => (
+                  <SelectItem key={country.id} value={country.id.toString()}>
+                    {country.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+        </div>
+
+        <div className="flex gap-3">
+          <Field>
+            <Label>رقم الجوال</Label>
+            <Input
+              value={formData?.phoneNumber}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, phoneNumber: e.target.value }))
+              }
+            />
+          </Field>
+
+          <Field>
+            <Label>البريد الإلكتروني</Label>
+            <Input
+              value={formData?.email}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, email: e.target.value }))
+              }
+            />
+          </Field>
+        </div>
+
+        <Field>
+          <Label>تاريخ الميلاد</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                data-empty={!formData?.dateOfBirth}
+                className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+              >
+                {formData?.dateOfBirth ? (
+                  format(formData?.dateOfBirth, "PPP", { locale: arSA })
+                ) : (
+                  <span>إختر تاريخا</span>
+                )}
+                <ChevronDownIcon />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                captionLayout="dropdown"
+                mode="single"
+                selected={formData?.dateOfBirth}
+                onSelect={(date) => 
+                  setFormData((prev) => ({ ...prev, dateOfBirth: date }))
+                }
+                defaultMonth={formData?.dateOfBirth}
+                locale={arSADayPicker}
+              />
+            </PopoverContent>
+          </Popover>
+        </Field>
+
+        <Field>
+          <Label>رقم الجواز</Label>
+          <Input
+            value={formData?.passportNo}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, passportNo: e.target.value }))
+            }
+          />
+        </Field>
+
+        <div className="flex gap-3">
+          <Field>
+            <Label>تاريخ انتهاء الجواز</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  data-empty={!formData?.passportExpiration}
+                  className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                >
+                  {formData?.passportExpiration ? (
+                    format(formData?.passportExpiration, "PPP", {
+                      locale: arSA,
+                    })
+                  ) : (
+                    <span>إختر تاريخا</span>
+                  )}
+                  <ChevronDownIcon />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  captionLayout="dropdown"
+                  mode="single"
+                  selected={formData?.passportExpiration}
+                  onSelect={(date) => 
+                    setFormData((prev) => ({ ...prev, passportExpiration: date }))
+                  }
+                  defaultMonth={formData?.passportExpiration}
+                  endMonth={new Date(new Date().getFullYear() + 20, 11)}
+                  locale={arSADayPicker}
+                />
+              </PopoverContent>
+            </Popover>
+          </Field>
+
+          <Field>
+            <Label>مكان إصدار الجواز</Label>
+            <Input
+              value={formData?.passportIssueLocation}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, passportIssueLocation: e.target.value }))
+              }
+            />
+          </Field>
+        </div>
+      </FieldGroup>
+
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button variant="outline">إلغاء</Button>
+        </DialogClose>
+        <SaveButton
+          formData={formData as Passenger}
+          dialogMode={mode}
+          service={new PassengersApiService()}
+          disable={() => fetchingCountries}
+          onSuccess={onSuccess}
+        />
+      </DialogFooter>
+    </DialogContent>
+  );
+}
