@@ -6,10 +6,12 @@ import BaseApiService from "../Networking/BaseApiService";
 export default function useEntities<T extends BaseEntity>(service: BaseApiService<T>) 
 {
   const [entities, setEntities] = useState<FilterResult<T>>();
-
+  const [isLoading, setLoading] = useState(false)
   useEffect(() => {
     const dataFetch = async () => {
+      setLoading(true);
       const result = await service.Filter(1, 100);
+      setLoading(false);
 
       if (result.data) setEntities(result.data);
     };
@@ -53,5 +55,5 @@ export default function useEntities<T extends BaseEntity>(service: BaseApiServic
     }   
   };
 
-  return {entities, refreash};
+  return {entities, refreash, isLoading};
 }

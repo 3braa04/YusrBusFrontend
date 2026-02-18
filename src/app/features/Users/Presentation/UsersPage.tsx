@@ -14,9 +14,12 @@ import { Table, TableBody } from "@/components/ui/table";
 import { User2Icon } from "lucide-react";
 import User from "../Data/User";
 import ChangeUserDialog from "./ChangeUserDialog";
+import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 
 export default function UsersPage() {
-  const { entities, refreash } = useEntities<User>(new UsersApiService());
+  const { entities, refreash, isLoading } = useEntities<User>(
+    new UsersApiService(),
+  );
 
   const {
     selectedRow,
@@ -51,51 +54,54 @@ export default function UsersPage() {
           },
         ]}
       />
-
       <SearchInput />
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
-        <Table>
-          <TableHeaderRows
-            tableHeadRows={[
-              { rowName: "", rowStyles: "text-left w-12.5" },
-              { rowName: "رقم المستخدم", rowStyles: "w-30" },
-              { rowName: "اسم المستخدم", rowStyles: "w-70" },
-              { rowName: "هل المستخدم نشط", rowStyles: "" },
-            ]}
-          />
-
-          <TableBody>
-            {entities?.data?.map((user, i) => (
-              <TableBodyRow
-                key={i}
-                tableRows={[
-                  { rowName: `#${user.id}`, rowStyles: "" },
-                  { rowName: user.username, rowStyles: "font-semibold" },
-                  {
-                    rowName: user.isActive ? "نشط" : "غير نشط",
-                    rowStyles: `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.isActive ? "bg-green-300" : "bg-red-300"} text-slate-800`,
-                  },
-                ]}
-                dropdownMenu={
-                  <TableRowActionsMenu
-                    type="dropdown"
-                    onEditClicked={() => openEditDialog(user)}
-                    onDeleteClicked={() => openDeleteDialog(user)}
-                  />
-                }
-                contextMenuContent={
-                  <TableRowActionsMenu
-                    type="context"
-                    onEditClicked={() => openEditDialog(user)}
-                    onDeleteClicked={() => openDeleteDialog(user)}
-                  />
-                }
-              />
-            ))}
-          </TableBody>
-        </Table>
-
+        {isLoading ? (
+          <EmptyTablePreview mode="loading" />
+        ) : entities?.count == 0 ? (
+          <EmptyTablePreview mode="empty" />
+        ) : (
+          <Table>
+            <TableHeaderRows
+              tableHeadRows={[
+                { rowName: "", rowStyles: "text-left w-12.5" },
+                { rowName: "رقم المستخدم", rowStyles: "w-30" },
+                { rowName: "اسم المستخدم", rowStyles: "w-70" },
+                { rowName: "هل المستخدم نشط", rowStyles: "" },
+              ]}
+            />
+            <TableBody>
+              {entities?.data?.map((user, i) => (
+                <TableBodyRow
+                  key={i}
+                  tableRows={[
+                    { rowName: `#${user.id}`, rowStyles: "" },
+                    { rowName: user.username, rowStyles: "font-semibold" },
+                    {
+                      rowName: user.isActive ? "نشط" : "غير نشط",
+                      rowStyles: `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.isActive ? "bg-green-300" : "bg-red-300"} text-slate-800`,
+                    },
+                  ]}
+                  dropdownMenu={
+                    <TableRowActionsMenu
+                      type="dropdown"
+                      onEditClicked={() => openEditDialog(user)}
+                      onDeleteClicked={() => openDeleteDialog(user)}
+                    />
+                  }
+                  contextMenuContent={
+                    <TableRowActionsMenu
+                      type="context"
+                      onEditClicked={() => openEditDialog(user)}
+                      onDeleteClicked={() => openDeleteDialog(user)}
+                    />
+                  }
+                />
+              ))}
+            </TableBody>
+          </Table>
+        )}
         <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
 
         {isEditDialogOpen && (
