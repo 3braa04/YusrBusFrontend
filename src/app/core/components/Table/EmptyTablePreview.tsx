@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderPinwheelIcon, Table } from "lucide-react";
+import { LoaderPinwheelIcon, Table, RefreshCwOff } from "lucide-react";
 import {
   Empty,
   EmptyContent,
@@ -9,13 +9,14 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "../Empty";
-type EmptyTableMode = "empty" | "loading";
+type EmptyTableMode = "empty" | "loading" | "error";
 
 type EmptyTablePreviewProps = {
   mode: EmptyTableMode;
 };
 export default function EmptyTablePreview({ mode }: EmptyTablePreviewProps) {
   if (mode === "loading") return <LoadingMode />;
+  else if(mode === 'error') return <ErrorMode/>
   return <EmptyMode />;
 }
 
@@ -48,6 +49,26 @@ function EmptyMode() {
           هذا الجدول فارغ ولا يحتوي على بيانات للعرض
         </EmptyDescription>
       </EmptyHeader>
+    </Empty>
+  );
+}
+
+function ErrorMode()
+{
+    return (
+    <Empty>
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Table />
+        </EmptyMedia>
+        <EmptyTitle>حدث خطأ ما</EmptyTitle>
+        <EmptyDescription>
+         حدث خطأ اثناء جلب البيانات الرجاء التحقق من اتصالك الانترنت او اتصل بخدمة العملاء لدينا في حال تكراره
+        </EmptyDescription>
+      </EmptyHeader>
+            <EmptyContent>
+        <RefreshCwOff />
+      </EmptyContent>
     </Empty>
   );
 }
