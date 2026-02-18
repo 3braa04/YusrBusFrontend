@@ -25,14 +25,15 @@ import SaveButton from "@/app/core/components/Buttons/SaveButton";
 import { useState } from "react";
 
 export default function ChangeUserDialog({
-  entityType,
+  entity,
   mode,
   onSuccess,
 }: CummonChangeDialogProps<User>) {
   const [formData, setFormData] = useState<Partial<User>>({
-    id:entityType?.id,
-    username: entityType?.username,
-    isActive: entityType?.isActive,
+    id: entity?.id,
+    username: entity?.username || "",
+    isActive: entity?.isActive ?? true,
+    permissions: entity?.permissions || 0
   });
 
   return (
@@ -49,13 +50,13 @@ export default function ChangeUserDialog({
       <FieldGroup>
         <Field>
           <Label>رقم المستخدم</Label>
-          <Input disabled defaultValue={entityType?.id}/>
+          <Input disabled value={formData.id?.toString() || ""}/>
         </Field>
 
         <Field>
           <Label>اسم المستخدم</Label>
           <Input
-            defaultValue={entityType?.username}
+            value={formData.username || ""}
             onChange={(e) =>
               setFormData({ ...formData, username: e.target.value })
             }
@@ -66,7 +67,7 @@ export default function ChangeUserDialog({
           <Label>حالة المستخدم</Label>
           <Select
             dir="rtl"
-            defaultValue={entityType?.isActive ? "نشط" : "غير نشط"}
+            value={formData.isActive ? "نشط" : "غير نشط"}
             onValueChange={(val) =>
               setFormData({
                 ...formData,
@@ -91,7 +92,7 @@ export default function ChangeUserDialog({
         </DialogClose>
         <SaveButton
           formData={formData as User}
-          dialogType={mode}
+          dialogMode={mode}
           service={new UsersApiService()}
           onSuccess={onSuccess}
         />

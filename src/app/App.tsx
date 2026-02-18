@@ -1,19 +1,19 @@
-import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Skeleton } from "../components/ui/skeleton";
 import { TooltipProvider } from "../components/ui/tooltip";
 import useAppInitialization from "../hooks/useAppInitialization";
+import { ThemeProvider } from "./core/components/theme/themeProvider";
 import RoutesService from "./core/Services/constants/RoutesService";
+import BranchesPage from "./features/branches/presentation/BranchesPage";
 import DashboardPage from "./features/dashboard/dashboardPage";
 import LandingPage from "./features/landing/landingPage";
 import LoginPage from "./features/login/loginPage";
 import MainPage from "./features/main/mainPage";
-import PrfilePage from "./features/profile/PrfilePage";
-import Testing from "./test";
-import { ThemeProvider } from "./core/components/theme/themeProvider";
-import RoutesPage from "./features/Routes/Presentation/RoutesPage";
 import PassengersPage from "./features/Passengers/Presentation/PassengersPage";
-import BranchesPage from "./features/branches/presentation/BranchesPage";
-import UsersPage from "./features/Users/UsersPage";
+import PrfilePage from "./features/profile/PrfilePage";
+import RoutesPage from "./features/Routes/Presentation/RoutesPage";
+import UsersPage from "./features/Users/Presentation/UsersPage";
+import Testing from "./test";
 
 function App() {  
   const { isLoading } = useAppInitialization();

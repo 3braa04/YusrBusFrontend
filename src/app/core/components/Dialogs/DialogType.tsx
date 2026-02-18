@@ -1,1 +1,1 @@
-export type DialogType = "create" | "update";
+export type DialogMode = "create" | "update";

@@ -1,7 +1,7 @@
-import type { DialogType } from "./DialogType";
+import type { DialogMode } from "./DialogType";
 
 export type CummonChangeDialogProps<T> = {
-    entityType?:T;
-    mode:DialogType;
+    entity?:T;
+    mode:DialogMode;
     onSuccess?: (newData: T) => void;
 }

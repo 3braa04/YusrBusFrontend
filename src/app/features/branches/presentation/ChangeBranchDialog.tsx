@@ -1,4 +1,4 @@
-import type { DialogType } from "@/app/core/components/Dialogs/DialogType";
+import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,7 +7,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
@@ -25,61 +25,58 @@ import SaveButton from "../../../core/components/Buttons/SaveButton";
 import useCities from "../../../core/Hooks/useCities";
 import type Branch from "../data/Branch";
 
-
-interface Props {
-  branch?: Branch;
-  type: DialogType;
-  onSuccess?: (newData: Branch) => void;
-}
-
-export default function ChangeBranchDialog({ branch, type, onSuccess }: Props) 
-{
+export default function ChangeBranchDialog({
+  entity,
+  mode,
+  onSuccess,
+}: CummonChangeDialogProps<Branch>) {
   const [formData, setFormData] = useState<Partial<Branch>>({
-    id: branch?.id,
-    name: branch?.name,
-    cityId: branch?.cityId,
+    id: entity?.id,
+    name: entity?.name,
+    cityId: entity?.cityId,
   });
 
-  const {cities, fetchingCities} = useCities();
+  const { cities, fetchingCities } = useCities();
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-sm">
-
       <DialogHeader>
-        <DialogTitle>{type === 'create'? 'إضافة' : 'تعديل'} فرع</DialogTitle>
+        <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} فرع</DialogTitle>
         <DialogDescription></DialogDescription>
       </DialogHeader>
 
       <Separator></Separator>
 
       <FieldGroup className="py-2">
-
         <Field>
           <Label htmlFor="branchId">رقم الفرع</Label>
-          <Input 
-            id="branchId" 
-            name="branchId" 
+          <Input
+            id="branchId"
+            name="branchId"
             disabled={true}
             value={formData.id || ""}
-            defaultValue={branch?.id} 
+            defaultValue={entity?.id}
           />
         </Field>
 
         <Field>
           <Label htmlFor="branchName">اسم الفرع</Label>
-          <Input 
-            id="branchName" 
-            name="branchName" 
-            value={formData.name || ""} 
+          <Input
+            id="branchName"
+            name="branchName"
+            value={formData.name || ""}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
         </Field>
-        
+
         <Field>
           <Label htmlFor="branchCity">المدينة</Label>
-          <Select dir="rtl" 
-            value={formData.cityId?.toString()} 
-            onValueChange={(val) => setFormData({ ...formData, cityId: Number(val) })}
+          <Select
+            dir="rtl"
+            value={formData.cityId?.toString()}
+            onValueChange={(val) =>
+              setFormData({ ...formData, cityId: Number(val) })
+            }
             disabled={fetchingCities}
           >
             <SelectTrigger>
@@ -94,16 +91,20 @@ export default function ChangeBranchDialog({ branch, type, onSuccess }: Props)
             </SelectContent>
           </Select>
         </Field>
-
       </FieldGroup>
 
       <DialogFooter>
         <DialogClose asChild>
           <Button variant="outline">إلغاء</Button>
         </DialogClose>
-        <SaveButton formData={formData as Branch} dialogType={type} service={new BranchesApiService()} disable={() => fetchingCities} onSuccess={onSuccess}/>
+        <SaveButton
+          formData={formData as Branch}
+          dialogMode={mode}
+          service={new BranchesApiService()}
+          disable={() => fetchingCities}
+          onSuccess={onSuccess}
+        />
       </DialogFooter>
-    
     </DialogContent>
   );
 }

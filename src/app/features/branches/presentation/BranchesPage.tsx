@@ -1,6 +1,7 @@
 import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
 import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
 import useDialog from "@/app/core/Hooks/useDialog";
+import useEntities from "@/app/core/Hooks/useEntities";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
@@ -13,7 +14,6 @@ import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
 import Branch from "../data/Branch";
 import ChangeBranchDialog from "./ChangeBranchDialog";
-import useEntities from "@/app/core/Hooks/useEntities";
 
 export default function BranchesPage() {
   const { entities, refreash } = useEntities<Branch>(new BranchesApiService());
@@ -34,8 +34,8 @@ export default function BranchesPage() {
         buttonTitle="إضافة فرع جديد"
         createComp={
           <ChangeBranchDialog
-            branch={undefined}
-            type="create"
+            entity={undefined}
+            mode="create"
             onSuccess={(newData) => refreash(newData)}
           />
         }
@@ -106,8 +106,8 @@ export default function BranchesPage() {
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <ChangeBranchDialog
-              branch={selectedRow || undefined}
-              type={selectedRow ? "update" : "create"}
+              entity={selectedRow || undefined}
+              mode={selectedRow ? "update" : "create"}
               onSuccess={(data) => {
                 refreash(data);
                 setIsEditDialogOpen(false);

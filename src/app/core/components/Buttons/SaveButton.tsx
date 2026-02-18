@@ -1,4 +1,4 @@
-import type { DialogType } from "@/app/core/components/Dialogs/DialogType";
+import type { DialogMode } from "@/app/core/components/Dialogs/DialogType";
 import type BaseApiService from "@/app/core/Networking/BaseApiService";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -6,13 +6,13 @@ import { useState } from "react";
 
 interface Props<T> {
     formData: T,
-    dialogType: DialogType;
+    dialogMode: DialogMode;
     service: BaseApiService<T>,
     disable?: () => boolean,
     onSuccess?: (newData: T) => void;
 }
 
-export default function SaveButton<T>({formData, dialogType, service, disable, onSuccess}: Props<T>) 
+export default function SaveButton<T>({formData, dialogMode, service, disable, onSuccess}: Props<T>) 
 {
     const [loading, setLoading] = useState(false);
 
@@ -20,7 +20,7 @@ export default function SaveButton<T>({formData, dialogType, service, disable, o
     {
         setLoading(true);
 
-        const result = dialogType === "create" 
+        const result = dialogMode === "create" 
             ? await service.Add(formData) 
             : await service.Update(formData);
 

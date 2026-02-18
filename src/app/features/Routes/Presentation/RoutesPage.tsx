@@ -34,8 +34,8 @@ export default function RoutesPage() {
         buttonTitle="إضافة خط جديد"
         createComp={
           <ChangeRouteDialog
-            route={undefined}
-            type="create"
+            entity={undefined}
+            mode="create"
             onSuccess={(newData) => refreash(newData)}
           />
         }
@@ -112,8 +112,8 @@ export default function RoutesPage() {
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <ChangeRouteDialog
-              route={selectedRow || undefined}
-              type={selectedRow ? "update" : "create"}
+              entity={selectedRow || undefined}
+              mode={selectedRow ? "update" : "create"}
               onSuccess={(data) => {
                 refreash(data);
                 setIsEditDialogOpen(false);

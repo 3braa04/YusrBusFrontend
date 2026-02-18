@@ -1,22 +1,22 @@
+import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
 import SearchInput from "@/app/core/components/Input/SearchInput";
 import TableBodyRow from "@/app/core/components/Table/TableBodyRow";
 import TableCard from "@/app/core/components/Table/TableCard";
 import TableHeader from "@/app/core/components/Table/TableHeader";
 import TableHeaderRows from "@/app/core/components/Table/TableHeaderRows";
 import TablePagination from "@/app/core/components/Table/TablePagination";
+import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
+import useDialog from "@/app/core/Hooks/useDialog";
+import useEntities from "@/app/core/Hooks/useEntities";
+import UsersApiService from "@/app/core/Networking/Services/UsersApiService";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
 import { User2Icon } from "lucide-react";
-import ChangeUserDialog from "./Components/ChangeUserDialog";
-import User from "./Data/User";
-import useDialog from "@/app/core/Hooks/useDialog";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
-import UsersApiService from "@/app/core/Networking/Services/UsersApiService";
-import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
-import useUsers from "@/app/core/Hooks/useUsers";
+import User from "../Data/User";
+import ChangeUserDialog from "./ChangeUserDialog";
 
 export default function UsersPage() {
-  const { users, refreash } = useUsers();
+  const { entities, refreash } = useEntities<User>(new UsersApiService());
 
   const {
     selectedRow,
@@ -27,6 +27,7 @@ export default function UsersPage() {
     openEditDialog,
     openDeleteDialog,
   } = useDialog<User>();
+
   return (
     <div className="px-5 py-3">
       <TableHeader
@@ -34,7 +35,7 @@ export default function UsersPage() {
         buttonTitle="إضافة مستخدم جديد"
         createComp={
           <ChangeUserDialog
-            entityType={undefined}
+            entity={undefined}
             mode="create"
             onSuccess={(newData) => refreash(newData)}
           />
@@ -45,7 +46,7 @@ export default function UsersPage() {
         cards={[
           {
             title: "إجمالي المستخدمين",
-            data:  (users?.count ?? 0).toString(),
+            data: (entities?.count ?? 0).toString(),
             icon: <User2Icon className="h-4 w-4 text-muted-foreground" />,
           },
         ]}
@@ -65,7 +66,7 @@ export default function UsersPage() {
           />
 
           <TableBody>
-            {users?.data?.map((user, i) => (
+            {entities?.data?.map((user, i) => (
               <TableBodyRow
                 key={i}
                 tableRows={[
@@ -95,12 +96,12 @@ export default function UsersPage() {
           </TableBody>
         </Table>
 
-        <TablePagination pageSize={10} totalNumber={100} />
+        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
 
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <ChangeUserDialog
-              entityType={selectedRow || undefined}
+              entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
               onSuccess={(data) => {
                 refreash(data);
@@ -117,7 +118,7 @@ export default function UsersPage() {
           >
             <DialogContent dir="rtl" className="sm:max-w-sm">
               <DeleteDialog
-                entityName="الخط"
+                entityName="المستخدم"
                 id={selectedRow?.id ?? 0}
                 service={new UsersApiService()}
                 onSuccess={() => {

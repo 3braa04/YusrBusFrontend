@@ -1,5 +1,5 @@
 import SaveButton from "@/app/core/components/Buttons/SaveButton";
-import type { DialogType } from "@/app/core/components/Dialogs/DialogType";
+import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
 import useCities from "@/app/core/Hooks/useCities";
 import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
 import { Button } from "@/components/ui/button";
@@ -26,20 +26,15 @@ import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Route, RouteStation } from "../Data/Route";
 
-interface Props {
-  route?: Route;
-  type: DialogType;
-  onSuccess?: (newData: Route) => void;
-}
-export default function ChangeRouteDialog({ route, type, onSuccess }: Props) {
+export default function ChangeRouteDialog({ entity, mode, onSuccess }: CummonChangeDialogProps<Route>) {
   const [formData, setFormData] = useState<Partial<Route>>({});
 
   useEffect(() => {
-    if (type === "update" && route?.id) 
+    if (mode === "update" && entity?.id) 
     {
       const getRoute = async () => {
         const service = new RoutesApiService();
-        const res = await service.Get(route.id);
+        const res = await service.Get(entity.id);
 
         setFormData({
           id: res.data?.id,
@@ -54,7 +49,7 @@ export default function ChangeRouteDialog({ route, type, onSuccess }: Props) {
 
       getRoute();
     }
-  }, [route?.id]); // Only runs when the route ID changes (opening a different route)
+  }, [entity?.id]); // Only runs when the route ID changes (opening a different route)
 
   const { cities, fetchingCities } = useCities();
 
@@ -103,7 +98,7 @@ export default function ChangeRouteDialog({ route, type, onSuccess }: Props) {
   return (
     <DialogContent dir="rtl" className="sm:max-w-xl">
       <DialogHeader>
-        <DialogTitle>{type === "create" ? "إضافة" : "تعديل"} خط</DialogTitle>
+        <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} خط</DialogTitle>
         <DialogDescription></DialogDescription>
       </DialogHeader>
 
@@ -112,7 +107,7 @@ export default function ChangeRouteDialog({ route, type, onSuccess }: Props) {
       <FieldGroup>
         <Field>
           <Label>رقم الخط</Label>
-          <Input disabled defaultValue={route?.id} />
+          <Input disabled defaultValue={entity?.id} />
         </Field>
 
         <Field>
@@ -278,7 +273,7 @@ export default function ChangeRouteDialog({ route, type, onSuccess }: Props) {
         </DialogClose>
         <SaveButton
           formData={formData as Route}
-          dialogType={type}
+          dialogMode={mode}
           service={new RoutesApiService()}
           disable={() => fetchingCities}
           onSuccess={onSuccess}
