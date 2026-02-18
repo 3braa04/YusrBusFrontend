@@ -1,67 +1,103 @@
-import type { BusProps, SeatType } from './BusTypes';
-import Seat from './Seat'
-export default function Bus({
+import type { BusProps, SeatType } from "./BusTypes";
+import BusSeat from "./BusSeat";
+import { ShipWheel } from "lucide-react"; // Make sure to install lucide-react
+
+export default function BusLayout({
   seats,
   onSeatClick,
   lastRowFull = false,
-}: BusProps){
-  // Split seats into rows of up to 4 seats each
-  const rows: SeatType[][] = [];
+}: BusProps) {
+  // Group seats into "columns" (physical rows of the bus)
+  const columns: SeatType[][] = [];
   for (let i = 0; i < seats.length; i += 4) {
-    rows.push(seats.slice(i, i + 4));
+    columns.push(seats.slice(i, i + 4));
   }
 
   return (
-    <div className="border-2 border-gray-300 rounded-lg p-6 bg-white shadow-md max-w-md mx-auto rotate-90">
-      <div className="flex flex-col items-center space-y-4">
-        {rows.map((rowSeats, rowIndex) => {
-          const isLastRow = rowIndex === rows.length - 1;
-          const useFullWidth = isLastRow && lastRowFull && rowSeats.length === 4;
 
-          // Split row into left and right pairs
-          const leftSeats = rowSeats.slice(0, 2);
-          const rightSeats = rowSeats.slice(2, 4);
+    <div className="w-full overflow-x-auto p-6">
+      {/* Bus Chassis Container */}
+      <div className="mx-auto flex w-max min-w-[600px] flex-row rounded-[3rem] border-4 border-slate-300 bg-slate-50 p-8 shadow-xl relative">
+        
+        {/* Front of Bus / Driver Area */}
+        <div className="mr-8 flex flex-col justify-end border-r-2 border-dashed border-slate-300 pr-6">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 text-slate-500 shadow-inner">
+            <ShipWheel className="h-8 w-8" />
+          </div>
+          <span className="mt-2 text-xs font-semibold uppercase text-slate-400 text-center">Driver</span>
+        </div>
 
-          return (
-            <div key={rowIndex} className="flex justify-center w-full">
-              {useFullWidth ? (
-                // Last row as a continuous block of 4 seats
-                <div className="flex justify-center gap-4">
-                  {rowSeats.map((seat) => (
-                    <Seat key={seat.id} seat={seat} onClick={onSeatClick} />
+        {/* Passenger Area */}
+        <div className="flex flex-row gap-6">
+          {columns.map((colSeats, colIndex) => {
+            const isLastColumn = colIndex === columns.length - 1;
+            
+            // In horizontal mode:
+            // "Left" seats become "Top" pair
+            // "Right" seats become "Bottom" pair
+            const topPair = colSeats.slice(0, 2); 
+            const bottomPair = colSeats.slice(2, 4);
+
+            // Handle the special "Back of the bus" case
+            // If lastRowFull is true, we treat the last column as a continuous vertical block
+            if (isLastColumn && lastRowFull) {
+              return (
+                <div key={colIndex} className="flex flex-col justify-center gap-2 border-l border-slate-200 pl-2">
+                  {colSeats.map((seat) => (
+                    <BusSeat key={seat.id} seat={seat} onClick={onSeatClick} />
                   ))}
                 </div>
-              ) : (
-                // Standard row: left pair, aisle gap, right pair (if present)
-                <div className="flex items-center gap-8">
-                  {/* Left pair */}
-                  {leftSeats.length > 0 && (
-                    <div className="flex gap-4">
-                      {leftSeats.map((seat) => (
-                        <Seat key={seat.id} seat={seat} onClick={onSeatClick} />
-                      ))}
-                    </div>
-                  )}
+              );
+            }
 
-                  {/* Aisle – only shown when both sides have seats */}
-                  {leftSeats.length > 0 && rightSeats.length > 0 && (
-                    <div className="w-4" aria-hidden="true" />
-                  )}
-
-                  {/* Right pair */}
-                  {rightSeats.length > 0 && (
-                    <div className="flex gap-4">
-                      {rightSeats.map((seat) => (
-                        <Seat key={seat.id} seat={seat} onClick={onSeatClick} />
-                      ))}
-                    </div>
-                  )}
+            return (
+              <div key={colIndex} className="flex flex-col justify-between">
+                {/* Top Pair (Window + Aisle) */}
+                <div className="flex flex-col gap-2">
+                  {/* We reverse the top pair so the window seat is at the top edge */}
+                  {topPair.map((seat) => (
+                    <BusSeat key={seat.id} seat={seat} onClick={onSeatClick} />
+                  ))}
                 </div>
-              )}
-            </div>
-          );
-        })}
+
+                {/* Aisle Spacer */}
+                <div className="h-12 flex items-center justify-center">
+                   <span className="text-[10px] text-slate-300 font-mono">{colIndex + 1}</span>
+                </div>
+
+                {/* Bottom Pair (Aisle + Window) */}
+                <div className="flex flex-col gap-2">
+                  {bottomPair.map((seat) => (
+                    <BusSeat key={seat.id} seat={seat} onClick={onSeatClick} />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Decorative: Rear Wheels (Absolute positioned) */}
+        <div className="absolute -bottom-4 left-24 h-4 w-16 rounded-b-xl bg-slate-800" />
+        <div className="absolute -bottom-4 right-24 h-4 w-16 rounded-b-xl bg-slate-800" />
+        <div className="absolute -top-4 left-24 h-4 w-16 rounded-t-xl bg-slate-800" />
+        <div className="absolute -top-4 right-24 h-4 w-16 rounded-t-xl bg-slate-800" />
+      </div>
+      
+      {/* Legend */}
+      <div className="mt-8 flex justify-center gap-6 text-sm text-gray-600">
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-4 rounded bg-white border border-gray-300"></div>
+          <span>Available</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-4 rounded bg-blue-600 border border-blue-700"></div>
+          <span>Selected</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-4 rounded bg-gray-200 border border-gray-300"></div>
+          <span>Booked</span>
+        </div>
       </div>
     </div>
   );
-};
+}

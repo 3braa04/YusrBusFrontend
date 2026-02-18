@@ -1,9 +1,13 @@
+export type SeatStatus = 'available' | 'selected' | 'booked';
+
 export interface SeatType {
-  id: string | number;   
+  id: string | number;
+  status?: SeatStatus; // Optional, defaults to 'available'
+  price?: number;
 }
 
 export interface BusProps {
-  seats: SeatType[];             // Array of seat objects to render
-  onSeatClick: (seat: SeatType) => void;  // Callback when a seat is clicked
-  lastRowFull?: boolean;     // If true, the last row (if it has 4 seats) renders as a full block without an aisle
+  seats: SeatType[];
+  onSeatClick: (seat: SeatType) => void;
+  lastRowFull?: boolean; // If true, the back of the bus has 5 seats (no aisle)
 }
