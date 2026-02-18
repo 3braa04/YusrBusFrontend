@@ -30,7 +30,7 @@ function LoadingMode() {
         <EmptyDescription>يتم تحميل البيانات المطلوبة</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <LoaderPinwheelIcon />
+        <LoaderPinwheelIcon className="animate-spin duration-700" />
       </EmptyContent>
     </Empty>
   );
