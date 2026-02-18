@@ -61,7 +61,9 @@ export default function UsersPage() {
           <EmptyTablePreview mode="loading" />
         ) : entities?.count == 0 ? (
           <EmptyTablePreview mode="empty" />
-        ) : 
+        ) : entities == undefined?(
+          <EmptyTablePreview mode="error"/>
+        ):
           <Table>
             <TableHeaderRows
               tableHeadRows={[
