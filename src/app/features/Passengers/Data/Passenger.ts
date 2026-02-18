@@ -1,8 +1,8 @@
+import { BaseEntity } from "@/app/core/Data/BaseEntity";
 import { Country } from "@/app/core/Data/Country";
 
-export class Passenger
+export class Passenger extends BaseEntity
 {
-    public id! : number;
     public name! : string;
     public passportNo! : string;
     public phoneNumber? : string;
@@ -15,7 +15,7 @@ export class Passenger
 
     public nationality? : Country;
 
-    constructor(init?: Partial<Passenger>) { Object.assign(this, init); }
+    constructor(init?: Partial<Passenger>) { super(); Object.assign(this, init); }
 }
 
 export type Gender = 0 | 1;

@@ -5,3 +5,4 @@ export default class RoutesApiService extends BaseApiService<Route>
 {
     routeName: string = "Routes";
 }
+

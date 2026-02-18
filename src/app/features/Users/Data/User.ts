@@ -1,11 +1,12 @@
-export default class User
+import { BaseEntity } from "@/app/core/Data/BaseEntity";
+
+export default class User extends BaseEntity
 {
-    public id! : number;
     public username! : string;
     public isActive! : boolean;
     public permissions! : number;
 
-    constructor(init?: Partial<User>) { Object.assign(this, init); }
+    constructor(init?: Partial<User>) { super(); Object.assign(this, init); }
 }
 
 export const sampleUsersList:User[] = [
