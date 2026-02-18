@@ -14,9 +14,10 @@ import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
 import { Passenger } from "../Data/Passenger";
 import ChangePassengerDialog from "./ChangePassengerDialog";
+import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 
 export default function PassengersPage() {
-  const { entities, refreash } = useEntities<Passenger>(
+  const { entities, refreash, isLoading } = useEntities<Passenger>(
     new PassengersApiService(),
   );
   const {
@@ -56,57 +57,62 @@ export default function PassengersPage() {
       <SearchInput />
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
-        <Table>
-          <TableHeaderRows
-            tableHeadRows={[
-              { rowName: "", rowStyles: "text-left w-12.5" },
-              { rowName: "رقم الراكب", rowStyles: "w-30" },
-              { rowName: "اسم الراكب", rowStyles: "" },
-              { rowName: "الجنس", rowStyles: "" },
-              { rowName: "رقم الجوال", rowStyles: "" },
-              { rowName: "البريد الإلكتروني", rowStyles: "" },
-              { rowName: "الجنسية", rowStyles: "" },
-            ]}
-          />
+        {isLoading ? (
+          <EmptyTablePreview mode="loading" />
+        ) : entities?.count == 0 ? (
+          <EmptyTablePreview mode="empty" />
+        ) : (
+          <Table>
+            <TableHeaderRows
+              tableHeadRows={[
+                { rowName: "", rowStyles: "text-left w-12.5" },
+                { rowName: "رقم الراكب", rowStyles: "w-30" },
+                { rowName: "اسم الراكب", rowStyles: "" },
+                { rowName: "الجنس", rowStyles: "" },
+                { rowName: "رقم الجوال", rowStyles: "" },
+                { rowName: "البريد الإلكتروني", rowStyles: "" },
+                { rowName: "الجنسية", rowStyles: "" },
+              ]}
+            />
 
-          <TableBody>
-            {entities?.data?.map((passenger, i) => (
-              <BranchRow
-                key={i}
-                tableRows={[
-                  { rowName: `#${passenger.id}`, rowStyles: "" },
-                  { rowName: passenger.name, rowStyles: "font-semibold" },
-                  {
-                    rowName: passenger.gender === 0 ? "ذكر" : "أنثى",
-                    rowStyles: `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${passenger.gender === 0 ? "bg-blue-300" : "bg-pink-300"} text-slate-800`,
-                  },
-                  { rowName: passenger.phoneNumber ?? "-", rowStyles: "" },
-                  { rowName: passenger.email ?? "-", rowStyles: "" },
-                  {
-                    rowName: passenger.nationality?.name ?? "-",
-                    rowStyles:
-                      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-300 text-slate-800",
-                  },
-                ]}
-                dropdownMenu={
-                  <TableRowActionsMenu
-                    type="dropdown"
-                    onEditClicked={() => openEditDialog(passenger)}
-                    onDeleteClicked={() => openDeleteDialog(passenger)}
-                  />
-                }
-                contextMenuContent={
-                  <TableRowActionsMenu
-                    type="context"
-                    onEditClicked={() => openEditDialog(passenger)}
-                    onDeleteClicked={() => openDeleteDialog(passenger)}
-                  />
-                }
-              />
-            ))}
-          </TableBody>
-        </Table>
-
+            <TableBody>
+              {entities?.data?.map((passenger, i) => (
+                <BranchRow
+                  key={i}
+                  tableRows={[
+                    { rowName: `#${passenger.id}`, rowStyles: "" },
+                    { rowName: passenger.name, rowStyles: "font-semibold" },
+                    {
+                      rowName: passenger.gender === 0 ? "ذكر" : "أنثى",
+                      rowStyles: `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${passenger.gender === 0 ? "bg-blue-300" : "bg-pink-300"} text-slate-800`,
+                    },
+                    { rowName: passenger.phoneNumber ?? "-", rowStyles: "" },
+                    { rowName: passenger.email ?? "-", rowStyles: "" },
+                    {
+                      rowName: passenger.nationality?.name ?? "-",
+                      rowStyles:
+                        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-300 text-slate-800",
+                    },
+                  ]}
+                  dropdownMenu={
+                    <TableRowActionsMenu
+                      type="dropdown"
+                      onEditClicked={() => openEditDialog(passenger)}
+                      onDeleteClicked={() => openDeleteDialog(passenger)}
+                    />
+                  }
+                  contextMenuContent={
+                    <TableRowActionsMenu
+                      type="context"
+                      onEditClicked={() => openEditDialog(passenger)}
+                      onDeleteClicked={() => openDeleteDialog(passenger)}
+                    />
+                  }
+                />
+              ))}
+            </TableBody>
+          </Table>
+        )}
         <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
 
         {isEditDialogOpen && (

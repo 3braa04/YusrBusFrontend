@@ -14,9 +14,12 @@ import ChangeRouteDialog from "./ChangeRouteDialog";
 import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
+import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 
 export default function RoutesPage() {
-  const { entities, refreash } = useEntities<Route>(new RoutesApiService());
+  const { entities, refreash, isLoading } = useEntities<Route>(
+    new RoutesApiService(),
+  );
   const {
     selectedRow,
     isEditDialogOpen,
@@ -59,54 +62,59 @@ export default function RoutesPage() {
       <SearchInput />
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
-        <Table>
-          <TableHeaderRows
-            tableHeadRows={[
-              { rowName: "", rowStyles: "text-left w-12.5" },
-              { rowName: "رقم الخط", rowStyles: "w-30" },
-              { rowName: "اسم الخط", rowStyles: "" },
-              { rowName: "من المدينة", rowStyles: "" },
-              { rowName: "إلى المدينة", rowStyles: "" },
-            ]}
-          />
+        {isLoading ? (
+          <EmptyTablePreview mode="loading" />
+        ) : entities?.count == 0 ? (
+          <EmptyTablePreview mode="empty" />
+        ) : (
+          <Table>
+            <TableHeaderRows
+              tableHeadRows={[
+                { rowName: "", rowStyles: "text-left w-12.5" },
+                { rowName: "رقم الخط", rowStyles: "w-30" },
+                { rowName: "اسم الخط", rowStyles: "" },
+                { rowName: "من المدينة", rowStyles: "" },
+                { rowName: "إلى المدينة", rowStyles: "" },
+              ]}
+            />
 
-          <TableBody>
-            {entities?.data?.map((route, i) => (
-              <BranchRow
-                key={i}
-                tableRows={[
-                  { rowName: `#${route.id}`, rowStyles: "" },
-                  { rowName: route.name, rowStyles: "font-semibold" },
-                  {
-                    rowName: route.fromCityName,
-                    rowStyles:
-                      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
-                  },
-                  {
-                    rowName: route.toCityName,
-                    rowStyles:
-                      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
-                  },
-                ]}
-                dropdownMenu={
-                  <TableRowActionsMenu
-                    type="dropdown"
-                    onEditClicked={() => openEditDialog(route)}
-                    onDeleteClicked={() => openDeleteDialog(route)}
-                  />
-                }
-                contextMenuContent={
-                  <TableRowActionsMenu
-                    type="context"
-                    onEditClicked={() => openEditDialog(route)}
-                    onDeleteClicked={() => openDeleteDialog(route)}
-                  />
-                }
-              />
-            ))}
-          </TableBody>
-        </Table>
-
+            <TableBody>
+              {entities?.data?.map((route, i) => (
+                <BranchRow
+                  key={i}
+                  tableRows={[
+                    { rowName: `#${route.id}`, rowStyles: "" },
+                    { rowName: route.name, rowStyles: "font-semibold" },
+                    {
+                      rowName: route.fromCityName,
+                      rowStyles:
+                        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
+                    },
+                    {
+                      rowName: route.toCityName,
+                      rowStyles:
+                        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
+                    },
+                  ]}
+                  dropdownMenu={
+                    <TableRowActionsMenu
+                      type="dropdown"
+                      onEditClicked={() => openEditDialog(route)}
+                      onDeleteClicked={() => openDeleteDialog(route)}
+                    />
+                  }
+                  contextMenuContent={
+                    <TableRowActionsMenu
+                      type="context"
+                      onEditClicked={() => openEditDialog(route)}
+                      onDeleteClicked={() => openDeleteDialog(route)}
+                    />
+                  }
+                />
+              ))}
+            </TableBody>
+          </Table>
+        )}
         <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
 
         {isEditDialogOpen && (

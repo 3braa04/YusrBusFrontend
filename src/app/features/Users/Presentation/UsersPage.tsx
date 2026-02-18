@@ -61,7 +61,7 @@ export default function UsersPage() {
           <EmptyTablePreview mode="loading" />
         ) : entities?.count == 0 ? (
           <EmptyTablePreview mode="empty" />
-        ) : (
+        ) : 
           <Table>
             <TableHeaderRows
               tableHeadRows={[
@@ -101,7 +101,7 @@ export default function UsersPage() {
               ))}
             </TableBody>
           </Table>
-        )}
+        }
         <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
 
         {isEditDialogOpen && (
