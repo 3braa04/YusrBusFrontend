@@ -128,7 +128,7 @@ export default function ChangeTripDialog({
   return (
     <DialogContent
       dir="rtl"
-      className="sm:max-w-[95vw] sm:w-[95vw] sm:h-[95vh] flex flex-col p-0 gap-0 overflow-hidden"
+      className="sm:max-w-[90vw] sm:w-[90vw] sm:h-[90vh] flex flex-col p-0 gap-0 overflow-hidden"
     >
       {/* Header - Minimal padding to save space */}
       <DialogHeader className="p-4 border-b">

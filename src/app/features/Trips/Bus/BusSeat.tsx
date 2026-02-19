@@ -17,7 +17,7 @@ export default function BusSeat({ seat, ticket, onClick }: SeatProps) {
       dir="rtl"
       type="button"
       onClick={() => onClick(seat)}
-      className="group relative flex h-20 w-18 flex-col items-center transition-all hover:scale-105 active:scale-95"
+      className="group relative flex h-22 w-18 flex-col items-center transition-all hover:scale-105 active:scale-95"
     >
       {/* مسند الرأس */}
       <div className={cn(
