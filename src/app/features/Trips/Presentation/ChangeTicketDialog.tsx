@@ -7,7 +7,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -28,7 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import { ChevronDownIcon, Edit, PlusCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
 import type { Passenger } from "../../Passengers/Data/Passenger";
 import type { Ticket } from "../Data/Ticket";
@@ -50,16 +50,9 @@ export default function ChangeTicketDialog({
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
   const { cities, fetchingCities } = useCities();
 
-  useEffect(() => {
-    if (entity) {
-      setFormData(entity);
-    }
-  }, [entity]);
-
-
   // Helper to clear a specific field error
   const clearError = (field: string) => {
-    setFieldErrors(prev => ({ ...prev, [field]: false }));
+    setFieldErrors((prev) => ({ ...prev, [field]: false }));
   };
 
   // Validate all required fields, return true if valid
@@ -71,7 +64,8 @@ export default function ChangeTicketDialog({
     if (!formData.fromCityId) errors.fromCityId = true;
     if (!formData.toCityId) errors.toCityId = true;
     if (formData.amount == null || isNaN(formData.amount)) errors.amount = true;
-    if (formData.paidAmount == null || isNaN(formData.paidAmount)) errors.paidAmount = true;
+    if (formData.paidAmount == null || isNaN(formData.paidAmount))
+      errors.paidAmount = true;
     if (!formData.issueDate) errors.issueDate = true;
     if (!formData.issueCityId) errors.issueCityId = true;
 
@@ -106,7 +100,10 @@ export default function ChangeTicketDialog({
 
           <Field>
             <Label>رقم الكرسي</Label>
-            <Input disabled value={(entity?.chairNo ?? -1) < 0 ? 0 : entity?.chairNo} />
+            <Input
+              disabled
+              value={(entity?.chairNo ?? -1) < 0 ? 0 : entity?.chairNo}
+            />
           </Field>
         </div>
 
@@ -127,12 +124,16 @@ export default function ChangeTicketDialog({
                       passengerId: selectedPassenger.id,
                       passenger: selectedPassenger,
                     }));
-                    clearError('passengerId');
+                    clearError("passengerId");
                   }
                 }}
                 disabled={fetchingCities}
               >
-                <SelectTrigger className={errorInputClass(!!fieldErrors.passengerId) + " w-full"}>
+                <SelectTrigger
+                  className={
+                    errorInputClass(!!fieldErrors.passengerId) + " w-full"
+                  }
+                >
                   <SelectValue placeholder="اختر الراكب" />
                 </SelectTrigger>
                 <SelectContent>
@@ -184,11 +185,13 @@ export default function ChangeTicketDialog({
                   fromCityId: selectedCity?.id,
                   fromCityName: selectedCity?.name,
                 });
-                clearError('fromCityId');
+                clearError("fromCityId");
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger className={errorInputClass(!!fieldErrors.fromCityId)}>
+              <SelectTrigger
+                className={errorInputClass(!!fieldErrors.fromCityId)}
+              >
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -215,11 +218,13 @@ export default function ChangeTicketDialog({
                   toCityId: selectedCity?.id,
                   toCityName: selectedCity?.name,
                 });
-                clearError('toCityId');
+                clearError("toCityId");
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger className={errorInputClass(!!fieldErrors.toCityId)}>
+              <SelectTrigger
+                className={errorInputClass(!!fieldErrors.toCityId)}
+              >
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -243,7 +248,7 @@ export default function ChangeTicketDialog({
                   ...prev,
                   amount: Number(e.target.value),
                 }));
-                clearError('amount');
+                clearError("amount");
               }}
               className={errorInputClass(!!fieldErrors.amount)}
             />
@@ -258,7 +263,7 @@ export default function ChangeTicketDialog({
                   ...prev,
                   paidAmount: Number(e.target.value),
                 }));
-                clearError('paidAmount');
+                clearError("paidAmount");
               }}
               className={errorInputClass(!!fieldErrors.paidAmount)}
             />
@@ -294,7 +299,7 @@ export default function ChangeTicketDialog({
                   selected={formData?.issueDate}
                   onSelect={(date) => {
                     setFormData((prev) => ({ ...prev, issueDate: date }));
-                    clearError('issueDate');
+                    clearError("issueDate");
                   }}
                   defaultMonth={formData?.issueDate}
                   locale={arSADayPicker}
@@ -310,11 +315,13 @@ export default function ChangeTicketDialog({
               value={formData.issueCityId?.toString() || ""}
               onValueChange={(val) => {
                 setFormData({ ...formData, issueCityId: Number(val) });
-                clearError('issueCityId');
+                clearError("issueCityId");
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger className={errorInputClass(!!fieldErrors.issueCityId)}>
+              <SelectTrigger
+                className={errorInputClass(!!fieldErrors.issueCityId)}
+              >
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
