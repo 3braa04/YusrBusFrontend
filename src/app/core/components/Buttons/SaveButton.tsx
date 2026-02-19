@@ -10,7 +10,7 @@ interface Props<T> {
   service: BaseApiService<T>;
   disable?: () => boolean;
   onSuccess?: (newData: T) => void;
-  preSave?: () => boolean;
+  validation?: () => boolean;
 }
 
 export default function SaveButton<T>({
@@ -19,7 +19,7 @@ export default function SaveButton<T>({
   service,
   disable,
   onSuccess,
-  preSave = () => true,
+  validation: preSave = () => true,
 }: Props<T>) {
   const [loading, setLoading] = useState(false);
 

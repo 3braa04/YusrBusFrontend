@@ -116,7 +116,7 @@ export default function ChangeUserDialog({
           dialogMode={mode}
           service={new UsersApiService()}
           onSuccess={onSuccess}
-          preSave={validate}
+          validation={validate}
         />
       </DialogFooter>
     </DialogContent>

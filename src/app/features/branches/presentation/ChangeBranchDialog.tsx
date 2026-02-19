@@ -127,7 +127,7 @@ export default function ChangeBranchDialog({
           service={new BranchesApiService()}
           disable={() => fetchingCities}
           onSuccess={onSuccess}
-          preSave={validate}
+          validation={validate}
         />
       </DialogFooter>
     </DialogContent>
