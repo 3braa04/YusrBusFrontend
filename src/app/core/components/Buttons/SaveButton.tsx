@@ -10,14 +10,17 @@ interface Props<T> {
     service: BaseApiService<T>,
     disable?: () => boolean,
     onSuccess?: (newData: T) => void;
+    preSave?:()=>boolean
 }
 
-export default function SaveButton<T>({formData, dialogMode, service, disable, onSuccess}: Props<T>) 
+export default function SaveButton<T>({formData, dialogMode, service, disable, onSuccess, preSave=()=>true}: Props<T>) 
 {
     const [loading, setLoading] = useState(false);
 
     async function Save() 
     {
+        if(!preSave())return;
+
         setLoading(true);
 
         const result = dialogMode === "create" 

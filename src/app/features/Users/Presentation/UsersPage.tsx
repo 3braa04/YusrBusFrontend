@@ -40,7 +40,8 @@ export default function UsersPage() {
           <ChangeUserDialog
             entity={undefined}
             mode="create"
-            onSuccess={(newData) => refreash(newData)}
+            onSuccess={(newData) => {console.log(23232);
+            ;refreash(newData)}}
           />
         }
       />

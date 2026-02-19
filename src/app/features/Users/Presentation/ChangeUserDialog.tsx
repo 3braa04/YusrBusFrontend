@@ -33,8 +33,30 @@ export default function ChangeUserDialog({
     id: entity?.id,
     username: entity?.username || "",
     isActive: entity?.isActive ?? true,
-    permissions: entity?.permissions || 0
+    permissions: entity?.permissions || 0,
   });
+
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+
+  const clearError = (field: string) => {
+    setFieldErrors((prev) => ({ ...prev, [field]: false }));
+  };
+  const validate = (): boolean => {
+    const errors: Record<string, boolean> = {};
+
+    if (!formData.username) errors.username = true;
+    if (!formData.isActive) errors.isActive = true;
+    console.log(formData);
+    
+    setFieldErrors(errors);
+    console.log(errors);
+    console.log(Object.keys(errors).length === 0);
+    
+    return Object.keys(errors).length === 0;
+  };
+
+  const errorInputClass = (hasError: boolean) =>
+    hasError ? "border-red-500 ring-red-500" : "";
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-xl">
@@ -50,16 +72,18 @@ export default function ChangeUserDialog({
       <FieldGroup>
         <Field>
           <Label>رقم المستخدم</Label>
-          <Input disabled value={formData.id?.toString() || ""}/>
+          <Input disabled value={formData.id?.toString() || ""} />
         </Field>
 
         <Field>
           <Label>اسم المستخدم</Label>
           <Input
             value={formData.username || ""}
-            onChange={(e) =>
-              setFormData({ ...formData, username: e.target.value })
-            }
+            onChange={(e) => {
+              setFormData({ ...formData, username: e.target.value });
+              clearError("username");
+            }}
+            className={errorInputClass(!!fieldErrors.username)}
           />
         </Field>
 
@@ -90,11 +114,13 @@ export default function ChangeUserDialog({
         <DialogClose asChild>
           <Button variant="outline">إلغاء</Button>
         </DialogClose>
+        
         <SaveButton
           formData={formData as User}
           dialogMode={mode}
           service={new UsersApiService()}
           onSuccess={onSuccess}
+          preSave={validate}
         />
       </DialogFooter>
     </DialogContent>
