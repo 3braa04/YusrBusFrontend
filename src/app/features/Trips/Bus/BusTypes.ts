@@ -1,11 +1,17 @@
 import type { Ticket } from "../Data/Ticket";
 
-export type SeatStatus = 'available' | 'selected' | 'booked';
-
 export interface SeatType {
   id: number;
-  status?: SeatStatus; // Optional, defaults to 'available'
   price?: number;
+}
+
+export interface SeatProps {
+  seat: SeatType;
+  ticket?: Ticket;
+  onClick: (seat: SeatType) => void;
+  highlighted?: boolean;
+  isDimmed?: boolean;
+  onHoverData?: (type: 'nationality' | 'from' | 'to' | 'amount' | null, value?: string) => void;
 }
 
 export interface BusProps {
