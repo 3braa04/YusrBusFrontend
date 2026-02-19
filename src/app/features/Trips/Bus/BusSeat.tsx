@@ -38,7 +38,7 @@ export default function BusSeat({ seat, ticket, onClick }: SeatProps) {
           "flex justify-between px-1 py-px text-[9px] font-bold text-white",
           isOccupied ? "bg-red-600" : isSelected ? "bg-blue-600" : "bg-emerald-600"
         )}>
-          <span>مقعد {seat.id}</span>
+          <span>{seat.id < 0? 'طفل' : 'مقعد'} {Math.abs(seat.id)}</span>
           <span>${ticket?.amount ?? "0"}</span>
         </div>
 

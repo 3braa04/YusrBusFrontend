@@ -74,7 +74,7 @@ export default function ChangeTicketDialog({
 
           <Field>
             <Label>رقم الكرسي</Label>
-            <Input disabled value={entity?.chairNo} />
+            <Input disabled value={(entity?.chairNo ?? -1) < 0? 0 : entity?.chairNo} />
           </Field>
         </div>
 
