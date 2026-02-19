@@ -6,7 +6,7 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { type LucideProps } from "lucide-react";
+import { AlertCircle, type LucideProps } from "lucide-react";
 import { useState } from "react";
 
 type MessageBoxProps = {
@@ -29,7 +29,7 @@ export default function MessageBox({
   return (
     <Dialog open={isOpenState}>
       <DialogContent dir="rtl" showCloseButton={false} >
-        {MessageIcon && <MessageIcon />}
+        {MessageIcon ? <MessageIcon /> : <AlertCircle/> }
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{descirption}</DialogDescription>
         <DialogFooter>
