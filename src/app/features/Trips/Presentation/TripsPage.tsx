@@ -3,7 +3,6 @@ import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
 import useDialog from "@/app/core/Hooks/useDialog";
 import useEntities from "@/app/core/Hooks/useEntities";
-import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
 import TripsApiService from "@/app/core/Networking/Services/TripsApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
@@ -128,7 +127,7 @@ export default function TripsPage() {
                 setIsEditDialogOpen(false);
               }}
             />
-          </Dialog>
+          </Dialog>          
         )}
 
         {isDeleteDialogOpen && (
@@ -140,7 +139,7 @@ export default function TripsPage() {
               <DeleteDialog
                 entityName="الرحلة"
                 id={selectedRow?.id ?? 0}
-                service={new RoutesApiService()}
+                service={new TripsApiService()}
                 onSuccess={() => {
                   refreash(undefined, selectedRow?.id);
                   setIsDeleteDialogOpen(false);

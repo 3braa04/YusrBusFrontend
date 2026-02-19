@@ -1,8 +1,10 @@
 import { BaseEntity } from "@/app/core/Data/BaseEntity";
+import type { Passenger } from "../../Passengers/Data/Passenger";
 
 export class Ticket extends BaseEntity
 {
     public tripId! : number;
+    public passengerId! : number;
     public fromCityId! : number;
     public toCityId! : number;
     public amount! : number;
@@ -14,6 +16,8 @@ export class Ticket extends BaseEntity
     public fromCityName? : string;
     public toCityName? : string;
     public issueCityName? : string;
+
+    public passenger? : Passenger;
 
     constructor(init?: Partial<Ticket>) { super(); Object.assign(this, init); }
 }

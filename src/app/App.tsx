@@ -1,4 +1,3 @@
-import { ThemeProvider } from "next-themes";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Skeleton } from "../components/ui/skeleton";
 import { TooltipProvider } from "../components/ui/tooltip";
@@ -15,6 +14,7 @@ import RoutesPage from "./features/Routes/Presentation/RoutesPage";
 import TripsPage from "./features/Trips/Presentation/TripsPage";
 import UsersPage from "./features/Users/Presentation/UsersPage";
 import Testing from "./test";
+import { ThemeProvider } from "./core/components/theme/themeProvider";
 
 function App() {  
   const { isLoading } = useAppInitialization();

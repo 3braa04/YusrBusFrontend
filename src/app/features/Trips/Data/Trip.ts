@@ -9,6 +9,7 @@ export class Trip extends BaseEntity
     public busName? : string;
     public routeId! : number;
     public startDate! : Date;
+    public ticketPrice! : number;
     public route! : Route;
     public tickets! : Ticket[];
 

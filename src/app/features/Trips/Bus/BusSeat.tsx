@@ -1,60 +1,83 @@
-import { cn } from "@/lib/utils"; // Assuming you have the standard shadcn utils
+import { cn } from "@/lib/utils";
+import type { Ticket } from "../Data/Ticket";
 import type { SeatType } from "./BusTypes";
 
 interface SeatProps {
   seat: SeatType;
+  ticket?: Ticket;
   onClick: (seat: SeatType) => void;
 }
 
-export default function BusSeat({ seat, onClick }: SeatProps) {
-  const status = seat.status || 'available';
+export default function BusSeat({ seat, ticket, onClick }: SeatProps) {
+  const isOccupied = !!ticket;
+  const isSelected = seat.status === 'selected';
 
   return (
     <button
-      onClick={() => status !== 'booked' && onClick(seat)}
-      disabled={status === 'booked'}
-      className={cn(
-        "group relative flex h-12 w-12 flex-col items-center justify-center transition-all duration-200",
-        "focus:outline-none focus:ring-2 focus:ring-offset-2",
-        // distinct styling based on status
-        status === 'available' && "hover:-translate-y-1",
-        status === 'booked' && "cursor-not-allowed opacity-50"
-      )}
-      aria-label={`Seat ${seat.id} - ${status}`}
+      dir="rtl"
+      type="button"
+      onClick={() => onClick(seat)}
+      className="group relative flex h-20 w-18 flex-col items-center transition-all hover:scale-105 active:scale-95"
     >
-      {/* Seat Back (Top part) */}
-      <div
-        className={cn(
-          "h-8 w-10 rounded-t-lg border-x-2 border-t-2 shadow-sm transition-colors",
-          status === 'available' && "bg-white border-gray-300 group-hover:border-blue-400 group-hover:bg-blue-50",
-          status === 'selected' && "bg-blue-600 border-blue-700 text-white",
-          status === 'booked' && "bg-gray-200 border-gray-300"
-        )}
-      />
+      {/* مسند الرأس */}
+      <div className={cn(
+        "z-10 h-1.5 w-8 rounded-t-md",
+        isOccupied ? "bg-red-700" : isSelected ? "bg-blue-700" : "bg-emerald-700"
+      )} />
 
-      {/* Seat Cushion (Bottom part) */}
-      <div
-        className={cn(
-          "relative -mt-1 h-4 w-10 rounded-b-md border-2 shadow-sm",
-          status === 'available' && "bg-white border-gray-300 group-hover:border-blue-400",
-          status === 'selected' && "bg-blue-500 border-blue-700",
-          status === 'booked' && "bg-gray-300 border-gray-400"
+      {/* جسم الكرسي */}
+      <div className={cn(
+        "flex w-full flex-1 flex-col overflow-hidden rounded-lg border shadow-sm",
+        isOccupied ? "border-red-500 bg-red-300/30" :
+        isSelected ? "border-blue-500 bg-blue-300" :
+        "border-emerald-500 bg-background/30"
+      )}>
+
+        {/* العنوان */}
+        <div className={cn(
+          "flex justify-between px-1 py-px text-[9px] font-bold text-white",
+          isOccupied ? "bg-red-600" : isSelected ? "bg-blue-600" : "bg-emerald-600"
+        )}>
+          <span>مقعد {seat.id}</span>
+          <span>{ticket?.amount ?? ""}</span>
+        </div>
+
+        {/* المحتوى */}
+        {isOccupied ? (
+          <div className="flex flex-col gap-px px-1 py-0.5 text-[8px] text-right leading-tight">
+
+            <p className="truncate font-bold">
+              {ticket.passenger?.name}
+            </p>
+
+            <p className="truncate opacity-80">
+              {ticket.passenger?.nationality?.name}
+            </p>
+
+            {/* المسار */}
+            <div className="mt-px border-t border-red-200 pt-px text-[8px] font-semibold">
+              <span className="block truncate">{ticket.fromCityName}</span>
+              <span className="block text-center text-[7px]">إلى</span>
+              <span className="block truncate">{ticket.toCityName}</span>
+            </div>
+
+          </div>
+        ) : (
+          <div className="flex flex-1 flex-col items-center justify-center gap-0">
+            <span className="text-[8px] font-bold text-emerald-500">متاح</span>
+          </div>
         )}
-      >
-        {/* Seat Number */}
-        <span
-          className={cn(
-            "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] font-bold",
-            status === 'selected' ? "text-white" : "text-gray-600"
-          )}
-        >
-          {seat.id}
-        </span>
       </div>
-      
-      {/* Armrests (Visual flair) */}
-      <div className="absolute bottom-2 -left-1 h-4 w-1 rounded-full bg-gray-300" />
-      <div className="absolute bottom-2 -right-1 h-4 w-1 rounded-full bg-gray-300" />
+
+      {/* مساند اليد */}
+      <div className={cn(
+        "absolute top-6 -left-0.5 h-5 w-1 rounded-full",
+        isOccupied ? "bg-red-300" : "bg-slate-300"
+      )} />
+      <div className={cn(
+        "absolute top-6 -right-0.5 h-5 w-1 rounded-full",
+        isOccupied ? "bg-red-300" : "bg-slate-300"
+      )} />
     </button>
   );
 }
