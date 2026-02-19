@@ -32,6 +32,7 @@ import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
 import type { Passenger } from "../../Passengers/Data/Passenger";
 import type { Ticket } from "../Data/Ticket";
+import MessageBox from "@/app/core/components/MessageBox";
 
 type ChangeTicketDialogProps = {
   entity?: Ticket;
@@ -47,7 +48,7 @@ export default function ChangeTicketDialog({
   onSuccess,
 }: ChangeTicketDialogProps) {
   const [formData, setFormData] = useState<Partial<Ticket>>(entity || {});
-
+  const [showErrorMessage, setErrorMessag] = useState(false)
   const { cities, fetchingCities } = useCities();
 
   useEffect(() => {
@@ -59,12 +60,14 @@ export default function ChangeTicketDialog({
 
   function onSaveHandler()
   {
-    // checks
+    // setErrorMessag(true);
+    // return 
     onSuccess?.(formData as Ticket)
 
   }
 
   return (
+    <>
     <DialogContent dir="rtl" className="sm:max-w-[80%] scroll-auto">
       <DialogHeader>
         <DialogTitle>بيانات التذكرة</DialogTitle>
@@ -312,5 +315,11 @@ export default function ChangeTicketDialog({
       </DialogFooter>
       
     </DialogContent>
+
+    {showErrorMessage && <MessageBox title={""} descirption={""} isOpen={showErrorMessage} onColse={()=>setErrorMessag(false)}/>}
+    </>
+
   );
 }
+
+
