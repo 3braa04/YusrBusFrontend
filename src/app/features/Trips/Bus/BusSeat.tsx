@@ -39,7 +39,7 @@ export default function BusSeat({ seat, ticket, onClick }: SeatProps) {
           isOccupied ? "bg-red-600" : isSelected ? "bg-blue-600" : "bg-emerald-600"
         )}>
           <span>مقعد {seat.id}</span>
-          <span>{ticket?.amount ?? ""}</span>
+          <span>${ticket?.amount ?? "0"}</span>
         </div>
 
         {/* المحتوى */}

@@ -270,7 +270,7 @@ export default function ChangeTripDialog({
               onSuccess={onSuccess}
             />
             <DialogClose asChild>
-              <Button variant="ghost" className="w-full h-8 text-xs">
+              <Button variant="outline" className="w-full h-8 text-xs">
                 إلغاء
               </Button>
             </DialogClose>
