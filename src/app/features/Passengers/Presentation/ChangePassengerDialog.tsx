@@ -40,9 +40,29 @@ export default function ChangePassengerDialog({
   mode,
   onSuccess,
 }: CummonChangeDialogProps<Passenger>) {
-
   const [formData, setFormData] = useState<Partial<Passenger>>(entity || {});
-  const {countries, fetchingCountries} = useCountries();
+  const { countries, fetchingCountries } = useCountries();
+
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+
+  const clearError = (field: string) => {
+    setFieldErrors((prev) => ({ ...prev, [field]: false }));
+  };
+  const validate = (): boolean => {
+    const errors: Record<string, boolean> = {};
+
+    if (!formData.name?.trim()) errors.name = true;
+    if (formData.gender === undefined) errors.gender = true;
+    if (!formData.nationalityId) errors.nationalityId = true;
+    if (!formData.passportNo?.trim()) errors.passportNo = true;
+
+    setFieldErrors(errors);
+
+    return Object.keys(errors).length === 0;
+  };
+
+  const errorInputClass = (hasError: boolean) =>
+    hasError ? "border-red-500 ring-red-500" : "";
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-xl">
@@ -63,9 +83,11 @@ export default function ChangePassengerDialog({
           <Label>اسم الراكب</Label>
           <Input
             value={formData?.name || ""}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, name: e.target.value }))
-            }
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, name: e.target.value }));
+              clearError("name");
+            }}
+            className={errorInputClass(!!fieldErrors.name)}
           />
         </Field>
 
@@ -76,13 +98,14 @@ export default function ChangePassengerDialog({
               dir="rtl"
               value={formData.gender?.toString() || ""}
               onValueChange={(e) => {
-                setFormData((prev) => ({ 
-                  ...prev, 
-                  gender: Number(e) as Gender 
+                setFormData((prev) => ({
+                  ...prev,
+                  gender: Number(e) as Gender,
                 }));
+                clearError("gender");
               }}
             >
-              <SelectTrigger>
+              <SelectTrigger className={errorInputClass(!!fieldErrors.gender)}>
                 <SelectValue placeholder="اختر" />
               </SelectTrigger>
               <SelectContent>
@@ -107,6 +130,7 @@ export default function ChangePassengerDialog({
                     nationalityId: selectedCountry.id,
                     nationality: selectedCountry,
                   }));
+                  clearError("nationalityId");
                 }
               }}
               disabled={fetchingCountries}
@@ -129,9 +153,12 @@ export default function ChangePassengerDialog({
           <Field>
             <Label>رقم الجوال</Label>
             <Input
-              value={formData?.phoneNumber}
+              defaultValue={formData?.phoneNumber}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, phoneNumber: e.target.value }))
+                setFormData((prev) => ({
+                  ...prev,
+                  phoneNumber: e.target.value,
+                }))
               }
             />
           </Field>
@@ -169,7 +196,7 @@ export default function ChangePassengerDialog({
                 captionLayout="dropdown"
                 mode="single"
                 selected={formData?.dateOfBirth}
-                onSelect={(date) => 
+                onSelect={(date) =>
                   setFormData((prev) => ({ ...prev, dateOfBirth: date }))
                 }
                 defaultMonth={formData?.dateOfBirth}
@@ -183,9 +210,11 @@ export default function ChangePassengerDialog({
           <Label>رقم الجواز</Label>
           <Input
             value={formData?.passportNo}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, passportNo: e.target.value }))
-            }
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, passportNo: e.target.value }));
+              clearError("passportNo");
+            }}
+            className={errorInputClass(!!fieldErrors.passportNo)}
           />
         </Field>
 
@@ -214,8 +243,11 @@ export default function ChangePassengerDialog({
                   captionLayout="dropdown"
                   mode="single"
                   selected={formData?.passportExpiration}
-                  onSelect={(date) => 
-                    setFormData((prev) => ({ ...prev, passportExpiration: date }))
+                  onSelect={(date) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      passportExpiration: date,
+                    }))
                   }
                   defaultMonth={formData?.passportExpiration}
                   endMonth={new Date(new Date().getFullYear() + 20, 11)}
@@ -230,7 +262,10 @@ export default function ChangePassengerDialog({
             <Input
               value={formData?.passportIssueLocation}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, passportIssueLocation: e.target.value }))
+                setFormData((prev) => ({
+                  ...prev,
+                  passportIssueLocation: e.target.value,
+                }))
               }
             />
           </Field>
@@ -247,6 +282,7 @@ export default function ChangePassengerDialog({
           service={new PassengersApiService()}
           disable={() => fetchingCountries}
           onSuccess={onSuccess}
+          validation={validate} 
         />
       </DialogFooter>
     </DialogContent>

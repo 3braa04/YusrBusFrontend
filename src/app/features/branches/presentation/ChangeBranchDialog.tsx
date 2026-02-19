@@ -48,9 +48,6 @@ export default function ChangeBranchDialog({
 
     if (!formData.name) errors.name = true;
     setFieldErrors(errors);
-    console.log(errors);
-    console.log(Object.keys(errors).length === 0);
-
     return Object.keys(errors).length === 0;
   };
 
