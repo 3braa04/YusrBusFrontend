@@ -38,6 +38,25 @@ export default function ChangeBranchDialog({
 
   const { cities, fetchingCities } = useCities();
 
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+
+  const clearError = (field: string) => {
+    setFieldErrors((prev) => ({ ...prev, [field]: false }));
+  };
+  const validate = (): boolean => {
+    const errors: Record<string, boolean> = {};
+
+    if (!formData.name) errors.name = true;
+    setFieldErrors(errors);
+    console.log(errors);
+    console.log(Object.keys(errors).length === 0);
+
+    return Object.keys(errors).length === 0;
+  };
+
+  const errorInputClass = (hasError: boolean) =>
+    hasError ? "border-red-500 ring-red-500" : "";
+
   return (
     <DialogContent dir="rtl" className="sm:max-w-sm">
       <DialogHeader>
@@ -65,7 +84,11 @@ export default function ChangeBranchDialog({
             id="branchName"
             name="branchName"
             value={formData.name || ""}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e) => {
+              setFormData({ ...formData, name: e.target.value });
+              clearError("name");
+            }}
+            className={errorInputClass(!!fieldErrors.name)}
           />
         </Field>
 
@@ -73,13 +96,14 @@ export default function ChangeBranchDialog({
           <Label htmlFor="branchCity">المدينة</Label>
           <Select
             dir="rtl"
-            value={formData.cityId?.toString()}
-            onValueChange={(val) =>
-              setFormData({ ...formData, cityId: Number(val) })
-            }
+            defaultValue={formData.cityId?.toString()}
+            onValueChange={(val) => {
+              setFormData({ ...formData, cityId: Number(val) });
+              clearError("cityName");
+            }}
             disabled={fetchingCities}
           >
-            <SelectTrigger>
+            <SelectTrigger className={errorInputClass(!!fieldErrors.cityName)}>
               <SelectValue placeholder="اختر المدينة" />
             </SelectTrigger>
             <SelectContent>
@@ -103,6 +127,7 @@ export default function ChangeBranchDialog({
           service={new BranchesApiService()}
           disable={() => fetchingCities}
           onSuccess={onSuccess}
+          preSave={validate}
         />
       </DialogFooter>
     </DialogContent>

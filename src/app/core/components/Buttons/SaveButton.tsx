@@ -5,40 +5,45 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 interface Props<T> {
-    formData: T,
-    dialogMode: DialogMode;
-    service: BaseApiService<T>,
-    disable?: () => boolean,
-    onSuccess?: (newData: T) => void;
-    preSave?:()=>boolean
+  formData: T;
+  dialogMode: DialogMode;
+  service: BaseApiService<T>;
+  disable?: () => boolean;
+  onSuccess?: (newData: T) => void;
+  preSave?: () => boolean;
 }
 
-export default function SaveButton<T>({formData, dialogMode, service, disable, onSuccess, preSave=()=>true}: Props<T>) 
-{
-    const [loading, setLoading] = useState(false);
+export default function SaveButton<T>({
+  formData,
+  dialogMode,
+  service,
+  disable,
+  onSuccess,
+  preSave = () => true,
+}: Props<T>) {
+  const [loading, setLoading] = useState(false);
 
-    async function Save() 
-    {
-        if(!preSave())return;
+  async function Save() {
+    if (!preSave()) return;
 
-        setLoading(true);
+    setLoading(true);
 
-        const result = dialogMode === "create" 
-            ? await service.Add(formData) 
-            : await service.Update(formData);
+    const result =
+      dialogMode === "create"
+        ? await service.Add(formData)
+        : await service.Update(formData);
 
-        setLoading(false);
+    setLoading(false);
 
-        if (result.status === 200) 
-        {
-            onSuccess?.(result.data as T);
-        } 
+    if (result.status === 200) {
+      onSuccess?.(result.data as T);
     }
+  }
 
-    return (
-        <Button disabled={loading || disable?.()} onClick={Save}>
-            {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
-            حفظ التغييرات
-        </Button>
+  return (
+    <Button disabled={loading || disable?.()} onClick={Save}>
+      {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+      حفظ التغييرات
+    </Button>
   );
 }

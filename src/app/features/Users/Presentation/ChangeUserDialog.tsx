@@ -45,12 +45,8 @@ export default function ChangeUserDialog({
     const errors: Record<string, boolean> = {};
 
     if (!formData.username) errors.username = true;
-    if (!formData.isActive) errors.isActive = true;
-    console.log(formData);
-    
+    if (!formData.isActive) errors.isActive = true;    
     setFieldErrors(errors);
-    console.log(errors);
-    console.log(Object.keys(errors).length === 0);
     
     return Object.keys(errors).length === 0;
   };
