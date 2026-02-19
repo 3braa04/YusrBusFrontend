@@ -84,7 +84,7 @@ export default function ChangeTripDialog({
     setIsTicketDialogOpen(true);
   };
 
-  const {entities: routes, isLoading: fetchingRoutes} = useEntities<Route>(new RoutesApiService());
+  const { entities: routes, isLoading: fetchingRoutes } = useEntities<Route>(new RoutesApiService());
 
   const seats: SeatType[] = Array.from({ length: 44 }, (_, i) => ({
     id: i + 1,
@@ -137,22 +137,44 @@ export default function ChangeTripDialog({
 
       getTrip();
     }
-  }, [entity?.id]); // Only runs when the route ID changes (opening a different route)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entity?.id]);
+
+  // ---------- Validation ----------
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+
+  const clearError = (field: string) => {
+    setFieldErrors((prev) => ({ ...prev, [field]: false }));
+  };
+
+  const validate = (): boolean => {
+    const errors: Record<string, boolean> = {};
+
+    // Required fields (based on Trip class and common sense)
+    if (!formData.mainCaptainName?.trim()) errors.mainCaptainName = true;
+    if (!formData.busName?.trim()) errors.busName = true; // optional? but likely needed
+    if (!formData.routeId) errors.routeId = true;
+    if (!formData.startDate) errors.startDate = true;
+    if (formData.ticketPrice === undefined || formData.ticketPrice <= 0) errors.ticketPrice = true;
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const errorInputClass = (hasError: boolean) =>
+    hasError ? "border-red-500 ring-red-500" : "";
 
   return (
     <DialogContent
       dir="rtl"
       className="sm:max-w-[90vw] sm:w-[90vw] sm:h-[90vh] flex flex-col p-0 gap-0 overflow-hidden"
     >
-      {/* Header - Minimal padding to save space */}
       <DialogHeader className="p-4 border-b">
         <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} رحلة</DialogTitle>
         <DialogDescription></DialogDescription>
       </DialogHeader>
 
-      {/* Main Content Area: Sidebar + Bus Grid */}
       <div className="flex flex-1 overflow-hidden">
-        {/* RIGHT SIDEBAR: Controls */}
         <aside className="w-80 shrink-0 border-l bg-muted/40 dark:bg-muted/40 p-4 overflow-y-auto">
           <FieldGroup className="space-y-4">
             <Field>
@@ -163,14 +185,12 @@ export default function ChangeTripDialog({
             <Field>
               <Label className="text-xs">اسم قائد الحافلة</Label>
               <Input
-                className="h-8 text-xs"
+                className={`h-8 text-xs ${errorInputClass(!!fieldErrors.mainCaptainName)}`}
                 value={formData.mainCaptainName || ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    mainCaptainName: e.target.value,
-                  }))
-                }
+                onChange={(e) => {
+                  setFormData((prev) => ({ ...prev, mainCaptainName: e.target.value }));
+                  clearError("mainCaptainName");
+                }}
               />
             </Field>
 
@@ -180,10 +200,7 @@ export default function ChangeTripDialog({
                 className="h-8 text-xs"
                 value={formData.secondaryCaptainName || ""}
                 onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    secondaryCaptainName: e.target.value,
-                  }))
+                  setFormData((prev) => ({ ...prev, secondaryCaptainName: e.target.value }))
                 }
               />
             </Field>
@@ -191,11 +208,12 @@ export default function ChangeTripDialog({
             <Field>
               <Label className="text-xs">الحافلة</Label>
               <Input
-                className="h-8 text-xs"
+                className={`h-8 text-xs ${errorInputClass(!!fieldErrors.busName)}`}
                 value={formData.busName || ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, busName: e.target.value }))
-                }
+                onChange={(e) => {
+                  setFormData((prev) => ({ ...prev, busName: e.target.value }));
+                  clearError("busName");
+                }}
               />
             </Field>
 
@@ -206,16 +224,20 @@ export default function ChangeTripDialog({
                 value={formData.routeId?.toString() || ""}
                 onValueChange={(val) => {
                   const selected = routes?.data?.find((c) => c.id.toString() === val);
-                  if (selected)
+                  if (selected) {
                     setFormData((prev) => ({
                       ...prev,
                       routeId: selected.id,
                       route: selected,
                     }));
+                    clearError("routeId");
+                  }
                 }}
                 disabled={fetchingRoutes}
               >
-                <SelectTrigger className="h-8 text-xs">
+                <SelectTrigger
+                  className={`h-8 text-xs ${errorInputClass(!!fieldErrors.routeId)}`}
+                >
                   <SelectValue placeholder="اختر خطًا" />
                 </SelectTrigger>
                 <SelectContent>
@@ -235,7 +257,7 @@ export default function ChangeTripDialog({
                   <Button
                     variant="outline"
                     data-empty={!formData?.startDate}
-                    className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                    className={`data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal ${errorInputClass(!!fieldErrors.startDate)}`}
                   >
                     {formData?.startDate ? (
                       format(formData?.startDate, "PPP", { locale: arSA })
@@ -250,9 +272,10 @@ export default function ChangeTripDialog({
                     captionLayout="dropdown"
                     mode="single"
                     selected={formData?.startDate}
-                    onSelect={(date) =>
-                      setFormData((prev) => ({ ...prev, startDate: date }))
-                    }
+                    onSelect={(date) => {
+                      setFormData((prev) => ({ ...prev, startDate: date }));
+                      clearError("startDate");
+                    }}
                     defaultMonth={formData?.startDate}
                     locale={arSADayPicker}
                   />
@@ -263,15 +286,16 @@ export default function ChangeTripDialog({
             <Field>
               <Label className="text-xs">مبلغ التذكرة الافتراضي</Label>
               <Input
-              type="number"
-                className="h-8 text-xs"
-                value={formData.ticketPrice || ""}
-                onChange={(e) =>
+                type="number"
+                className={`h-8 text-xs ${errorInputClass(!!fieldErrors.ticketPrice)}`}
+                value={formData.ticketPrice ?? ""}
+                onChange={(e) => {
                   setFormData((prev) => ({
                     ...prev,
                     ticketPrice: Number(e.target.value),
-                  }))
-                }
+                  }));
+                  clearError("ticketPrice");
+                }}
               />
             </Field>
           </FieldGroup>
@@ -282,6 +306,7 @@ export default function ChangeTripDialog({
               dialogMode={mode}
               service={new TripsApiService()}
               onSuccess={onSuccess}
+              validation={validate} // This will block save if validation fails
             />
             <DialogClose asChild>
               <Button variant="outline" className="w-full h-8 text-xs">
@@ -291,9 +316,7 @@ export default function ChangeTripDialog({
           </div>
         </aside>
 
-        {/* LEFT AREA: The Bus (Takes whole width/height) */}
         <main className="flex-1 p-6 overflow-auto flex items-center justify-center bg-background">
-          {/* The Bus component should be set to scale properly here */}
           <Bus
             seats={seats}
             tickets={formData.tickets ?? []}
@@ -337,7 +360,6 @@ export default function ChangeTripDialog({
           />
         </Dialog>
       )}
-      
     </DialogContent>
   );
 }
