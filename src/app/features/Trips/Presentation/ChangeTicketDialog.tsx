@@ -32,7 +32,6 @@ import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
 import type { Passenger } from "../../Passengers/Data/Passenger";
 import type { Ticket } from "../Data/Ticket";
-import MessageBox from "@/app/core/components/MessageBox";
 
 type ChangeTicketDialogProps = {
   entity?: Ticket;
@@ -48,7 +47,7 @@ export default function ChangeTicketDialog({
   onSuccess,
 }: ChangeTicketDialogProps) {
   const [formData, setFormData] = useState<Partial<Ticket>>(entity || {});
-  const [showErrorMessage, setErrorMessag] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
   const { cities, fetchingCities } = useCities();
 
   useEffect(() => {
@@ -58,16 +57,38 @@ export default function ChangeTicketDialog({
   }, [entity]);
 
 
-  function onSaveHandler()
-  {
-    // setErrorMessag(true);
-    // return 
-    onSuccess?.(formData as Ticket)
+  // Helper to clear a specific field error
+  const clearError = (field: string) => {
+    setFieldErrors(prev => ({ ...prev, [field]: false }));
+  };
 
+  // Validate all required fields, return true if valid
+  const validate = (): boolean => {
+    const errors: Record<string, boolean> = {};
+
+    // Check each required field
+    if (!formData.passengerId) errors.passengerId = true;
+    if (!formData.fromCityId) errors.fromCityId = true;
+    if (!formData.toCityId) errors.toCityId = true;
+    if (formData.amount == null || isNaN(formData.amount)) errors.amount = true;
+    if (formData.paidAmount == null || isNaN(formData.paidAmount)) errors.paidAmount = true;
+    if (!formData.issueDate) errors.issueDate = true;
+    if (!formData.issueCityId) errors.issueCityId = true;
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  function onSaveHandler() {
+    if (!validate()) return; // stop if invalid
+    onSuccess?.(formData as Ticket);
   }
 
+  // Reusable class for error border
+  const errorInputClass = (hasError: boolean) =>
+    hasError ? "border-red-500 ring-red-500" : "";
+
   return (
-    <>
     <DialogContent dir="rtl" className="sm:max-w-[80%] scroll-auto">
       <DialogHeader>
         <DialogTitle>بيانات التذكرة</DialogTitle>
@@ -85,7 +106,7 @@ export default function ChangeTicketDialog({
 
           <Field>
             <Label>رقم الكرسي</Label>
-            <Input disabled value={(entity?.chairNo ?? -1) < 0? 0 : entity?.chairNo} />
+            <Input disabled value={(entity?.chairNo ?? -1) < 0 ? 0 : entity?.chairNo} />
           </Field>
         </div>
 
@@ -106,11 +127,12 @@ export default function ChangeTicketDialog({
                       passengerId: selectedPassenger.id,
                       passenger: selectedPassenger,
                     }));
+                    clearError('passengerId');
                   }
                 }}
                 disabled={fetchingCities}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className={errorInputClass(!!fieldErrors.passengerId) + " w-full"}>
                   <SelectValue placeholder="اختر الراكب" />
                 </SelectTrigger>
                 <SelectContent>
@@ -131,7 +153,7 @@ export default function ChangeTicketDialog({
               onClick={() => onPassengerDialogClicked?.(undefined)}
             >
               إضافة
-              <PlusCircle/>
+              <PlusCircle />
             </Button>
 
             {formData.passenger && (
@@ -141,10 +163,9 @@ export default function ChangeTicketDialog({
                 onClick={() => onPassengerDialogClicked?.(formData.passenger!)}
               >
                 تعديل
-                <Edit/>
+                <Edit />
               </Button>
             )}
-            
           </div>
         </Field>
 
@@ -163,10 +184,11 @@ export default function ChangeTicketDialog({
                   fromCityId: selectedCity?.id,
                   fromCityName: selectedCity?.name,
                 });
+                clearError('fromCityId');
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger>
+              <SelectTrigger className={errorInputClass(!!fieldErrors.fromCityId)}>
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -193,10 +215,11 @@ export default function ChangeTicketDialog({
                   toCityId: selectedCity?.id,
                   toCityName: selectedCity?.name,
                 });
+                clearError('toCityId');
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger>
+              <SelectTrigger className={errorInputClass(!!fieldErrors.toCityId)}>
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -215,12 +238,14 @@ export default function ChangeTicketDialog({
             <Label>المبلغ</Label>
             <Input
               value={formData.amount || ""}
-              onChange={(e) =>
+              onChange={(e) => {
                 setFormData((prev) => ({
                   ...prev,
                   amount: Number(e.target.value),
-                }))
-              }
+                }));
+                clearError('amount');
+              }}
+              className={errorInputClass(!!fieldErrors.amount)}
             />
           </Field>
 
@@ -228,12 +253,14 @@ export default function ChangeTicketDialog({
             <Label>المبلغ المدفوع</Label>
             <Input
               value={formData.paidAmount || ""}
-              onChange={(e) =>
+              onChange={(e) => {
                 setFormData((prev) => ({
                   ...prev,
                   paidAmount: Number(e.target.value),
-                }))
-              }
+                }));
+                clearError('paidAmount');
+              }}
+              className={errorInputClass(!!fieldErrors.paidAmount)}
             />
           </Field>
         </div>
@@ -246,7 +273,11 @@ export default function ChangeTicketDialog({
                 <Button
                   variant="outline"
                   data-empty={!formData?.issueDate}
-                  className="data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal"
+                  className={`
+                    w-53 justify-between text-left font-normal
+                    data-[empty=true]:text-muted-foreground
+                    ${errorInputClass(!!fieldErrors.issueDate)}
+                  `}
                 >
                   {formData?.issueDate ? (
                     format(formData?.issueDate, "PPP", { locale: arSA })
@@ -261,9 +292,10 @@ export default function ChangeTicketDialog({
                   captionLayout="dropdown"
                   mode="single"
                   selected={formData?.issueDate}
-                  onSelect={(date) =>
-                    setFormData((prev) => ({ ...prev, issueDate: date }))
-                  }
+                  onSelect={(date) => {
+                    setFormData((prev) => ({ ...prev, issueDate: date }));
+                    clearError('issueDate');
+                  }}
                   defaultMonth={formData?.issueDate}
                   locale={arSADayPicker}
                 />
@@ -276,12 +308,13 @@ export default function ChangeTicketDialog({
             <Select
               dir="rtl"
               value={formData.issueCityId?.toString() || ""}
-              onValueChange={(val) =>
-                setFormData({ ...formData, issueCityId: Number(val) })
-              }
+              onValueChange={(val) => {
+                setFormData({ ...formData, issueCityId: Number(val) });
+                clearError('issueCityId');
+              }}
               disabled={fetchingCities}
             >
-              <SelectTrigger>
+              <SelectTrigger className={errorInputClass(!!fieldErrors.issueCityId)}>
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -310,16 +343,8 @@ export default function ChangeTicketDialog({
         <DialogClose asChild>
           <Button variant="outline">إلغاء</Button>
         </DialogClose>
-        
         <Button onClick={onSaveHandler}>حفظ</Button>
       </DialogFooter>
-      
     </DialogContent>
-
-    {showErrorMessage && <MessageBox title={""} descirption={""} isOpen={showErrorMessage} onColse={()=>setErrorMessag(false)}/>}
-    </>
-
   );
 }
-
-
