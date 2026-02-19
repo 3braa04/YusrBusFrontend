@@ -56,6 +56,14 @@ export default function ChangeTicketDialog({
     }
   }, [entity]);
 
+
+  function onSaveHandler()
+  {
+    // checks
+    onSuccess?.(formData as Ticket)
+
+  }
+
   return (
     <DialogContent dir="rtl" className="sm:max-w-[80%] scroll-auto">
       <DialogHeader>
@@ -299,7 +307,8 @@ export default function ChangeTicketDialog({
         <DialogClose asChild>
           <Button variant="outline">إلغاء</Button>
         </DialogClose>
-        <Button onClick={() => onSuccess?.(formData as Ticket)}>حفظ</Button>
+        
+        <Button onClick={onSaveHandler}>حفظ</Button>
       </DialogFooter>
       
     </DialogContent>
