@@ -1,5 +1,4 @@
 import useCities from "@/app/core/Hooks/useCities";
-import usePassengers from "@/app/core/Hooks/usePassengers";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -8,7 +7,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -28,24 +27,34 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
-import { ChevronDownIcon } from "lucide-react";
-import { useState } from "react";
+import { ChevronDownIcon, Edit, PlusCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
+import type { Passenger } from "../../Passengers/Data/Passenger";
 import type { Ticket } from "../Data/Ticket";
 
 type ChangeTicketDialogProps = {
   entity?: Ticket;
+  passengers?: Passenger[];
+  onPassengerDialogClicked?: (passenger?: Passenger) => void;
   onSuccess?: (newData?: Ticket) => void;
 };
 
 export default function ChangeTicketDialog({
   entity,
+  passengers,
+  onPassengerDialogClicked,
   onSuccess,
 }: ChangeTicketDialogProps) {
   const [formData, setFormData] = useState<Partial<Ticket>>(entity || {});
 
   const { cities, fetchingCities } = useCities();
-  const { passengers, fetchingPassenger } = usePassengers();
+
+  useEffect(() => {
+    if (entity) {
+      setFormData(entity);
+    }
+  }, [entity]);
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-[80%] scroll-auto">
@@ -72,12 +81,12 @@ export default function ChangeTicketDialog({
         <Field>
           <Label>الراكب</Label>
           <div className="flex w-full gap-2">
-            <div className="flex-5">
+            <div className="flex-10">
               <Select
                 dir="rtl"
                 value={formData.passengerId?.toString() || ""}
                 onValueChange={(val) => {
-                  const selectedPassenger = passengers.find(
+                  const selectedPassenger = passengers?.find(
                     (c) => c.id.toString() === val,
                   );
                   if (selectedPassenger) {
@@ -94,7 +103,7 @@ export default function ChangeTicketDialog({
                   <SelectValue placeholder="اختر الراكب" />
                 </SelectTrigger>
                 <SelectContent>
-                  {passengers.map((passenger) => (
+                  {passengers?.map((passenger) => (
                     <SelectItem
                       key={passenger.id}
                       value={passenger.id.toString()}
@@ -106,7 +115,25 @@ export default function ChangeTicketDialog({
               </Select>
             </div>
 
-            <Button className="flex-1">إضافة</Button>
+            <Button
+              className="flex-1"
+              onClick={() => onPassengerDialogClicked?.(undefined)}
+            >
+              إضافة
+              <PlusCircle/>
+            </Button>
+
+            {formData.passenger && (
+              <Button
+                variant="secondary"
+                className="flex-1 bg"
+                onClick={() => onPassengerDialogClicked?.(formData.passenger!)}
+              >
+                تعديل
+                <Edit/>
+              </Button>
+            )}
+            
           </div>
         </Field>
 
@@ -274,6 +301,7 @@ export default function ChangeTicketDialog({
         </DialogClose>
         <Button onClick={() => onSuccess?.(formData as Ticket)}>حفظ</Button>
       </DialogFooter>
+      
     </DialogContent>
   );
 }

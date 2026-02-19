@@ -1,4 +1,4 @@
 export type FilterResult<T> = {
-    data: T[] | null;
+    data: T[] | undefined;
     count: number
 }

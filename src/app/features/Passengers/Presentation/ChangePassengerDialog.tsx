@@ -62,7 +62,7 @@ export default function ChangePassengerDialog({
         <Field>
           <Label>اسم الراكب</Label>
           <Input
-            value={formData?.name}
+            value={formData?.name || ""}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, name: e.target.value }))
             }

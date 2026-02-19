@@ -1,6 +1,7 @@
 import SaveButton from "@/app/core/components/Buttons/SaveButton";
 import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
-import useRoutes from "@/app/core/Hooks/useRoutes";
+import useEntities from "@/app/core/Hooks/useEntities";
+import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
 import TripsApiService from "@/app/core/Networking/Services/TripsApiService";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -32,11 +33,15 @@ import { arSA } from "date-fns/locale";
 import { ChevronDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
+import type { Route } from "../../Routes/Data/Route";
 import Bus from "../Bus/Bus";
 import type { SeatType } from "../Bus/BusTypes";
 import { Ticket } from "../Data/Ticket";
 import type { Trip } from "../Data/Trip";
 import ChangeTicketDialog from "./ChangeTicketDialog";
+import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
+import type { Passenger } from "../../Passengers/Data/Passenger";
+import ChangePassengerDialog from "../../Passengers/Presentation/ChangePassengerDialog";
 
 export default function ChangeTripDialog({
   entity,
@@ -47,6 +52,15 @@ export default function ChangeTripDialog({
 
   const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>(undefined);
   const [isTicketDialogOpen, setIsTicketDialogOpen] = useState(false);
+
+  const { entities: passengers, refreash: refreshPassengers } = useEntities<Passenger>(new PassengersApiService());
+  const [selectedPassenger, setSelectedPassenger] = useState<Passenger | undefined>(undefined);
+  const [isEditPassengerDialogOpen, setIsEditPassengerDialogOpen] = useState(false);
+
+  const openEditPassengerDialog = (entity: Passenger | undefined) => {
+    setSelectedPassenger(entity);
+    setIsEditPassengerDialogOpen(true);
+  };
 
   const openTicketDialog = (seat: SeatType) => {
     let ticket = formData.tickets?.find((t) => t.chairNo === seat.id);
@@ -70,7 +84,7 @@ export default function ChangeTripDialog({
     setIsTicketDialogOpen(true);
   };
 
-  const { routes, fetchingRoutes } = useRoutes();
+  const {entities: routes, isLoading: fetchingRoutes} = useEntities<Route>(new RoutesApiService());
 
   const seats: SeatType[] = Array.from({ length: 44 }, (_, i) => ({
     id: i + 1,
@@ -191,7 +205,7 @@ export default function ChangeTripDialog({
                 dir="rtl"
                 value={formData.routeId?.toString() || ""}
                 onValueChange={(val) => {
-                  const selected = routes.find((c) => c.id.toString() === val);
+                  const selected = routes?.data?.find((c) => c.id.toString() === val);
                   if (selected)
                     setFormData((prev) => ({
                       ...prev,
@@ -205,7 +219,7 @@ export default function ChangeTripDialog({
                   <SelectValue placeholder="اختر خطًا" />
                 </SelectTrigger>
                 <SelectContent>
-                  {routes.map((route) => (
+                  {routes?.data?.map((route) => (
                     <SelectItem key={route.id} value={route.id.toString()}>
                       {route.name}
                     </SelectItem>
@@ -289,15 +303,41 @@ export default function ChangeTripDialog({
         </main>
       </div>
 
-      {/* Ticket Dialog remains same */}
       {isTicketDialogOpen && (
         <Dialog open={isTicketDialogOpen} onOpenChange={setIsTicketDialogOpen}>
           <ChangeTicketDialog
             entity={selectedTicket}
+            passengers={passengers?.data}
+            onPassengerDialogClicked={(passenger) => openEditPassengerDialog(passenger)}
             onSuccess={(ticket) => changeTicket(ticket)}
           />
         </Dialog>
       )}
+
+      {isEditPassengerDialogOpen && (
+        <Dialog
+          open={isEditPassengerDialogOpen}
+          onOpenChange={setIsEditPassengerDialogOpen}
+        >
+          <ChangePassengerDialog
+            entity={selectedPassenger || undefined}
+            mode={selectedPassenger ? "update" : "create"}
+            onSuccess={(data) => {
+              refreshPassengers(data);
+              setSelectedTicket((prev) => {
+                if (!prev) return prev;
+                return {
+                  ...prev,
+                  passengerId: data.id,
+                  passenger: data,
+                };
+              });
+              setIsEditPassengerDialogOpen(false);
+            }}
+          />
+        </Dialog>
+      )}
+      
     </DialogContent>
   );
 }
