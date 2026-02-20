@@ -32,6 +32,11 @@ import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
 import type { Passenger } from "../../Passengers/Data/Passenger";
 import type { Ticket } from "../Data/Ticket";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/Hooks/useFormValidation";
+import { Validators } from "@/app/core/utils/Validators";
 
 type ChangeTicketDialogProps = {
   entity?: Ticket;
@@ -47,46 +52,60 @@ export default function ChangeTicketDialog({
   onSuccess,
 }: ChangeTicketDialogProps) {
   const [formData, setFormData] = useState<Partial<Ticket>>(entity || {});
-  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
   const { cities, fetchingCities } = useCities();
 
   useEffect(() => {
-    if(entity){
+    if (entity) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData(entity);
     }
   }, [entity]);
 
-  // Helper to clear a specific field error
-  const clearError = (field: string) => {
-    setFieldErrors((prev) => ({ ...prev, [field]: false }));
-  };
+  const validationRules: ValidationRule<Partial<Ticket>>[] = [
+    {
+      field: "passengerId",
+      selector: (d) => d.passengerId,
+      validators: [Validators.required("يرجى اختيار راكب")],
+    },
+    {
+      field: "fromCityId",
+      selector: (d) => d.fromCityId,
+      validators: [Validators.required("يرجى اختيار مدينة المغادرة")],
+    },
+    {
+      field: "toCityId",
+      selector: (d) => d.toCityId,
+      validators: [Validators.required("يرجى اختيار مدينة الوجهة")],
+    },
+    {
+      field: "amount",
+      selector: (d) => d.amount,
+      validators: [Validators.min(0, "يرجى ادخال المبلغ المطلوب دفعه")],
+    },
+    {
+      field: "paidAmount",
+      selector: (d) => d.paidAmount,
+      validators: [Validators.min(0, "يرجى ادخال المبلغ المدفوع")],
+    },
+    {
+      field: "issueDate",
+      selector: (d) => d.issueDate,
+      validators: [Validators.required("يرجى ادخال تاريخ الاصدار")],
+    },
+    {
+      field: "issueCityId",
+      selector: (d) => d.issueCityId,
+      validators: [Validators.required("يرجى اختيار مدينة الاصدار")],
+    },
+  ];
 
-  // Validate all required fields, return true if valid
-  const validate = (): boolean => {
-    const errors: Record<string, boolean> = {};
+  const { getError, isInvalid, validate, clearError, errorInputClass } =
+    useFormValidation(formData, validationRules);
 
-    // Check each required field
-    if (!formData.passengerId) errors.passengerId = true;
-    if (!formData.fromCityId) errors.fromCityId = true;
-    if (!formData.toCityId) errors.toCityId = true;
-    if (formData.amount == null || isNaN(formData.amount)) errors.amount = true;
-    if (formData.paidAmount == null || isNaN(formData.paidAmount))
-      errors.paidAmount = true;
-    if (!formData.issueDate) errors.issueDate = true;
-    if (!formData.issueCityId) errors.issueCityId = true;
-
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  function onSaveHandler() {    
+  function onSaveHandler() {
     if (!validate()) return; // stop if invalid
     onSuccess?.(formData as Ticket);
   }
-
-  // Reusable class for error border
-  const errorInputClass = (hasError: boolean) =>
-    hasError ? "border-red-500 ring-red-500" : "";
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-[80%] scroll-auto">
@@ -136,9 +155,7 @@ export default function ChangeTicketDialog({
                 disabled={fetchingCities}
               >
                 <SelectTrigger
-                  className={
-                    errorInputClass(!!fieldErrors.passengerId) + " w-full"
-                  }
+                  className={errorInputClass("passengerId") + " w-full"}
                 >
                   <SelectValue placeholder="اختر الراكب" />
                 </SelectTrigger>
@@ -174,6 +191,11 @@ export default function ChangeTicketDialog({
               </Button>
             )}
           </div>
+          {isInvalid("passengerId") && (
+            <span className="text-xs text-red-500">
+              {getError("passengerId")}
+            </span>
+          )}
         </Field>
 
         <div className="flex gap-3">
@@ -195,9 +217,7 @@ export default function ChangeTicketDialog({
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger
-                className={errorInputClass(!!fieldErrors.fromCityId)}
-              >
+              <SelectTrigger className={errorInputClass("fromCityId")}>
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -208,6 +228,11 @@ export default function ChangeTicketDialog({
                 ))}
               </SelectContent>
             </Select>
+            {isInvalid("fromCityId") && (
+              <span className="text-xs text-red-500">
+                {getError("fromCityId")}
+              </span>
+            )}
           </Field>
 
           <Field>
@@ -228,9 +253,7 @@ export default function ChangeTicketDialog({
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger
-                className={errorInputClass(!!fieldErrors.toCityId)}
-              >
+              <SelectTrigger className={errorInputClass("toCityId")}>
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -256,8 +279,11 @@ export default function ChangeTicketDialog({
                 }));
                 clearError("amount");
               }}
-              className={errorInputClass(!!fieldErrors.amount)}
+              className={errorInputClass("amount")}
             />
+            {isInvalid("amount") && (
+              <span className="text-xs text-red-500">{getError("amount")}</span>
+            )}
           </Field>
 
           <Field>
@@ -271,9 +297,14 @@ export default function ChangeTicketDialog({
                 }));
                 clearError("paidAmount");
               }}
-              className={errorInputClass(!!fieldErrors.paidAmount)}
+              className={errorInputClass("paidAmount")}
             />
           </Field>
+          {isInvalid("paidAmount") && (
+            <span className="text-xs text-red-500">
+              {getError("paidAmount")}
+            </span>
+          )}
         </div>
 
         <div className="flex gap-3">
@@ -287,7 +318,7 @@ export default function ChangeTicketDialog({
                   className={`
                     w-53 justify-between text-left font-normal
                     data-[empty=true]:text-muted-foreground
-                    ${errorInputClass(!!fieldErrors.issueDate)}
+                    ${errorInputClass("issueDate")}
                   `}
                 >
                   {formData?.issueDate ? (
@@ -312,6 +343,11 @@ export default function ChangeTicketDialog({
                 />
               </PopoverContent>
             </Popover>
+            {isInvalid("issueDate") && (
+              <span className="text-xs text-red-500">
+                {getError("issueDate")}
+              </span>
+            )}
           </Field>
 
           <Field>
@@ -325,9 +361,7 @@ export default function ChangeTicketDialog({
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger
-                className={errorInputClass(!!fieldErrors.issueCityId)}
-              >
+              <SelectTrigger className={errorInputClass("issueCityId")}>
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -339,6 +373,11 @@ export default function ChangeTicketDialog({
               </SelectContent>
             </Select>
           </Field>
+          {isInvalid("issueCityId") && (
+            <span className="text-xs text-red-500">
+              {getError("issueCityId")}
+            </span>
+          )}
         </div>
 
         <Field>

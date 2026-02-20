@@ -6,23 +6,36 @@ import { Calendar } from "@/components/ui/calendar";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { DialogClose } from "@/components/ui/dialog";
 import SaveButton from "@/app/core/components/Buttons/SaveButton";
 import TripsApiService from "@/app/core/Networking/Services/TripsApiService";
 import type { Trip } from "../Data/Trip";
 import type { Route } from "../../Routes/Data/Route";
 import TripStationsList from "./TripStationsList";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/Hooks/useFormValidation";
+import { Validators } from "@/app/core/utils/Validators";
 
 interface TripSidePanelProps {
   entityId?: number;
   formData: Partial<Trip>;
   setFormData: React.Dispatch<React.SetStateAction<Partial<Trip>>>;
-  fieldErrors: Record<string, boolean>;
   routes?: Route[];
   fetchingRoutes: boolean;
-  validate: () => boolean;
   onSuccess: (data: Trip) => void;
   mode: "create" | "update";
 }
@@ -31,14 +44,38 @@ export default function TripSidePanel({
   entityId,
   formData,
   setFormData,
-  fieldErrors,
   routes,
   fetchingRoutes,
-  validate,
   onSuccess,
   mode,
 }: TripSidePanelProps) {
-  const errorInputClass = (field: string) => (fieldErrors[field] ? "border-red-500 ring-red-500" : "");
+  const validationRules: ValidationRule<Partial<Trip>>[] = [
+    {
+      field: "mainCaptainName",
+      selector: (d) => d.mainCaptainName,
+      validators: [Validators.required("يجب ادخال اسم كابتن الباص")],
+    },
+
+    {
+      field: "busName",
+      selector: (d) => d.busName,
+      validators: [Validators.required("يجب ادخال اسم الباص")],
+    },
+    {
+      field: "ticketPrice",
+      selector: (d) => d.ticketPrice,
+      validators: [Validators.required("يجب ادخال سعر التذكرة")],
+    },
+
+    {
+      field: "routeId",
+      selector: (d) => d.routeId,
+      validators: [Validators.required("يجب تحديد خط السفر")],
+    },
+  ];
+
+  const { getError, isInvalid, validate, clearError, errorInputClass } =
+    useFormValidation(formData, validationRules);
 
   return (
     <aside className="w-80 flex flex-col justify-between shrink-0 border-l bg-muted/40 dark:bg-muted/40 p-4 overflow-y-auto">
@@ -53,8 +90,19 @@ export default function TripSidePanel({
           <Input
             className={`h-8 text-xs ${errorInputClass("mainCaptainName")}`}
             value={formData.mainCaptainName || ""}
-            onChange={(e) => setFormData((prev) => ({ ...prev, mainCaptainName: e.target.value }))}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                mainCaptainName: e.target.value,
+              }));
+              clearError("mainCaptainName");
+            }}
           />
+          {isInvalid("mainCaptainName") && (
+            <span className="text-xs text-red-500">
+              {getError("mainCaptainName")}
+            </span>
+          )}
         </Field>
 
         <Field>
@@ -62,7 +110,12 @@ export default function TripSidePanel({
           <Input
             className="h-8 text-xs"
             value={formData.secondaryCaptainName || ""}
-            onChange={(e) => setFormData((prev) => ({ ...prev, secondaryCaptainName: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                secondaryCaptainName: e.target.value,
+              }))
+            }
           />
         </Field>
 
@@ -71,8 +124,15 @@ export default function TripSidePanel({
           <Input
             className={`h-8 text-xs ${errorInputClass("busName")}`}
             value={formData.busName || ""}
-            onChange={(e) => setFormData((prev) => ({ ...prev, busName: e.target.value }))}
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, busName: e.target.value }));
+
+              clearError("busName");
+            }}
           />
+          {isInvalid("busName") && (
+            <span className="text-xs text-red-500">{getError("busName")}</span>
+          )}
         </Field>
 
         <div className="flex gap-2">
@@ -84,7 +144,11 @@ export default function TripSidePanel({
                   variant="outline"
                   className={`h-8 w-full justify-between text-left text-xs font-normal ${errorInputClass("startDate")}`}
                 >
-                  {formData.startDate instanceof Date ? format(formData.startDate, "yyyy-MM-dd") : <span>إختر تاريخا</span>}
+                  {formData.startDate instanceof Date ? (
+                    format(formData.startDate, "yyyy-MM-dd")
+                  ) : (
+                    <span>إختر تاريخا</span>
+                  )}
                   <ChevronDownIcon className="h-3 w-3 opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -92,13 +156,20 @@ export default function TripSidePanel({
                 <Calendar
                   mode="single"
                   captionLayout="dropdown"
-                  selected={formData.startDate instanceof Date ? formData.startDate : undefined}
+                  selected={
+                    formData.startDate instanceof Date
+                      ? formData.startDate
+                      : undefined
+                  }
                   onSelect={(newDate) => {
                     if (!newDate) return;
                     setFormData((prev) => {
                       const dateWithTime = new Date(newDate);
                       if (prev.startDate instanceof Date) {
-                        dateWithTime.setHours(prev.startDate.getHours(), prev.startDate.getMinutes());
+                        dateWithTime.setHours(
+                          prev.startDate.getHours(),
+                          prev.startDate.getMinutes(),
+                        );
                       }
                       return { ...prev, startDate: dateWithTime };
                     });
@@ -114,13 +185,20 @@ export default function TripSidePanel({
             <Input
               type="time"
               className="h-8 text-xs bg-background appearance-none"
-              value={formData.startDate instanceof Date ? format(formData.startDate, "HH:mm") : ""}
+              value={
+                formData.startDate instanceof Date
+                  ? format(formData.startDate, "HH:mm")
+                  : ""
+              }
               onChange={(e) => {
                 const timeVal = e.target.value;
                 if (!timeVal) return;
                 const [hours, minutes] = timeVal.split(":").map(Number);
                 setFormData((prev) => {
-                  const newDate = prev.startDate instanceof Date ? new Date(prev.startDate) : new Date();
+                  const newDate =
+                    prev.startDate instanceof Date
+                      ? new Date(prev.startDate)
+                      : new Date();
                   newDate.setHours(hours, minutes, 0, 0);
                   return { ...prev, startDate: newDate };
                 });
@@ -135,8 +213,19 @@ export default function TripSidePanel({
             type="number"
             className={`h-8 text-xs ${errorInputClass("ticketPrice")}`}
             value={formData.ticketPrice ?? ""}
-            onChange={(e) => setFormData((prev) => ({ ...prev, ticketPrice: Number(e.target.value) }))}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                ticketPrice: Number(e.target.value),
+              }));
+              clearError("ticketPrice");
+            }}
           />
+          {isInvalid("ticketPrice") && (
+            <span className="text-xs text-red-500">
+              {getError("ticketPrice")}
+            </span>
+          )}
         </Field>
 
         <Field>
@@ -147,12 +236,20 @@ export default function TripSidePanel({
             onValueChange={(val) => {
               const selected = routes?.find((c) => c.id.toString() === val);
               if (selected) {
-                setFormData((prev) => ({ ...prev, routeId: selected.id, route: selected }));
+                setFormData((prev) => ({
+                  ...prev,
+                  routeId: selected.id,
+                  route: selected,
+                }));
+
+                clearError("routeId");
               }
             }}
             disabled={fetchingRoutes}
           >
-            <SelectTrigger className={`h-8 text-xs ${errorInputClass("routeId")}`}>
+            <SelectTrigger
+              className={`h-8 text-xs ${errorInputClass("routeId")}`}
+            >
               <SelectValue placeholder="اختر خطًا" />
             </SelectTrigger>
             <SelectContent>
@@ -163,10 +260,16 @@ export default function TripSidePanel({
               ))}
             </SelectContent>
           </Select>
+          {isInvalid("routeId") && (
+            <span className="text-xs text-red-500">{getError("routeId")}</span>
+          )}
         </Field>
 
         {/* The Station Schedule List */}
-        <TripStationsList stations={formData.route?.routeStations} startDate={formData.startDate} />
+        <TripStationsList
+          stations={formData.route?.routeStations}
+          startDate={formData.startDate}
+        />
       </FieldGroup>
 
       <div className="mt-8 flex flex-col gap-2">

@@ -19,7 +19,7 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
   const {
     formData, setFormData,
     movingTicket, setMovingTicket,
-    fieldErrors, validate, updateTicketChair,
+    updateTicketChair,
   } = useTripForm(entity, mode);
 
   // Modal States
@@ -90,10 +90,8 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
           entityId={entity?.id}
           formData={formData}
           setFormData={setFormData}
-          fieldErrors={fieldErrors}
           routes={routes?.data}
           fetchingRoutes={fetchingRoutes}
-          validate={validate}
           onSuccess={(trip) => onSuccess?.(trip)}
           mode={mode}
         />
