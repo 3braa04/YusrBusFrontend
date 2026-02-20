@@ -129,7 +129,7 @@ export default function ChangeTripDialog({
           busName: res.data?.busName,
           ticketPrice: res.data?.ticketPrice,
           routeId: res.data?.routeId,
-          startDate: res.data?.startDate,
+          startDate: res.data?.startDate ? new Date(res.data.startDate) : undefined,
           route: res.data?.route,
           tickets: res.data?.tickets,
         });
@@ -175,8 +175,11 @@ export default function ChangeTripDialog({
       </DialogHeader>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-80 shrink-0 border-l bg-muted/40 dark:bg-muted/40 p-4 overflow-y-auto">
-          <FieldGroup className="space-y-4">
+        
+        <aside className="w-80 flex flex-col justify-between shrink-0 border-l bg-muted/40 dark:bg-muted/40 p-4 overflow-y-auto">
+          
+          <FieldGroup>
+
             <Field>
               <Label className="text-xs">رقم الرحلة</Label>
               <Input disabled value={entity?.id} className="h-8 text-xs" />
@@ -217,6 +220,87 @@ export default function ChangeTripDialog({
               />
             </Field>
 
+            <div className="flex gap-2">
+
+              <Field className="flex-1">
+                <Label className="text-xs">تاريخ التحرك</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={`h-8 w-full justify-between text-left text-xs font-normal ${errorInputClass(!!fieldErrors.startDate)}`}
+                    >
+                      {formData.startDate instanceof Date ? (
+                        format(formData.startDate, "yyyy-MM-dd")
+                      ) : (
+                        <span>إختر تاريخا</span>
+                      )}
+                      <ChevronDownIcon className="h-3 w-3 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      captionLayout="dropdown"
+                      selected={formData.startDate instanceof Date ? formData.startDate : undefined}
+                      onSelect={(newDate) => {
+                        if (!newDate) return;
+                        setFormData((prev) => {
+                          const dateWithTime = new Date(newDate);
+                          // Preserve existing time if it was already set
+                          if (prev.startDate instanceof Date) {
+                            dateWithTime.setHours(prev.startDate.getHours(), prev.startDate.getMinutes());
+                          }
+                          return { ...prev, startDate: dateWithTime };
+                        });
+                        clearError("startDate");
+                      }}
+                      locale={arSADayPicker}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </Field>
+
+              <Field className="w-24">
+                <Label className="text-xs">الوقت</Label>
+                <Input
+                  type="time"
+                  className="h-8 text-xs bg-background appearance-none"
+                  // Extracts HH:mm from the Date object for display
+                  value={formData.startDate instanceof Date ? format(formData.startDate, "HH:mm") : ""}
+                  onChange={(e) => {
+                    const timeVal = e.target.value; // e.g. "14:30"
+                    if (!timeVal) return;
+                    
+                    const [hours, minutes] = timeVal.split(":").map(Number);
+                    setFormData((prev) => {
+                      const newDate = prev.startDate instanceof Date ? new Date(prev.startDate) : new Date();
+                      newDate.setHours(hours, minutes, 0, 0);
+                      return { ...prev, startDate: newDate };
+                    });
+                    clearError("startDate");
+                  }}
+                />
+              </Field>
+
+            </div>
+
+            <Field>
+              <Label className="text-xs">مبلغ التذكرة الافتراضي</Label>
+              <Input
+                type="number"
+                className={`h-8 text-xs ${errorInputClass(!!fieldErrors.ticketPrice)}`}
+                value={formData.ticketPrice ?? ""}
+                onChange={(e) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    ticketPrice: Number(e.target.value),
+                  }));
+                  clearError("ticketPrice");
+                }}
+              />
+            </Field>
+
             <Field>
               <Label className="text-xs">الخط</Label>
               <Select
@@ -250,54 +334,50 @@ export default function ChangeTripDialog({
               </Select>
             </Field>
 
-            <Field>
-              <Label className="text-xs">التاريخ</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    data-empty={!formData?.startDate}
-                    className={`data-[empty=true]:text-muted-foreground w-53 justify-between text-left font-normal ${errorInputClass(!!fieldErrors.startDate)}`}
-                  >
-                    {formData?.startDate ? (
-                      format(formData?.startDate, "PPP", { locale: arSA })
-                    ) : (
-                      <span>إختر تاريخا</span>
-                    )}
-                    <ChevronDownIcon />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    captionLayout="dropdown"
-                    mode="single"
-                    selected={formData?.startDate}
-                    onSelect={(date) => {
-                      setFormData((prev) => ({ ...prev, startDate: date }));
-                      clearError("startDate");
-                    }}
-                    defaultMonth={formData?.startDate}
-                    locale={arSADayPicker}
-                  />
-                </PopoverContent>
-              </Popover>
-            </Field>
+            {(() => {
+              return (
+                <div className="mt-3 space-y-2">
+                  <h3 className="text-sm font-bold border-b pb-1">
+                    جدول محطات الرحلة
+                  </h3>
+                  
+                  {formData.route?.routeStations
+                    .slice()
+                    .sort((a, b) => a.index - b.index)
+                    .map((station, idx) => {
 
-            <Field>
-              <Label className="text-xs">مبلغ التذكرة الافتراضي</Label>
-              <Input
-                type="number"
-                className={`h-8 text-xs ${errorInputClass(!!fieldErrors.ticketPrice)}`}
-                value={formData.ticketPrice ?? ""}
-                onChange={(e) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    ticketPrice: Number(e.target.value),
-                  }));
-                  clearError("ticketPrice");
-                }}
-              />
-            </Field>
+                      const periodInMs = (station.period || 0) * 60 * 60 * 1000;
+                      let arrivalDate = new Date((formData.startDate?.getTime() ?? new Date().getTime()) + periodInMs);
+
+                      const dateDisplay = format(arrivalDate, "yyyy-MM-dd");
+                      const timeDisplay = arrivalDate.toLocaleTimeString('ar-SA-u-nu-latn', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                      });
+
+                      return (
+                        <div key={station.cityId || idx} className="flex justify-between items-center p-2 bg-muted/30 rounded-lg border border-border">
+                          <div className="flex items-center gap-3">
+                            <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
+                              {idx + 1}
+                            </div>
+                            <span className="text-xs font-medium">{station.cityName}</span>
+                          </div>
+                          
+                          <div className="text-left">
+                            <span className="text-[10px] text-muted-foreground block">الوصول المتوقع</span>
+                            <span className="text-[9px] font-bold text-emerald-600 tabular-nums">
+                              {dateDisplay} <span className="mx-1 text-muted-foreground">|</span> {timeDisplay}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              );
+            })()}
+
           </FieldGroup>
 
           <div className="mt-8 flex flex-col gap-2">
@@ -314,6 +394,7 @@ export default function ChangeTripDialog({
               </Button>
             </DialogClose>
           </div>
+
         </aside>
 
         <main className="flex-1 p-6 overflow-auto flex items-center justify-center bg-background">

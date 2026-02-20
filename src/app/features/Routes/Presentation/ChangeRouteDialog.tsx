@@ -259,7 +259,7 @@ export default function ChangeRouteDialog({
             {(formData.routeStations?.length ?? 0) > 0 && (
               <div className="flex gap-3 px-3 mb-1 text-muted-foreground text-xs font-medium">
                 <div className="flex-1">المدينة</div>
-                <div>مدة الوصول (دقيقة)</div>
+                <div>مدة الوصول (ساعة)</div>
                 <div className="w-10">{/* Empty for trash icon */}</div>
               </div>
             )}
@@ -311,10 +311,10 @@ export default function ChangeRouteDialog({
 
                     <Field className="w-24">
                       <Input
-                        type="number"
+                        type="number" step="0.1"
                         value={station.period ?? ""}
                         onChange={(e) =>
-                          updateStation(index, "period", parseInt(e.target.value) || 0)
+                          updateStation(index, "period", parseFloat(e.target.value) || 0)
                         }
                         className={
                           (station.period ?? 0) <= 0 && fieldErrors.stations
