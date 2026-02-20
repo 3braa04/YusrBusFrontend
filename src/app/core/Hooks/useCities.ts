@@ -1,6 +1,8 @@
 import type { City } from "@/app/core/Data/City";
 import CitiesApiService from "@/app/core/Networking/Services/CitiesApiService";
 import { useEffect, useState } from "react";
+import type { Currency } from "../Data/Currency";
+import CurrenciesApiService from "../Networking/Services/CurrenciesApiService";
 
 export default function useCities() {
   const [cities, setCities] = useState<City[]>([]);

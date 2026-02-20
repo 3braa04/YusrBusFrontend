@@ -15,6 +15,7 @@ import TripsPage from "./features/Trips/Presentation/TripsPage";
 import UsersPage from "./features/Users/Presentation/UsersPage";
 import Testing from "./test";
 import { ThemeProvider } from "./core/components/theme/themeProvider";
+import SettingPage from "./features/Setting/SettingPage";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -46,7 +47,7 @@ function AppBody() {
               <Route path="/routes" element={<RoutesPage/>} />
               <Route path="/branches" element={<BranchesPage/>} />
               <Route path="/users" element={<UsersPage/>} />
-              <Route path="/settings" element={<h1>settings is working!</h1>} />
+              <Route path="/settings" element={<SettingPage/>} />
 
               <Route path={RoutesService.Profile} element={ <PrfilePage/> }/>
             </Route>

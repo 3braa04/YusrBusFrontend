@@ -1,4 +1,6 @@
-export class Currency
+import { BaseEntity } from "./BaseEntity";
+
+export class Currency extends BaseEntity
 {
     public name! : string;
     public code! : string;
@@ -8,5 +10,5 @@ export class Currency
     public subIsFeminine! : boolean;
     public subPlural! : string;
 
-    constructor(init?: Partial<Currency>) { Object.assign(this, init); }
+    constructor(init?: Partial<Currency>) { super(); Object.assign(this, init); }
 }
