@@ -1,8 +1,8 @@
 import { Setting } from "@/app/core/Data/Setting";
 import useCurrencies from "@/app/core/Hooks/useCurrencies";
 import {
-  useFormValidation,
-  type ValidationRule,
+    useFormValidation,
+    type ValidationRule,
 } from "@/app/core/Hooks/useFormValidation";
 import useStorageFile from "@/app/core/Hooks/useStorageFile";
 import SettingsApiService from "@/app/core/Networking/Services/SettingsApiService";
@@ -10,21 +10,21 @@ import { Validators } from "@/app/core/utils/Validators";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { differenceInDays, format } from "date-fns";
@@ -184,13 +184,13 @@ export default function SettingPage() {
                     value={formData.companyName || ""}
                     onChange={(e) => {
                         setFormData({ ...formData, companyName: e.target.value });
-                        clearError("CompanyName");
+                        clearError("companyName");
                     }}
-                    className={errorInputClass("CompanyName")}
+                    className={errorInputClass("companyName")}
                     />
-                    {isInvalid("CompanyName") && (
+                    {isInvalid("companyName") && (
                     <span className="text-xs text-destructive">
-                        {getError("CompanyName")}
+                        {getError("companyName")}
                     </span>
                     )}
                 </Field>
@@ -201,13 +201,13 @@ export default function SettingPage() {
                     value={formData.companyPhone || ""}
                     onChange={(e) => {
                         setFormData({ ...formData, companyPhone: e.target.value });
-                        clearError("CompanyPhone");
+                        clearError("companyPhone");
                     }}
-                    className={errorInputClass("CompanyPhone")}
+                    className={errorInputClass("companyPhone")}
                     />
-                    {isInvalid("CompanyPhone") && (
+                    {isInvalid("companyPhone") && (
                     <span className="text-xs text-destructive">
-                        {getError("CompanyPhone")}
+                        {getError("companyPhone")}
                     </span>
                     )}
                 </Field>
@@ -220,13 +220,13 @@ export default function SettingPage() {
                     value={formData.email || ""}
                     onChange={(e) => {
                         setFormData({ ...formData, email: e.target.value });
-                        clearError("Email");
+                        clearError("email");
                     }}
-                    className={errorInputClass("Email")}
+                    className={errorInputClass("email")}
                     />
-                    {isInvalid("Email") && (
+                    {isInvalid("email") && (
                     <span className="text-xs text-destructive">
-                        {getError("Email")}
+                        {getError("email")}
                     </span>
                     )}
                 </Field>
@@ -246,12 +246,12 @@ export default function SettingPage() {
                             fromCityId: selected.id,
                             fromCityName: selected.name,
                         }));
-                        clearError("fromCityId");
+                        clearError("currencyId");
                         }
                     }}
                     disabled={fetchingCurrencies}
                     >
-                    <SelectTrigger className={errorInputClass("fromCityId")}>
+                    <SelectTrigger className={errorInputClass("currencyId")}>
                         <SelectValue placeholder="اختر العملة" />
                     </SelectTrigger>
                     <SelectContent>
@@ -265,9 +265,9 @@ export default function SettingPage() {
                         ))}
                     </SelectContent>
                     </Select>
-                    {isInvalid("fromCityId") && (
+                    {isInvalid("currencyId") && (
                     <span className="text-xs text-destructive">
-                        {getError("fromCityId")}
+                        {getError("currencyId")}
                     </span>
                     )}
                 </Field>
