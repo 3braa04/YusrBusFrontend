@@ -37,7 +37,7 @@ type ChangeTicketDialogProps = {
   entity?: Ticket;
   passengers?: Passenger[];
   onPassengerDialogClicked?: (passenger?: Passenger) => void;
-  onSuccess?: (newData?: Ticket) => void;
+  onSuccess?: (newData: Ticket) => void;
 };
 
 export default function ChangeTicketDialog({
@@ -73,7 +73,7 @@ export default function ChangeTicketDialog({
     return Object.keys(errors).length === 0;
   };
 
-  function onSaveHandler() {
+  function onSaveHandler() {    
     if (!validate()) return; // stop if invalid
     onSuccess?.(formData as Ticket);
   }
