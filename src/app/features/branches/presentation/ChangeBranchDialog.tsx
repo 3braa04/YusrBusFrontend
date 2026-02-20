@@ -1,5 +1,7 @@
 import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
+import { useFormValidation, type ValidationRule } from "@/app/core/Hooks/useFormValidation";
 import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
+import { Validators } from "@/app/core/utils/Validators";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -38,21 +40,23 @@ export default function ChangeBranchDialog({
 
   const { cities, fetchingCities } = useCities();
 
-  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+  const validationRules: ValidationRule<Partial<Branch>>[] = [
+    {
+      field: "name",
+      selector: (d) => d.name,
+      validators: [Validators.required("يرجى إدخال اسم الفرع")],
+    },
+    {
+      field: "cityId",
+      selector: (d) => d.cityId,
+      validators: [Validators.required("يرجى إدخال موقع الفرع")],
+    },
+  ];
 
-  const clearError = (field: string) => {
-    setFieldErrors((prev) => ({ ...prev, [field]: false }));
-  };
-  const validate = (): boolean => {
-    const errors: Record<string, boolean> = {};
-
-    if (!formData.name) errors.name = true;
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const errorInputClass = (hasError: boolean) =>
-    hasError ? "border-red-500 ring-red-500" : "";
+  const { getError, isInvalid, validate, clearError, errorInputClass } = useFormValidation(
+    formData,
+    validationRules,
+  );
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-sm">
@@ -85,8 +89,11 @@ export default function ChangeBranchDialog({
               setFormData({ ...formData, name: e.target.value });
               clearError("name");
             }}
-            className={errorInputClass(!!fieldErrors.name)}
+            className={errorInputClass("name")}
           />
+          {isInvalid("name") && (
+            <span className="text-xs text-red-500">{getError("name")}</span>
+          )}
         </Field>
 
         <Field>
@@ -96,11 +103,11 @@ export default function ChangeBranchDialog({
             defaultValue={formData.cityId?.toString()}
             onValueChange={(val) => {
               setFormData({ ...formData, cityId: Number(val) });
-              clearError("cityName");
+              clearError("cityId");
             }}
             disabled={fetchingCities}
           >
-            <SelectTrigger className={errorInputClass(!!fieldErrors.cityName)}>
+            <SelectTrigger className={errorInputClass("cityId")}>
               <SelectValue placeholder="اختر المدينة" />
             </SelectTrigger>
             <SelectContent>
@@ -111,6 +118,9 @@ export default function ChangeBranchDialog({
               ))}
             </SelectContent>
           </Select>
+          {isInvalid("cityId") && (
+            <span className="text-xs text-red-500">{getError("cityId")}</span>
+          )}
         </Field>
       </FieldGroup>
 
