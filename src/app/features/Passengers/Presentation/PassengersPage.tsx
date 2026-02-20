@@ -17,7 +17,7 @@ import ChangePassengerDialog from "./ChangePassengerDialog";
 import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 
 export default function PassengersPage() {
-  const { entities, refreash, isLoading } = useEntities<Passenger>(
+  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Passenger>(
     new PassengersApiService(),
   );
   const {
@@ -115,7 +115,7 @@ export default function PassengersPage() {
             </TableBody>
           </Table>
         )}
-        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
+        <TablePagination pageSize={3} totalNumber={entities?.count ?? 0} currentPage={currentPage || 1} onPageChanged={setCurrentPage} />
 
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

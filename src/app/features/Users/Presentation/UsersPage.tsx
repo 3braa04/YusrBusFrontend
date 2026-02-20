@@ -17,7 +17,7 @@ import ChangeUserDialog from "./ChangeUserDialog";
 import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 
 export default function UsersPage() {
-  const { entities, refreash, isLoading } = useEntities<User>(
+  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<User>(
     new UsersApiService(),
   );
 
@@ -105,7 +105,7 @@ export default function UsersPage() {
             </TableBody>
           </Table>
         }
-        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
+        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} currentPage={currentPage || 1} onPageChanged={setCurrentPage} />
 
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

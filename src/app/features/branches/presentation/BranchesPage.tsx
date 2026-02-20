@@ -17,7 +17,7 @@ import ChangeBranchDialog from "./ChangeBranchDialog";
 import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 
 export default function BranchesPage() {
-  const { entities, refreash, isLoading } = useEntities<Branch>(
+  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Branch>(
     new BranchesApiService(),
   );
   const {
@@ -111,7 +111,7 @@ export default function BranchesPage() {
             </TableBody>
           </Table>
         )}
-        <TablePagination pageSize={100} totalNumber={entities?.count ?? 0} />
+        <TablePagination pageSize={100} totalNumber={entities?.count ?? 0} currentPage={currentPage || 1} onPageChanged={setCurrentPage} />
 
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

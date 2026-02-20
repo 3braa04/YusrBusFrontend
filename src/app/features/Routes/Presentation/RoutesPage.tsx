@@ -17,7 +17,7 @@ import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
 import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 
 export default function RoutesPage() {
-  const { entities, refreash, isLoading } = useEntities<Route>(
+  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Route>(
     new RoutesApiService(),
   );
   const {
@@ -117,7 +117,7 @@ export default function RoutesPage() {
             </TableBody>
           </Table>
         )}
-        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
+        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} currentPage={currentPage || 1} onPageChanged={setCurrentPage} />
 
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

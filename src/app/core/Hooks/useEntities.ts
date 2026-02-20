@@ -6,17 +6,20 @@ import BaseApiService from "../Networking/BaseApiService";
 export default function useEntities<T extends BaseEntity>(service: BaseApiService<T>) 
 {
   const [entities, setEntities] = useState<FilterResult<T>>();
-  const [isLoading, setLoading] = useState(false)
+  const [isLoading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
+
   useEffect(() => {
     const dataFetch = async () => {
       setLoading(true);
-      const result = await service.Filter(1, 100);
+      const result = await service.Filter(currentPage, rowsPerPage);
       setLoading(false);
 
       if (result.data) setEntities(result.data);
     };
     dataFetch();
-  }, []);
+  }, [currentPage, rowsPerPage]);
 
   const refreash = (newData?: T, deletedId?: number) => 
   {
@@ -55,5 +58,5 @@ export default function useEntities<T extends BaseEntity>(service: BaseApiServic
     }   
   };
 
-  return {entities, refreash, isLoading};
+  return {entities, refreash, isLoading, currentPage, setCurrentPage, setRowsPerPage};
 }

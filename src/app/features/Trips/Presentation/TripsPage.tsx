@@ -17,7 +17,7 @@ import type { Trip } from "../Data/Trip";
 import ChangeTripDialog from "./ChangeTripDialog";
 
 export default function TripsPage() {
-  const { entities, refreash, isLoading } = useEntities<Trip>(
+  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(
     new TripsApiService(),
   );
   const {
@@ -115,7 +115,7 @@ export default function TripsPage() {
             </TableBody>
           </Table>
         )}
-        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} />
+        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} currentPage={currentPage || 1} onPageChanged={setCurrentPage} />
 
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
