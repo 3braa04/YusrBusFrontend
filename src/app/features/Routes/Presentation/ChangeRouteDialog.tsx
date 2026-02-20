@@ -1,7 +1,12 @@
 import SaveButton from "@/app/core/components/Buttons/SaveButton";
 import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
 import useCities from "@/app/core/Hooks/useCities";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/Hooks/useFormValidation";
 import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
+import { Validators } from "@/app/core/utils/Validators";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -62,43 +67,6 @@ export default function ChangeRouteDialog({
 
   const { cities, fetchingCities } = useCities();
 
-  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
-
-  const clearError = (field: string) => {
-    setFieldErrors((prev) => ({ ...prev, [field]: false }));
-  };
-
-  const validate = (): boolean => {
-    const errors: Record<string, boolean> = {};
-
-    // Route name
-    if (!formData.name?.trim()) errors.name = true;
-
-    // From city
-    if (!formData.fromCityId) errors.fromCityId = true;
-
-    // To city
-    if (!formData.toCityId) errors.toCityId = true;
-
-    // Stations
-    const stations = formData.routeStations || [];
-    if (stations.length === 0) {
-      errors.stations = true;
-    } else {
-      // Check each station has city and period > 0
-      const hasInvalidStation = stations.some(
-        (station) => !station.cityId || (station.period ?? 0) <= 0
-      );
-      if (hasInvalidStation) errors.stations = true;
-    }
-
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const errorInputClass = (hasError: boolean) =>
-    hasError ? "border-red-500 ring-red-500" : "";
-
   const addStation = () => {
     const newStation = new RouteStation({
       index: (formData.routeStations?.length || 0) + 1,
@@ -126,7 +94,7 @@ export default function ChangeRouteDialog({
   const updateStation = (
     index: number,
     field: keyof RouteStation,
-    value: unknown
+    value: unknown,
   ) => {
     setFormData((prev) => {
       const updatedStations = [...(prev.routeStations || [])];
@@ -139,8 +107,40 @@ export default function ChangeRouteDialog({
         routeStations: updatedStations,
       };
     });
-    clearError("stations");
+    clearError(field);
   };
+
+  const validationRules: ValidationRule<Partial<Route>>[] = [
+    {
+      field: "name",
+      selector: (d) => d.name,
+      validators: [Validators.required("يرجى إدخال اسم الخط")],
+    },
+    {
+      field: "fromCityId",
+      selector: (d) => d.fromCityId,
+      validators: [Validators.required("يرجى اختيار مدينة الانطلاق")],
+    },
+    {
+      field: "toCityId",
+      selector: (d) => d.toCityId,
+      validators: [Validators.required("يرجى اختيار مدينة الوصول")],
+    },
+    {
+      field: "stations",
+      selector: (d) => d.routeStations,
+      validators: [
+        Validators.custom<RouteStation[]>((stations) => {
+          return stations.every((s) => s.cityId && (s.period ?? 0) > 0);
+        }, "يجب تحديد المدينة والمدة (أكبر من 0) لجميع المحطات"),
+      ],
+    },
+  ];
+
+  const { getError, isInvalid, validate, clearError, errorInputClass } = useFormValidation(
+    formData,
+    validationRules,
+  );
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-xl">
@@ -165,8 +165,11 @@ export default function ChangeRouteDialog({
               setFormData((prev) => ({ ...prev, name: e.target.value }));
               clearError("name");
             }}
-            className={errorInputClass(!!fieldErrors.name)}
+            className={errorInputClass("name")}
           />
+          {isInvalid("name") && (
+            <span className="text-xs text-red-500">{getError("name")}</span>
+          )}
         </Field>
 
         <div className="flex gap-3">
@@ -177,7 +180,7 @@ export default function ChangeRouteDialog({
               value={formData.fromCityId?.toString() || ""}
               onValueChange={(val) => {
                 const selectedCity = cities.find(
-                  (c) => c.id.toString() === val
+                  (c) => c.id.toString() === val,
                 );
                 if (selectedCity) {
                   setFormData((prev) => ({
@@ -190,9 +193,7 @@ export default function ChangeRouteDialog({
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger
-                className={errorInputClass(!!fieldErrors.fromCityId)}
-              >
+              <SelectTrigger className={errorInputClass("fromCityId")}>
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -203,6 +204,11 @@ export default function ChangeRouteDialog({
                 ))}
               </SelectContent>
             </Select>
+            {isInvalid("fromCityId") && (
+              <span className="text-xs text-red-500">
+                {getError("fromCityId")}
+              </span>
+            )}
           </Field>
 
           <Field>
@@ -212,7 +218,7 @@ export default function ChangeRouteDialog({
               value={formData.toCityId?.toString() || ""}
               onValueChange={(val) => {
                 const selectedCity = cities.find(
-                  (c) => c.id.toString() === val
+                  (c) => c.id.toString() === val,
                 );
                 if (selectedCity) {
                   setFormData((prev) => ({
@@ -225,7 +231,7 @@ export default function ChangeRouteDialog({
               }}
               disabled={fetchingCities}
             >
-              <SelectTrigger className={errorInputClass(!!fieldErrors.toCityId)}>
+              <SelectTrigger className={errorInputClass("toCityId")}>
                 <SelectValue placeholder="اختر المدينة" />
               </SelectTrigger>
               <SelectContent>
@@ -236,6 +242,7 @@ export default function ChangeRouteDialog({
                 ))}
               </SelectContent>
             </Select>
+            {isInvalid("toCityId") && <span className="text-xs text-red-500">{getError("toCityId")}</span>}
           </Field>
         </div>
 
@@ -254,8 +261,7 @@ export default function ChangeRouteDialog({
             </Button>
           </div>
 
-          {/* Stations container with possible error border */}
-          <div className={errorInputClass(!!fieldErrors.stations)}>
+          <div className={isInvalid("stations") ? "border border-red-600 rounded-md p-2" : ""}>
             {(formData.routeStations?.length ?? 0) > 0 && (
               <div className="flex gap-3 px-3 mb-1 text-muted-foreground text-xs font-medium">
                 <div className="flex-1">المدينة</div>
@@ -270,78 +276,88 @@ export default function ChangeRouteDialog({
               </p>
             ) : (
               <div className="space-y-2">
-                {formData.routeStations?.map((station, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-2 border rounded-md hover:bg-secondary/5 transition-colors"
-                  >
-                    <Field className="flex-1 cursor-pointer">
-                      <Select
-                        dir="rtl"
-                        value={station.cityId?.toString() || ""}
-                        onValueChange={(val) => {
-                          updateStation(index, "cityId", Number(val));
-                          // Also update cityName for display
-                          const city = cities.find((c) => c.id.toString() === val);
-                          if (city) {
-                            updateStation(index, "cityName", city.name);
-                          }
-                        }}
-                        disabled={fetchingCities}
-                      >
-                        <SelectTrigger
-                          // Optionally highlight if this station is invalid
+                {formData.routeStations?.map((station, index) => {
+                  const hasGlobalError = isInvalid("stations");
+                  const isCityMissing = !station.cityId;
+                  const isPeriodInvalid = (station.period ?? 0) <= 0;
+
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-2 border rounded-md hover:bg-secondary/5 transition-colors"
+                    >
+                      <Field className="flex-1 cursor-pointer">
+                        <Select
+                          dir="rtl"
+                          value={station.cityId?.toString() || ""}
+                          onValueChange={(val) => {
+                            updateStation(index, "cityId", Number(val));
+                            const city = cities.find((c) => c.id.toString() === val);
+                            if (city) {
+                              updateStation(index, "cityName", city.name);
+                            }
+                            if (hasGlobalError) 
+                              clearError("stations");
+                          }}
+                          disabled={fetchingCities}
+                        >
+                          <SelectTrigger
+                            className={
+                              hasGlobalError && isCityMissing
+                                ? "border-red-500 ring-red-500 text-red-900"
+                                : ""
+                            }
+                          >
+                            <SelectValue placeholder="اختر المدينة" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {cities.map((city) => (
+                              <SelectItem key={city.id} value={city.id.toString()}>
+                                {city.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+
+                      <Field className="w-24">
+                        <Input
+                          type="number"
+                          step="0.1"
+                          value={station.period ?? ""}
+                          onChange={(e) => {
+                            updateStation(
+                              index,
+                              "period",
+                              parseFloat(e.target.value) || 0
+                            );
+                            if (hasGlobalError) 
+                              clearError("stations");
+                          }}
                           className={
-                            !station.cityId && fieldErrors.stations
-                              ? "border-red-500 ring-red-500"
+                            hasGlobalError && isPeriodInvalid
+                              ? "border-red-500 ring-red-500 text-red-900"
                               : ""
                           }
-                        >
-                          <SelectValue placeholder="اختر المدينة" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {cities.map((city) => (
-                            <SelectItem key={city.id} value={city.id.toString()}>
-                              {city.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
+                        />
+                      </Field>
 
-                    <Field className="w-24">
-                      <Input
-                        type="number" step="0.1"
-                        value={station.period ?? ""}
-                        onChange={(e) =>
-                          updateStation(index, "period", parseFloat(e.target.value) || 0)
-                        }
-                        className={
-                          (station.period ?? 0) <= 0 && fieldErrors.stations
-                            ? "border-red-500 ring-red-500"
-                            : ""
-                        }
-                      />
-                    </Field>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-10 text-destructive hover:bg-destructive/10"
+                        onClick={() => removeStation(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  );
+                })}
 
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-10 text-destructive hover:bg-destructive/10"
-                      onClick={() => removeStation(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
               </div>
             )}
           </div>
-          {fieldErrors.stations && (
-            <p className="text-xs text-red-500 mt-1">
-              يجب إضافة محطة واحدة على الأقل مع تحديد المدينة والمدة (أكبر من 0)
-            </p>
-          )}
+          {isInvalid("stations") && <p className="text-xs text-red-500 font-bold mt-2">{getError("stations")}</p>}
         </div>
       </FieldGroup>
 
