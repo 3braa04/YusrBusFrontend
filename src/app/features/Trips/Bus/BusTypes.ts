@@ -11,6 +11,7 @@ export interface SeatProps {
   onClick: (seat: SeatType) => void;
   highlighted?: boolean;
   isDimmed?: boolean;
+  onDeleteTicket?: (ticketId: number) => void;
   onHoverData?: (type: 'nationality' | 'from' | 'to' | 'amount' | null, value?: string) => void;
 }
 
@@ -18,5 +19,6 @@ export interface BusProps {
   seats: SeatType[];
   tickets: Ticket[];
   onSeatClick: (seat: SeatType) => void;
+  onDeleteTicket?: (ticketId: number) => void;
   lastRowFull?: boolean; // If true, the back of the bus has 5 seats (no aisle)
 }

@@ -8,6 +8,7 @@ export default function BusLayout({
   seats,
   tickets,
   onSeatClick,
+  onDeleteTicket,
   lastRowFull = false,
 }: BusProps) {
   // --- State for Highlighting ---
@@ -70,6 +71,7 @@ export default function BusLayout({
         seat={seat} 
         ticket={ticket} 
         onClick={onSeatClick}
+        onDeleteTicket={onDeleteTicket}
         highlighted={isHighlighted}
         isDimmed={isDimmed}
         onHoverData={handleHover}

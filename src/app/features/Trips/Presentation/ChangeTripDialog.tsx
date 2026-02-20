@@ -1,6 +1,7 @@
 import SaveButton from "@/app/core/components/Buttons/SaveButton";
 import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
 import useEntities from "@/app/core/Hooks/useEntities";
+import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
 import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
 import TripsApiService from "@/app/core/Networking/Services/TripsApiService";
 import { Button } from "@/components/ui/button";
@@ -29,19 +30,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { format } from "date-fns";
-import { arSA } from "date-fns/locale";
 import { ChevronDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
+import type { Passenger } from "../../Passengers/Data/Passenger";
+import ChangePassengerDialog from "../../Passengers/Presentation/ChangePassengerDialog";
 import type { Route } from "../../Routes/Data/Route";
 import Bus from "../Bus/Bus";
 import type { SeatType } from "../Bus/BusTypes";
 import { Ticket } from "../Data/Ticket";
 import type { Trip } from "../Data/Trip";
 import ChangeTicketDialog from "./ChangeTicketDialog";
-import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
-import type { Passenger } from "../../Passengers/Data/Passenger";
-import ChangePassengerDialog from "../../Passengers/Presentation/ChangePassengerDialog";
 
 export default function ChangeTripDialog({
   entity,
@@ -82,6 +81,13 @@ export default function ChangeTripDialog({
 
     setSelectedTicket(ticket);
     setIsTicketDialogOpen(true);
+  };
+
+  const deleteTicket = (ticketId: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      tickets: prev.tickets?.filter((t) => t.id !== ticketId),
+    }));
   };
 
   const { entities: routes, isLoading: fetchingRoutes } = useEntities<Route>(new RoutesApiService());
@@ -346,8 +352,9 @@ export default function ChangeTripDialog({
                     .sort((a, b) => a.index - b.index)
                     .map((station, idx) => {
 
+                      const baseDate = formData.startDate ? new Date(formData.startDate) : new Date();
                       const periodInMs = (station.period || 0) * 60 * 60 * 1000;
-                      let arrivalDate = new Date((formData.startDate?.getTime() ?? new Date().getTime()) + periodInMs);
+                      let arrivalDate = new Date(baseDate.getTime() + periodInMs);
 
                       const dateDisplay = format(arrivalDate, "yyyy-MM-dd");
                       const timeDisplay = arrivalDate.toLocaleTimeString('ar-SA-u-nu-latn', {
@@ -357,7 +364,7 @@ export default function ChangeTripDialog({
                       });
 
                       return (
-                        <div key={station.cityId || idx} className="flex justify-between items-center p-2 bg-muted/30 rounded-lg border border-border">
+                        <div key={idx} className="flex justify-between items-center p-2 bg-muted/30 rounded-lg border border-border">
                           <div className="flex items-center gap-3">
                             <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
                               {idx + 1}
@@ -401,6 +408,7 @@ export default function ChangeTripDialog({
           <Bus
             seats={seats}
             tickets={formData.tickets ?? []}
+            onDeleteTicket={deleteTicket}
             onSeatClick={openTicketDialog}
             lastRowFull
           />
