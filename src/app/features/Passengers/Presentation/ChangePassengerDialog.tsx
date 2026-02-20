@@ -34,6 +34,11 @@ import { arSA as arSADayPicker } from "react-day-picker/locale";
 import type { Gender, Passenger } from "../Data/Passenger";
 import SaveButton from "@/app/core/components/Buttons/SaveButton";
 import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/Hooks/useFormValidation";
+import { Validators } from "@/app/core/utils/Validators";
 
 export default function ChangePassengerDialog({
   entity,
@@ -43,26 +48,31 @@ export default function ChangePassengerDialog({
   const [formData, setFormData] = useState<Partial<Passenger>>(entity || {});
   const { countries, fetchingCountries } = useCountries();
 
-  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+  const validationRules: ValidationRule<Partial<Passenger>>[] = [
+    {
+      field: "name",
+      selector: (d) => d.name,
+      validators: [Validators.required("يرجى ادخال اسم الراكب")],
+    },
+    {
+      field: "nationalityId",
+      selector: (d) => d.nationalityId,
+      validators: [Validators.required("يرجى اختيار الجنسية")],
+    },
+    {
+      field: "gender",
+      selector: (d) => d.gender,
+      validators: [Validators.required("يرجى ادخال الجنس")],
+    },
+    {
+      field: "passportNo",
+      selector: (d) => d.passportNo,
+      validators: [Validators.required("يرجى ادخال بيانات جواز السفر")],
+    },
+  ];
 
-  const clearError = (field: string) => {
-    setFieldErrors((prev) => ({ ...prev, [field]: false }));
-  };
-  const validate = (): boolean => {
-    const errors: Record<string, boolean> = {};
-
-    if (!formData.name?.trim()) errors.name = true;
-    if (formData.gender === undefined) errors.gender = true;
-    if (!formData.nationalityId) errors.nationalityId = true;
-    if (!formData.passportNo?.trim()) errors.passportNo = true;
-
-    setFieldErrors(errors);
-
-    return Object.keys(errors).length === 0;
-  };
-
-  const errorInputClass = (hasError: boolean) =>
-    hasError ? "border-red-500 ring-red-500" : "";
+  const { getError, isInvalid, validate, clearError, errorInputClass } =
+    useFormValidation(formData, validationRules);
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-xl">
@@ -87,8 +97,11 @@ export default function ChangePassengerDialog({
               setFormData((prev) => ({ ...prev, name: e.target.value }));
               clearError("name");
             }}
-            className={errorInputClass(!!fieldErrors.name)}
+            className={errorInputClass("name")}
           />
+          {isInvalid("name") && (
+            <span className="text-xs text-red-500">{getError("name")}</span>
+          )}
         </Field>
 
         <div className="flex gap-3">
@@ -105,7 +118,7 @@ export default function ChangePassengerDialog({
                 clearError("gender");
               }}
             >
-              <SelectTrigger className={errorInputClass(!!fieldErrors.gender)}>
+              <SelectTrigger className={errorInputClass("gender")}>
                 <SelectValue placeholder="اختر" />
               </SelectTrigger>
               <SelectContent>
@@ -113,6 +126,9 @@ export default function ChangePassengerDialog({
                 <SelectItem value="1">أنثى</SelectItem>
               </SelectContent>
             </Select>
+            {isInvalid("gender") && (
+              <span className="text-xs text-red-500">{getError("gender")}</span>
+            )}
           </Field>
 
           <Field>
@@ -146,6 +162,11 @@ export default function ChangePassengerDialog({
                 ))}
               </SelectContent>
             </Select>
+            {isInvalid("nationalityId") && (
+              <span className="text-xs text-red-500">
+                {getError("nationalityId")}
+              </span>
+            )}
           </Field>
         </div>
 
@@ -214,8 +235,13 @@ export default function ChangePassengerDialog({
               setFormData((prev) => ({ ...prev, passportNo: e.target.value }));
               clearError("passportNo");
             }}
-            className={errorInputClass(!!fieldErrors.passportNo)}
+            className={errorInputClass("passportNo")}
           />
+          {isInvalid("passportNo") && (
+            <span className="text-xs text-red-500">
+              {getError("passportNo")}
+            </span>
+          )}
         </Field>
 
         <div className="flex gap-3">
@@ -282,7 +308,7 @@ export default function ChangePassengerDialog({
           service={new PassengersApiService()}
           disable={() => fetchingCountries}
           onSuccess={onSuccess}
-          validation={validate} 
+          validation={validate}
         />
       </DialogFooter>
     </DialogContent>
