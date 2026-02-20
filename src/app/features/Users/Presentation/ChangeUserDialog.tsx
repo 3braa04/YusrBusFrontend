@@ -23,6 +23,8 @@ import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/Cumm
 import UsersApiService from "@/app/core/Networking/Services/UsersApiService";
 import SaveButton from "@/app/core/components/Buttons/SaveButton";
 import { useState } from "react";
+import { useFormValidation, type ValidationRule } from "@/app/core/Hooks/useFormValidation";
+import { Validators } from "@/app/core/utils/Validators";
 
 export default function ChangeUserDialog({
   entity,
@@ -36,23 +38,15 @@ export default function ChangeUserDialog({
     permissions: entity?.permissions || 0,
   });
 
-  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
-
-  const clearError = (field: string) => {
-    setFieldErrors((prev) => ({ ...prev, [field]: false }));
-  };
-  const validate = (): boolean => {
-    const errors: Record<string, boolean> = {};
-
-    if (!formData.username) errors.username = true;
-    if (!formData.isActive) errors.isActive = true;    
-    setFieldErrors(errors);
-    
-    return Object.keys(errors).length === 0;
-  };
-
-  const errorInputClass = (hasError: boolean) =>
-    hasError ? "border-red-500 ring-red-500" : "";
+  const validationRules: ValidationRule<Partial<User>>[] = [
+    {
+      field: "username",
+      selector: (d) => d.username,
+      validators: [Validators.required("يرجى اختيار اسم المستخدم")],
+    },
+  ];
+  const { getError, isInvalid, validate, clearError, errorInputClass } =
+    useFormValidation(formData, validationRules);
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-xl">
@@ -79,8 +73,11 @@ export default function ChangeUserDialog({
               setFormData({ ...formData, username: e.target.value });
               clearError("username");
             }}
-            className={errorInputClass(!!fieldErrors.username)}
+            className={errorInputClass("useranme")}
           />
+          {isInvalid("username") && (
+            <span className="text-xs text-red-500">{getError("username")}</span>
+          )}
         </Field>
 
         <Field>
@@ -110,7 +107,7 @@ export default function ChangeUserDialog({
         <DialogClose asChild>
           <Button variant="outline">إلغاء</Button>
         </DialogClose>
-        
+
         <SaveButton
           formData={formData as User}
           dialogMode={mode}
