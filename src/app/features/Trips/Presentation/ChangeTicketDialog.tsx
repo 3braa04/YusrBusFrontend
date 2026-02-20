@@ -28,7 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import { ChevronDownIcon, Edit, PlusCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
 import type { Passenger } from "../../Passengers/Data/Passenger";
 import type { Ticket } from "../Data/Ticket";
@@ -49,6 +49,12 @@ export default function ChangeTicketDialog({
   const [formData, setFormData] = useState<Partial<Ticket>>(entity || {});
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
   const { cities, fetchingCities } = useCities();
+
+  useEffect(() => {
+    if(entity){
+      setFormData(entity);
+    }
+  }, [entity]);
 
   // Helper to clear a specific field error
   const clearError = (field: string) => {
