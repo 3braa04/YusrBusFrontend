@@ -83,11 +83,6 @@ export default function ChangeTicketDialog({
       validators: [Validators.min(0, "يرجى ادخال المبلغ المطلوب دفعه")],
     },
     {
-      field: "paidAmount",
-      selector: (d) => d.paidAmount,
-      validators: [Validators.min(0, "يرجى ادخال المبلغ المدفوع")],
-    },
-    {
       field: "issueDate",
       selector: (d) => d.issueDate,
       validators: [Validators.required("يرجى ادخال تاريخ الاصدار")],
@@ -295,16 +290,9 @@ export default function ChangeTicketDialog({
                   ...prev,
                   paidAmount: Number(e.target.value),
                 }));
-                clearError("paidAmount");
               }}
-              className={errorInputClass("paidAmount")}
             />
           </Field>
-          {isInvalid("paidAmount") && (
-            <span className="text-xs text-red-500">
-              {getError("paidAmount")}
-            </span>
-          )}
         </div>
 
         <div className="flex gap-3">
@@ -372,12 +360,13 @@ export default function ChangeTicketDialog({
                 ))}
               </SelectContent>
             </Select>
-          </Field>
-          {isInvalid("issueCityId") && (
+            {isInvalid("issueCityId") && (
             <span className="text-xs text-red-500">
               {getError("issueCityId")}
             </span>
           )}
+          </Field>
+          
         </div>
 
         <Field>

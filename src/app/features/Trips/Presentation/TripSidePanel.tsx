@@ -29,6 +29,7 @@ import {
   type ValidationRule,
 } from "@/app/core/Hooks/useFormValidation";
 import { Validators } from "@/app/core/utils/Validators";
+import { cn } from "@/lib/utils";
 
 interface TripSidePanelProps {
   entityId?: number;
@@ -53,24 +54,24 @@ export default function TripSidePanel({
     {
       field: "mainCaptainName",
       selector: (d) => d.mainCaptainName,
-      validators: [Validators.required("يجب ادخال اسم كابتن الباص")],
+      validators: [Validators.required("يرجى إدخال اسم قائد الحافلة")],
     },
 
     {
-      field: "busName",
-      selector: (d) => d.busName,
-      validators: [Validators.required("يجب ادخال اسم الباص")],
+      field: "startDate",
+      selector: (d) => d.startDate,
+      validators: [Validators.required("يرجى إدخال تاريخ ووقت التحرك")],
     },
     {
       field: "ticketPrice",
       selector: (d) => d.ticketPrice,
-      validators: [Validators.required("يجب ادخال سعر التذكرة")],
+      validators: [Validators.required("يرجى إدخال سعر التذكرة")],
     },
 
     {
       field: "routeId",
       selector: (d) => d.routeId,
-      validators: [Validators.required("يجب تحديد خط السفر")],
+      validators: [Validators.required("يرجى تحديد خط السفر")],
     },
   ];
 
@@ -122,27 +123,26 @@ export default function TripSidePanel({
         <Field>
           <Label className="text-xs">الحافلة</Label>
           <Input
-            className={`h-8 text-xs ${errorInputClass("busName")}`}
+            className={'h-8 text-xs'}
             value={formData.busName || ""}
             onChange={(e) => {
               setFormData((prev) => ({ ...prev, busName: e.target.value }));
-
-              clearError("busName");
             }}
           />
-          {isInvalid("busName") && (
-            <span className="text-xs text-red-500">{getError("busName")}</span>
-          )}
         </Field>
 
-        <div className="flex gap-2">
+        <div className={"flex gap-2"}>
           <Field className="flex-1">
             <Label className="text-xs">تاريخ التحرك</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className={`h-8 w-full justify-between text-left text-xs font-normal ${errorInputClass("startDate")}`}
+                  className={cn(
+                    "h-8 w-full justify-between text-left text-xs font-normal border",
+                    !formData.startDate && "text-muted-foreground",
+                    isInvalid("startDate") && "border-red-500! ring-red-500! text-red-900!"
+                  )}
                 >
                   {formData.startDate instanceof Date ? (
                     format(formData.startDate, "yyyy-MM-dd")
@@ -153,7 +153,7 @@ export default function TripSidePanel({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
+                <Calendar 
                   mode="single"
                   captionLayout="dropdown"
                   selected={
@@ -170,6 +170,7 @@ export default function TripSidePanel({
                           prev.startDate.getHours(),
                           prev.startDate.getMinutes(),
                         );
+                        clearError("startDate");
                       }
                       return { ...prev, startDate: dateWithTime };
                     });
@@ -178,13 +179,18 @@ export default function TripSidePanel({
                 />
               </PopoverContent>
             </Popover>
+            {isInvalid("startDate") && (
+              <span className="text-xs text-red-500">
+                {getError("startDate")}
+              </span>
+            )}
           </Field>
 
           <Field className="w-24">
             <Label className="text-xs">الوقت</Label>
             <Input
               type="time"
-              className="h-8 text-xs bg-background appearance-none"
+              className={`h-8 text-xs bg-background appearance-none ${errorInputClass("startDate")}`}
               value={
                 formData.startDate instanceof Date
                   ? format(formData.startDate, "HH:mm")

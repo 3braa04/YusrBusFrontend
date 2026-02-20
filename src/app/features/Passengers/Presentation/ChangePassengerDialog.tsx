@@ -151,7 +151,7 @@ export default function ChangePassengerDialog({
               }}
               disabled={fetchingCountries}
             >
-              <SelectTrigger>
+              <SelectTrigger className={errorInputClass("nationalityId")}>
                 <SelectValue placeholder="اختر دولة" />
               </SelectTrigger>
               <SelectContent>

@@ -73,7 +73,7 @@ export default function ChangeUserDialog({
               setFormData({ ...formData, username: e.target.value });
               clearError("username");
             }}
-            className={errorInputClass("useranme")}
+            className={errorInputClass("username")}
           />
           {isInvalid("username") && (
             <span className="text-xs text-red-500">{getError("username")}</span>
