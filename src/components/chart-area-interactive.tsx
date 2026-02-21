@@ -3,7 +3,6 @@
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
-import useDashbaord from "@/app/core/Hooks/useDashboard"
 import {
   Card,
   CardAction,
@@ -30,6 +29,7 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 import { useIsMobile } from "@/hooks/use-mobile"
+import type { TripInTimeData } from "@/app/core/Data/Dashboard"
 
 export const description = "An interactive area chart"
 
@@ -47,17 +47,19 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartAreaInteractive() {
+type ChartAreaInteractiveProps = {
+  tripsInTime:TripInTimeData[];
+}
+export function ChartAreaInteractive({tripsInTime}:ChartAreaInteractiveProps) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
-  const {data, loading} = useDashbaord();
   React.useEffect(() => {
     if (isMobile) {
       setTimeRange("7d")
     }
   }, [isMobile])
   
-  const filteredData = data?.tripsInTime.filter((item) => {
+  const filteredData = tripsInTime.filter((item) => {
     const date = new Date(item.date)
     const referenceDate = new Date("2024-06-30")
     let daysToSubtract = 90
@@ -74,7 +76,7 @@ export function ChartAreaInteractive() {
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Total Visitors</CardTitle>
+        <CardTitle>مجموع الرحلات</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
             Total for the last 3 months

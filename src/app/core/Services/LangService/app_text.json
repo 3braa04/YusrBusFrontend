@@ -4,8 +4,8 @@
 
         "dashborad":{
             "income":"مجموع الدخل",
-            "totalCustomers":"مجموع المستخدمين",
-            "routes":"الرحلات",
+            "totalPassengers":"مجموع الركاب",
+            "totalTrips":"الرحلات",
             "growthRate":"معدل النمو",
             "charts":{
                 "last3months":""
