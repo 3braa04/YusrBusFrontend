@@ -2,6 +2,7 @@ import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { SectionCards } from "@/components/section-cards"
 
 import useDashbaord from "@/app/core/Hooks/useDashboard";
+import TripsPage from "../Trips/Presentation/TripsPage";
 
 export default function DashboardPage() {
     const {data} = useDashbaord();
@@ -10,9 +11,12 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
       {data && <SectionCards data={data}/>}
       <div className="px-4 lg:px-6">
-        <ChartAreaInteractive tripsInTime={data?.tripsInTime || []}/>
+        <ChartAreaInteractive tripsInTime={(data?.tripsInTime || []).map(trip => ({
+          ...trip,
+          date: trip.date instanceof Date ? trip.date.toISOString() : trip.date
+        }))}/>
       </div>
-      {/* <DataTable data={data} /> */}
+      <TripsPage/>
     </div>
   )
 }
