@@ -1,8 +1,12 @@
+import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
+import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
+import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
 import useDialog from "@/app/core/Hooks/useDialog";
 import useEntities from "@/app/core/Hooks/useEntities";
 import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
-import { Building, MapPin } from "lucide-react";
+import { Building } from "lucide-react";
 import SearchInput from "../../../core/components/Input/SearchInput";
 import BranchRow from "../../../core/components/Table/TableBodyRow";
 import TableCard from "../../../core/components/Table/TableCard";
@@ -11,10 +15,6 @@ import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
 import TablePagination from "../../../core/components/Table/TablePagination";
 import type { Route } from "../Data/Route";
 import ChangeRouteDialog from "./ChangeRouteDialog";
-import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
-import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 
 export default function RoutesPage() {
   const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Route>(
@@ -50,11 +50,6 @@ export default function RoutesPage() {
             title: "إجمالي الخطوط",
             data: (entities?.count ?? 0).toString(),
             icon: <Building className="h-4 w-4 text-muted-foreground" />,
-          },
-          {
-            title: "المدن المغطاة",
-            data: (4).toString(),
-            icon: <MapPin className="h-4 w-4 text-muted-foreground" />,
           },
         ]}
       />

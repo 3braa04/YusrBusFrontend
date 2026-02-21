@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { AuthConstants } from "./AuthConstants";
 import { useSetting } from "../Contexts/SettingContext";
 import { useLoggedInUser } from "../Contexts/LoggedInUserContext";
@@ -17,6 +17,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem(AuthConstants.AuthCheckStorageItemName) === "true"
   );
+  
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      logout();
+    };
+
+    window.addEventListener(AuthConstants.UnauthorizedEventName, handleUnauthorized);
+    return () => window.removeEventListener(AuthConstants.UnauthorizedEventName, handleUnauthorized);
+  }, []);
 
   const login = () => {
     localStorage.setItem(AuthConstants.AuthCheckStorageItemName, "true");

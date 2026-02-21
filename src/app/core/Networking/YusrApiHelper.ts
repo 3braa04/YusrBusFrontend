@@ -1,4 +1,4 @@
-import { useAuth } from "../Auth/AuthContext";
+import { AuthConstants } from "../Auth/AuthConstants";
 import type { RequestResult } from "../Data/RequestResult";
 
 export default class YusrApiHelper 
@@ -61,22 +61,21 @@ export default class YusrApiHelper
 
     private static async handleResponse<T>(response: Response): Promise<RequestResult<T>> 
     {
+        if (response.status === 401) {
+            window.dispatchEvent(new Event(AuthConstants.UnauthorizedEventName));
+            return { data: null, status: 401, errorTitle: "Unauthorized", errorDetails: "Session expired" };
+        }
+
+        if (response.status === 404) {
+            return { data: null, status: 404, errorTitle: "Not Found", errorDetails: "" };
+        }
+
         if (!response.ok) 
         {
             const errorData = await response.json();
             console.log(errorData)
             console.error(`[Error ${response.status}]: ${errorData.title}`, errorData.detail);
             return {data:null, status:response.status, errorTitle: errorData.title, errorDetails: errorData.detail}
-        }
-
-        if(response.status === 401){
-            const { logout } = useAuth();
-            logout();
-        }
-
-        if (response.status === 404) 
-        {
-            return { data: null, status: 404, errorTitle: "", errorDetails: "" };
         }
 
         const data = await response.json() as T;
