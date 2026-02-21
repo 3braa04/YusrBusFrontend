@@ -2,16 +2,12 @@
 
 import type { Dashboard } from "@/app/core/Data/Dashboard"
 import ApplicationLang from "@/app/core/Services/LangService/ApplicationLang"
-import { Badge } from "@/components/ui/badge"
 import {
   Card,
-  CardAction,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { TrendingDownIcon, TrendingUpIcon } from "lucide-react"
 type DashboardSectionCardsProps={
   data:Dashboard
 }
@@ -47,7 +43,7 @@ export function SectionCards({data}:DashboardSectionCardsProps) {
         <CardHeader>
           <CardDescription>{lang.growthRate}</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {data.grothRate}
+            %{data.grothRate}
           </CardTitle>
         </CardHeader>
       </Card>
