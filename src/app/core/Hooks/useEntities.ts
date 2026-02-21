@@ -60,3 +60,4 @@ export default function useEntities<T extends BaseEntity>(service: BaseApiServic
 
   return {entities, refreash, isLoading, currentPage, setCurrentPage, setRowsPerPage};
 }
+
