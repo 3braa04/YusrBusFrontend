@@ -5,24 +5,25 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarMenuItem
 } from "@/components/ui/sidebar";
 import {
   Building2Icon,
   BusFrontIcon,
-  CommandIcon,
   LayoutDashboardIcon,
   MapPinnedIcon,
   Settings2Icon,
   UserCogIcon,
-  UsersIcon,
+  UsersIcon
 } from "lucide-react";
 import * as React from "react";
 import ApplicationLang from "../../Services/LangService/ApplicationLang";
+import SidebarLogo from "./SidebarLogo";
+import { SideBarCompanyData } from "./sideBarCompanyData";
 import { SideBarMainMenu } from "./sideBarMainMenu";
 import { SideBarSecondaryMenu } from "./sideBarSecondaryMenu";
 import { SideBarUserData } from "./sideBarUserData";
+import { useCompany } from "../../Contexts/CompanyContext";
 const appLang = ApplicationLang.getAppLangText();  
 const appLangSections = appLang.sections;
 const data = {
@@ -73,22 +74,24 @@ const data = {
 };
 
 export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  const { companyData } = useCompany();
+
+  const displayCompany = {
+    name: companyData?.companyName || "Default Name",
+    logo: companyData?.logo?.url || "/default-avatar.jpg",
+  };
+  
   return (
     <Sidebar collapsible="icon" side="right" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
-            >
-              <a href="#">
-                <CommandIcon className="size-5!" />
-                <span className="text-base font-semibold">
-                  {appLang.companyName}
-                </span>
-              </a>
-            </SidebarMenuButton>
+            
+            <SidebarLogo/>
+
+            <SideBarCompanyData company={displayCompany} />
+
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -96,7 +99,7 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SideBarMainMenu items={data.navMain} />
         <SideBarSecondaryMenu
           items={data.navSecondary}
-          className="pt-10 mt-auto"
+          className="pt-10 mt-auto text-center"
         />
       </SidebarContent>
       <SidebarFooter>

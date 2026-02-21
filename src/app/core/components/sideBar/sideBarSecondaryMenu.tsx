@@ -24,12 +24,14 @@ export function SideBarSecondaryMenu({
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
-        <SidebarMenu>
+        <SidebarMenu className="gap-2">
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
                 <a href={item.url}>
-                  {item.icon}
+                  <span className="flex items-center justify-center shrink-0 size-4">
+                    {item.icon}
+                  </span>
                   <span>{item.title}</span>
                 </a>
               </SidebarMenuButton>
