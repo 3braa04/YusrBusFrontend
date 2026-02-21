@@ -1,5 +1,6 @@
 import SaveButton from "@/app/core/components/Buttons/SaveButton";
 import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
+import Loading from "@/app/core/components/Loading/Loading";
 import useCities from "@/app/core/Hooks/useCities";
 import {
   useFormValidation,
@@ -40,8 +41,13 @@ export default function ChangeRouteDialog({
     routeStations: [],
   });
 
+  const [initLoading, setInitLoading] = useState(false);
+
   useEffect(() => {
     if (mode === "update" && entity?.id) {
+
+      setInitLoading(true);
+
       const getRoute = async () => {
         const service = new RoutesApiService();
         const res = await service.Get(entity.id);
@@ -55,11 +61,12 @@ export default function ChangeRouteDialog({
           toCityName: res.data?.toCityName,
           routeStations: res.data?.routeStations || [],
         });
+
+        setInitLoading(false);
       };
 
       getRoute();
     } else {
-      // For create mode, ensure routeStations is at least an empty array
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData((prev) => ({ ...prev, routeStations: [] }));
     }
@@ -141,6 +148,14 @@ export default function ChangeRouteDialog({
     formData,
     validationRules,
   );
+
+  if (initLoading) {
+    return (
+      <DialogContent dir="rtl" >
+        <Loading entityName="الخط"/>
+      </DialogContent>
+    );
+  }
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-xl">

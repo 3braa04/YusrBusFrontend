@@ -1,9 +1,10 @@
 import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
+import Loading from "@/app/core/components/Loading/Loading";
 import useEntities from "@/app/core/Hooks/useEntities";
 import { useTripForm } from "@/app/core/Hooks/useTripForm";
 import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
 import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import type { Passenger } from "../../Passengers/Data/Passenger";
 import ChangePassengerDialog from "../../Passengers/Presentation/ChangePassengerDialog";
@@ -17,9 +18,12 @@ import TripSidePanel from "./TripSidePanel";
 
 export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChangeDialogProps<Trip>) {
   const {
-    formData, setFormData,
-    movingTicket, setMovingTicket,
+    formData, 
+    setFormData,
+    movingTicket, 
+    setMovingTicket,
     updateTicketChair,
+    initLoading
   } = useTripForm(entity, mode);
 
   // Modal States
@@ -77,6 +81,14 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
     
     setIsTicketDialogOpen(false);
   };
+
+  if (initLoading) {
+    return (
+      <DialogContent dir="rtl" >
+        <Loading entityName="الرحلة"/>
+      </DialogContent>
+    );
+  }
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-[90vw] sm:w-[90vw] sm:h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">

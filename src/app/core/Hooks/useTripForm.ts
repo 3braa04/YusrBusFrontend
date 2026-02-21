@@ -9,9 +9,11 @@ export function useTripForm(entity: Trip | undefined, mode: string) {
     undefined,
   );
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+  const [initLoading, setInitLoading] = useState(false);
 
   useEffect(() => {
     if (mode === "update" && entity?.id) {
+      setInitLoading(true);
       new TripsApiService().Get(entity.id).then((res) => {
         if (res.data)
           setFormData({
@@ -20,7 +22,9 @@ export function useTripForm(entity: Trip | undefined, mode: string) {
               ? new Date(res.data.startDate)
               : undefined,
           });
-      });
+
+          setInitLoading(false);
+        });
     }
   }, [entity?.id, mode]);
 
@@ -61,5 +65,6 @@ export function useTripForm(entity: Trip | undefined, mode: string) {
     setFieldErrors,
     validate,
     updateTicketChair,
+    initLoading
   };
 }
