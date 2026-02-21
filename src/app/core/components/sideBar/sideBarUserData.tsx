@@ -21,10 +21,10 @@ import {
 } from "@/components/ui/sidebar"
 import { CircleUserRoundIcon, EllipsisVerticalIcon, LogOutIcon } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
-import RoutesService from "../../Services/constants/RoutesService"
-import ApplicationLang from "../../Services/LangService/ApplicationLang"
 import ApiConstants from "../../Networking/ApiConstants"
 import YusrApiHelper from "../../Networking/YusrApiHelper"
+import RoutesService from "../../Services/constants/RoutesService"
+import ApplicationLang from "../../Services/LangService/ApplicationLang"
 
 export function SideBarUserData({
   user,
@@ -37,11 +37,11 @@ export function SideBarUserData({
   const sideBarUserDataLang = ApplicationLang.getAppLangText().sideBarUserData;
   
   const Logout = async() => {
-    let result = await YusrApiHelper.Post<User>(
+    let result = await YusrApiHelper.Post(
       `${ApiConstants.baseUrl}/Logout`
     );
 
-    if(result.status === 200)
+    if(result.status === 200 || result.status === 204)
       navigate("/", { replace: true });
   };
 

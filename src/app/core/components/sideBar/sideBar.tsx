@@ -21,13 +21,12 @@ import { useSetting } from "../../Contexts/SettingContext";
 import ApplicationLang from "../../Services/LangService/ApplicationLang";
 import SidebarLogo from "./SidebarLogo";
 
+import { SideBarCompanyData } from "./SideBarCompanyData";
 import { SideBarMainMenu } from "./sideBarMainMenu";
 import { SideBarSecondaryMenu } from "./sideBarSecondaryMenu";
 import { SideBarUserData } from "./sideBarUserData";
 
 const appLang = ApplicationLang.getAppLangText();
-import { useCompany } from "../../Contexts/CompanyContext";
-import { SideBarCompanyData } from "./SideBarCompanyData";
 const appLangSections = appLang.sections;
 const data = {
   navMain: [
