@@ -20,7 +20,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { CircleUserRoundIcon, EllipsisVerticalIcon, LogOutIcon } from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
+import { useAuth } from "../../Auth/AuthContext"
 import ApiConstants from "../../Networking/ApiConstants"
 import YusrApiHelper from "../../Networking/YusrApiHelper"
 import RoutesService from "../../Services/constants/RoutesService"
@@ -32,17 +33,18 @@ export function SideBarUserData({
   user: Partial<User> | undefined
 }) {
   
-  const navigate = useNavigate();
+  const {logout} = useAuth();
   const { isMobile } = useSidebar();
   const sideBarUserDataLang = ApplicationLang.getAppLangText().sideBarUserData;
   
-  const Logout = async() => {
+  const LogoutHandler = async() => {
     let result = await YusrApiHelper.Post(
       `${ApiConstants.baseUrl}/Logout`
     );
 
-    if(result.status === 200 || result.status === 204)
-      navigate("/", { replace: true });
+    if(result.status === 200 || result.status === 204){
+      logout();
+    }
   };
 
   return (
@@ -92,7 +94,7 @@ export function SideBarUserData({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-600" onClick={Logout}>
+            <DropdownMenuItem className="text-red-600" onClick={LogoutHandler}>
               <LogOutIcon
               />
               {sideBarUserDataLang.logout}

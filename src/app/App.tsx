@@ -31,17 +31,17 @@ function App() {
 
 function AppBody() {
   return (
-    <AuthProvider>
-      <TooltipProvider>   
-        <SettingProvider>
-          <LoggedInUserProvider>
+  <TooltipProvider>   
+      <SettingProvider>
+        <LoggedInUserProvider>
+          <AuthProvider>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
               <AppRoutes />
             </ThemeProvider>
-          </LoggedInUserProvider>
-        </SettingProvider>  
-      </TooltipProvider>
-    </AuthProvider>
+          </AuthProvider>
+        </LoggedInUserProvider>
+      </SettingProvider>  
+    </TooltipProvider>
   );
 }
 

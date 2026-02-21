@@ -1,5 +1,6 @@
 import { Setting } from "@/app/core/Data/Setting";
 import { createContext, useContext, useState, type ReactNode } from "react";
+import { ContextConstants } from "./ContextConstants";
 
 type SettingContextType = {
   setting: Partial<Setting> | undefined;
@@ -11,23 +12,21 @@ const SettingContext = createContext<SettingContextType | undefined>(undefined);
 
 export function SettingProvider({ children }: { children: ReactNode }) {
 
-  const localStorageItemName = "Setting";
-
   const [setting, setSetting] = useState<Partial<Setting> | undefined>(() => {
-    const savedSetting = localStorage.getItem(localStorageItemName);
+    const savedSetting = localStorage.getItem(ContextConstants.SettingStorageItemName);
     return savedSetting ? JSON.parse(savedSetting) : undefined;
   });
 
   const updateSetting = (data: Partial<Setting>) => {
     setSetting((prev) => {
       const newSetting = { ...prev, ...data };
-      localStorage.setItem(localStorageItemName, JSON.stringify(newSetting));
+      localStorage.setItem(ContextConstants.SettingStorageItemName, JSON.stringify(newSetting));
       return newSetting;
     });
   };
 
   const clearSetting = () => {
-    localStorage.removeItem(localStorageItemName);
+    localStorage.removeItem(ContextConstants.SettingStorageItemName);
     setSetting(undefined);
   };
 

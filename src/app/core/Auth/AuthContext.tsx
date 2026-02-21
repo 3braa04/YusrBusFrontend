@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { AuthConstants } from "./AuthConstants";
+import { useSetting } from "../Contexts/SettingContext";
+import { useLoggedInUser } from "../Contexts/LoggedInUserContext";
 
 const AuthContext = createContext<{
   isAuthenticated: boolean;
@@ -9,7 +11,10 @@ const AuthContext = createContext<{
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
-    const [isAuthenticated, setIsAuthenticated] = useState(
+  const {clearSetting} = useSetting();
+  const {clearUser} = useLoggedInUser();
+
+  const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem(AuthConstants.AuthCheckStorageItemName) === "true"
   );
 
@@ -21,6 +26,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     localStorage.removeItem(AuthConstants.AuthCheckStorageItemName);
     setIsAuthenticated(false);
+    clearSetting();
+    clearUser();
   };
 
   return (
