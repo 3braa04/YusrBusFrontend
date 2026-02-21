@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { ThemeToggle } from "../theme/themeToggle"
+import { Link } from "react-router-dom"
 
 export function SideBarSecondaryMenu({
   items,
@@ -28,12 +29,14 @@ export function SideBarSecondaryMenu({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <a href={item.url}>
+                <Link to={item.url} className="flex items-center justify-start gap-3 w-full px-3">
+
                   <span className="flex items-center justify-center shrink-0 size-4">
                     {item.icon}
                   </span>
-                  <span>{item.title}</span>
-                </a>
+                  
+                  <span className="font-medium truncate">{item.title}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
