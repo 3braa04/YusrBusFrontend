@@ -34,6 +34,7 @@ export default function ChangeUserDialog({
   const [formData, setFormData] = useState<Partial<User>>({
     id: entity?.id,
     username: entity?.username || "",
+    password: entity?.password || "",
     isActive: entity?.isActive ?? true,
     permissions: entity?.permissions || 0,
   });
@@ -43,6 +44,11 @@ export default function ChangeUserDialog({
       field: "username",
       selector: (d) => d.username,
       validators: [Validators.required("يرجى اختيار اسم المستخدم")],
+    },
+    {
+      field: "password",
+      selector: (d) => d.password,
+      validators: [Validators.required("يرجى اختيار كلمة مرور")],
     },
   ];
   const { getError, isInvalid, validate, clearError, errorInputClass } =
@@ -77,6 +83,21 @@ export default function ChangeUserDialog({
           />
           {isInvalid("username") && (
             <span className="text-xs text-red-500">{getError("username")}</span>
+          )}
+        </Field>
+
+        <Field>
+          <Label>كلمة المرور</Label>
+          <Input
+            value={formData.password || ""}
+            onChange={(e) => {
+              setFormData({ ...formData, password: e.target.value });
+              clearError("password");
+            }}
+            className={errorInputClass("password")}
+          />
+          {isInvalid("password") && (
+            <span className="text-xs text-red-500">{getError("password")}</span>
           )}
         </Field>
 

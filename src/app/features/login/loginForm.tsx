@@ -1,18 +1,88 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { AuthConstants } from "@/app/core/Auth/AuthConstants";
+import { useAuth } from "@/app/core/Auth/AuthContext";
+import { LoginRequest } from "@/app/core/Data/LoginRequest";
+import { useFormValidation, type ValidationRule } from "@/app/core/Hooks/useFormValidation";
+import ApiConstants from "@/app/core/Networking/ApiConstants";
+import YusrApiHelper from "@/app/core/Networking/YusrApiHelper";
+import { Validators } from "@/app/core/utils/Validators";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
-  FieldLabel
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import type User from "../Users/Data/User";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<Partial<LoginRequest>>({});
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const location = useLocation();
+
+  const validationRules: ValidationRule<Partial<LoginRequest>>[] = [
+    {
+      field: "email",
+      selector: (d) => d.companyEmail,
+      validators: [Validators.required("البريد الإلكتروني مطلوب")],
+    },
+    {
+      field: "username",
+      selector: (d) => d.username,
+      validators: [Validators.required("اسم المستخدم مطلوب")],
+    },
+    {
+      field: "password",
+      selector: (d) => d.password,
+      validators: [Validators.required("كلمة المرور مطلوبة")],
+    },
+  ];
+  const { getError, isInvalid, validate, clearError, errorInputClass } =
+    useFormValidation(formData, validationRules);
+
+  const Login = async () => {
+
+    if(!validate())
+      return;
+
+    let request = new LoginRequest({
+      companyEmail: formData.companyEmail,
+      username: formData.username,
+      password: formData.password,
+    });
+
+    setLoading(true);
+
+    let result = await YusrApiHelper.Post<User>(
+      `${ApiConstants.baseUrl}/Login`,
+      request,
+    );
+
+    if(result.status === 200){
+      login();
+      const origin = location.state?.from?.pathname || "/dashboard";
+      navigate(origin, { replace: true });
+      console.log(localStorage.getItem(AuthConstants.AuthCheckStorageItemName))
+      setLoading(false);
+    }
+    else{
+      setApiError(result.errorDetails || "حدث خطأ غير متوقع");  
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -31,23 +101,71 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  value={formData.companyEmail}
+                  onChange={(e) => {
+                    setFormData({ ...formData, companyEmail: e.target.value });
+                    clearError("email");
+                    setApiError(null);
+                  }}
+                  className={errorInputClass("email")}
                   required
                 />
+                {isInvalid("email") && (
+                  <span className="text-xs text-red-500">{getError("email")}</span>
+                )}
               </Field>
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="username">اسم المستخدم</FieldLabel>
                 </div>
-                <Input id="username" type="username" required />
+                <Input
+                  id="username"
+                  type="text"
+                  value={formData.username}
+                  onChange={(e) => {
+                    setFormData({ ...formData, username: e.target.value });
+                    clearError("username");
+                    setApiError(null);
+                  }}
+                  className={errorInputClass("username")}
+                  required
+                />
+                {isInvalid("username") && (
+                  <span className="text-xs text-red-500">{getError("username")}</span>
+                )}
               </Field>
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">كلمة المرور</FieldLabel>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => {
+                    setFormData({ ...formData, password: e.target.value });
+                    clearError("password");
+                    setApiError(null);
+                  }}
+                  className={errorInputClass("password")}
+                  required
+                />
+                {isInvalid("password") && (
+                  <span className="text-xs text-red-500">{getError("password")}</span>
+                )}
               </Field>
+
+              {apiError && (
+                <div className="text-sm font-medium text-red-600">
+                  {apiError}
+                </div>
+              )}
+
               <Field>
-                <Button type="submit">تسجيل الدخول</Button>
+                <Button type="button" disabled={loading} onClick={Login}>
+                  {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+                  تسجيل الدخول
+                </Button>
               </Field>
               <FieldDescription className="text-center">
                 لا تملك حسابًا بعد؟ <a href="#">سجل معنا</a>
@@ -64,5 +182,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

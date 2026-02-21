@@ -1,3 +1,4 @@
+import { useAuth } from "../Auth/AuthContext";
 import type { RequestResult } from "../Data/RequestResult";
 
 export default class YusrApiHelper 
@@ -6,6 +7,7 @@ export default class YusrApiHelper
     {
         const response = await fetch(url, {
         method: 'GET',
+        credentials: 'include',
         ...options,
         });
         return YusrApiHelper.handleResponse<T>(response);
@@ -21,6 +23,7 @@ export default class YusrApiHelper
 
         const response = await fetch(url, {
         method: 'POST',
+        credentials: 'include',
         headers,
         body: isFormData ? body : JSON.stringify(body),
         ...options,
@@ -38,6 +41,7 @@ export default class YusrApiHelper
 
         const response = await fetch(url, {
         method: 'PUT',
+        credentials: 'include',
         headers,
         body: isFormData ? body : JSON.stringify(body),
         ...options,
@@ -49,6 +53,7 @@ export default class YusrApiHelper
     {
         const response = await fetch(url, {
         method: 'DELETE',
+        credentials: 'include',
         ...options,
         });
         return YusrApiHelper.handleResponse<T>(response);
@@ -58,17 +63,23 @@ export default class YusrApiHelper
     {
         if (!response.ok) 
         {
-            const errorText = response.statusText;
-            console.log(`[Status: ${response.status}]\nThere was an Error:\n${errorText}`);
-            return {data:null, status:response.status}
+            const errorData = await response.json();
+            console.log(errorData)
+            console.error(`[Error ${response.status}]: ${errorData.title}`, errorData.detail);
+            return {data:null, status:response.status, errorTitle: errorData.title, errorDetails: errorData.detail}
+        }
+
+        if(response.status === 401){
+            const { logout } = useAuth();
+            logout();
         }
 
         if (response.status === 404) 
         {
-            return { data: null, status: 404 };
+            return { data: null, status: 404, errorTitle: "", errorDetails: "" };
         }
 
         const data = await response.json() as T;
-        return { data,status: response.status };
+        return { data,status: response.status, errorTitle: "", errorDetails: "" };
     }
 }
