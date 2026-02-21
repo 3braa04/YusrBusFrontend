@@ -1,11 +1,13 @@
 import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
 import SearchInput from "@/app/core/components/Input/SearchInput";
+import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 import TableBodyRow from "@/app/core/components/Table/TableBodyRow";
 import TableCard from "@/app/core/components/Table/TableCard";
 import TableHeader from "@/app/core/components/Table/TableHeader";
 import TableHeaderRows from "@/app/core/components/Table/TableHeaderRows";
 import TablePagination from "@/app/core/components/Table/TablePagination";
 import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
+import { useLoggedInUser } from "@/app/core/Contexts/LoggedInUserContext";
 import useDialog from "@/app/core/Hooks/useDialog";
 import useEntities from "@/app/core/Hooks/useEntities";
 import UsersApiService from "@/app/core/Networking/Services/UsersApiService";
@@ -14,12 +16,13 @@ import { Table, TableBody } from "@/components/ui/table";
 import { User2Icon } from "lucide-react";
 import User from "../Data/User";
 import ChangeUserDialog from "./ChangeUserDialog";
-import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
 
 export default function UsersPage() {
   const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<User>(
     new UsersApiService(),
   );
+
+  const { loggedInUser, updateLoggedInUser } = useLoggedInUser();
 
   const {
     selectedRow,
@@ -115,6 +118,9 @@ export default function UsersPage() {
               onSuccess={(data) => {
                 refreash(data);
                 setIsEditDialogOpen(false);
+                if(data.id === loggedInUser?.id){
+                  updateLoggedInUser(data);
+                }
               }}
             />
           </Dialog>

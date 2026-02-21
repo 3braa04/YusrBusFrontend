@@ -1,8 +1,11 @@
 import { AuthConstants } from "@/app/core/Auth/AuthConstants";
 import { useAuth } from "@/app/core/Auth/AuthContext";
+import { useLoggedInUser } from "@/app/core/Contexts/LoggedInUserContext";
+import { useSetting } from "@/app/core/Contexts/SettingContext";
 import { LoginRequest } from "@/app/core/Data/LoginRequest";
 import { useFormValidation, type ValidationRule } from "@/app/core/Hooks/useFormValidation";
 import ApiConstants from "@/app/core/Networking/ApiConstants";
+import SettingsApiService from "@/app/core/Networking/Services/SettingsApiService";
 import YusrApiHelper from "@/app/core/Networking/YusrApiHelper";
 import { Validators } from "@/app/core/utils/Validators";
 import { Button } from "@/components/ui/button";
@@ -31,6 +34,8 @@ export function LoginForm({
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const location = useLocation();
+  const { updateSetting } = useSetting();
+  const { updateLoggedInUser } = useLoggedInUser();
 
   const validationRules: ValidationRule<Partial<LoginRequest>>[] = [
     {
@@ -72,6 +77,14 @@ export function LoginForm({
 
     if(result.status === 200){
       login();
+
+      let setting = await new SettingsApiService().Filter();
+      if(setting.data)
+        updateSetting(setting.data);
+
+      if(result.data)
+        updateLoggedInUser(result.data)
+
       const origin = location.state?.from?.pathname || "/dashboard";
       navigate(origin, { replace: true });
       console.log(localStorage.getItem(AuthConstants.AuthCheckStorageItemName))
@@ -101,7 +114,7 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
-                  value={formData.companyEmail}
+                  value={formData.companyEmail || ""}
                   onChange={(e) => {
                     setFormData({ ...formData, companyEmail: e.target.value });
                     clearError("email");
@@ -121,7 +134,7 @@ export function LoginForm({
                 <Input
                   id="username"
                   type="text"
-                  value={formData.username}
+                  value={formData.username || ""}
                   onChange={(e) => {
                     setFormData({ ...formData, username: e.target.value });
                     clearError("username");
@@ -141,7 +154,7 @@ export function LoginForm({
                 <Input
                   id="password"
                   type="password"
-                  value={formData.password}
+                  value={formData.password || ""}
                   onChange={(e) => {
                     setFormData({ ...formData, password: e.target.value });
                     clearError("password");

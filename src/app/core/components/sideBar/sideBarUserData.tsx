@@ -1,3 +1,4 @@
+import type User from "@/app/features/Users/Data/User"
 import {
   Avatar,
   AvatarFallback,
@@ -18,22 +19,32 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { EllipsisVerticalIcon, CircleUserRoundIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
-import ApplicationLang from "../../Services/LangService/ApplicationLang"
-import { Link } from "react-router-dom"
+import { CircleUserRoundIcon, EllipsisVerticalIcon, LogOutIcon } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
 import RoutesService from "../../Services/constants/RoutesService"
+import ApplicationLang from "../../Services/LangService/ApplicationLang"
+import ApiConstants from "../../Networking/ApiConstants"
+import YusrApiHelper from "../../Networking/YusrApiHelper"
 
 export function SideBarUserData({
   user,
 }: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
+  user: Partial<User> | undefined
 }) {
-  const { isMobile } = useSidebar()
+  
+  const navigate = useNavigate();
+  const { isMobile } = useSidebar();
   const sideBarUserDataLang = ApplicationLang.getAppLangText().sideBarUserData;
+  
+  const Logout = async() => {
+    let result = await YusrApiHelper.Post<User>(
+      `${ApiConstants.baseUrl}/Logout`
+    );
+
+    if(result.status === 200)
+      navigate("/", { replace: true });
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -44,14 +55,11 @@ export function SideBarUserData({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src="/avatars/shadcn.jpg" alt={user?.username} />
                 <AvatarFallback className="rounded-lg">YSR</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-start text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
-                </span>
+                <span className="truncate font-medium">{user?.username}</span>
               </div>
               <EllipsisVerticalIcon className="ms-auto size-4" />
             </SidebarMenuButton>
@@ -65,14 +73,11 @@ export function SideBarUserData({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src="/avatars/shadcn.jpg" alt={user?.username} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-start text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
-                  </span>
+                  <span className="truncate font-medium">{user?.username}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -85,19 +90,9 @@ export function SideBarUserData({
                 {sideBarUserDataLang.account}
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCardIcon
-                />
-                {sideBarUserDataLang.billing}
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon
-                />
-                {sideBarUserDataLang.notifications}
-              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600" onClick={Logout}>
               <LogOutIcon
               />
               {sideBarUserDataLang.logout}

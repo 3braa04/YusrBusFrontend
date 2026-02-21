@@ -1,11 +1,10 @@
-
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuItem
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import {
   Building2Icon,
@@ -14,24 +13,21 @@ import {
   MapPinnedIcon,
   Settings2Icon,
   UserCogIcon,
-  UsersIcon
+  UsersIcon,
 } from "lucide-react";
 import * as React from "react";
+import { useLoggedInUser } from "../../Contexts/LoggedInUserContext";
+import { useSetting } from "../../Contexts/SettingContext";
 import ApplicationLang from "../../Services/LangService/ApplicationLang";
 import SidebarLogo from "./SidebarLogo";
 import { SideBarCompanyData } from "./sideBarCompanyData";
 import { SideBarMainMenu } from "./sideBarMainMenu";
 import { SideBarSecondaryMenu } from "./sideBarSecondaryMenu";
 import { SideBarUserData } from "./sideBarUserData";
-import { useCompany } from "../../Contexts/CompanyContext";
-const appLang = ApplicationLang.getAppLangText();  
+
+const appLang = ApplicationLang.getAppLangText();
 const appLangSections = appLang.sections;
 const data = {
-  user: {
-    name: "Baraa Barmo",
-    email: "Barrrr@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: appLangSections.dashboard,
@@ -74,24 +70,22 @@ const data = {
 };
 
 export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-
-  const { companyData } = useCompany();
+  const { setting } = useSetting();
+  const { loggedInUser } = useLoggedInUser();
 
   const displayCompany = {
-    name: companyData?.companyName || "Default Name",
-    logo: companyData?.logo?.url || "/default-avatar.jpg",
+    name: setting?.companyName || "Default Name",
+    logo: setting?.logo?.url || "/default-avatar.jpg",
   };
-  
+
   return (
     <Sidebar collapsible="icon" side="right" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            
-            <SidebarLogo/>
+            <SidebarLogo />
 
             <SideBarCompanyData company={displayCompany} />
-
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -103,7 +97,7 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         />
       </SidebarContent>
       <SidebarFooter>
-        <SideBarUserData user={data.user} />
+        <SideBarUserData user={loggedInUser} />
       </SidebarFooter>
     </Sidebar>
   );

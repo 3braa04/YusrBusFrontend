@@ -22,8 +22,6 @@
         },
         "sideBarUserData":{
             "account":"الحساب",
-            "billing":"الفواتير",
-            "notifications":"الاشعارات",
             "logout":"تسجيل الخروج"
         }
     }

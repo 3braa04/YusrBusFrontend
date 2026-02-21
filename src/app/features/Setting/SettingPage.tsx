@@ -1,4 +1,4 @@
-import { useCompany } from "@/app/core/Contexts/CompanyContext";
+import { useSetting } from "@/app/core/Contexts/SettingContext";
 import { Setting } from "@/app/core/Data/Setting";
 import useCurrencies from "@/app/core/Hooks/useCurrencies";
 import {
@@ -64,7 +64,7 @@ export default function SettingPage() {
     useStorageFile(setFormData);
   const { isInvalid, validate, clearError, errorInputClass, getError } =
     useFormValidation(formData, validationRules);
-  const { updateCompanyData } = useCompany();
+  const { updateSetting } = useSetting();
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -74,7 +74,7 @@ export default function SettingPage() {
       if (response.data) {
         setFormData(response.data);
         setInitLoading(false);
-        updateCompanyData(response.data);
+        updateSetting(response.data);
       }
     };
 
@@ -91,7 +91,7 @@ export default function SettingPage() {
 
     if (result.status === 200) {
       setFormData(result.data as Setting);
-      updateCompanyData(result.data as Setting);
+      updateSetting(result.data as Setting);
     }
   }
 

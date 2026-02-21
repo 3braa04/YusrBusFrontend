@@ -5,7 +5,8 @@ import useAppInitialization from "../hooks/useAppInitialization";
 import { AuthProvider } from "./core/Auth/AuthContext";
 import ProtectedRoute from "./core/Auth/ProtectedRoute";
 import { ThemeProvider } from "./core/components/theme/themeProvider";
-import { CompanyProvider } from "./core/Contexts/CompanyContext";
+import { LoggedInUserProvider } from "./core/Contexts/LoggedInUserContext";
+import { SettingProvider } from "./core/Contexts/SettingContext";
 import RoutesService from "./core/Services/constants/RoutesService";
 import BranchesPage from "./features/branches/presentation/BranchesPage";
 import DashboardPage from "./features/dashboard/dashboardPage";
@@ -32,11 +33,13 @@ function AppBody() {
   return (
     <AuthProvider>
       <TooltipProvider>   
-        <CompanyProvider>
-          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <AppRoutes />
-          </ThemeProvider>
-        </CompanyProvider>  
+        <SettingProvider>
+          <LoggedInUserProvider>
+            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+              <AppRoutes />
+            </ThemeProvider>
+          </LoggedInUserProvider>
+        </SettingProvider>  
       </TooltipProvider>
     </AuthProvider>
   );
