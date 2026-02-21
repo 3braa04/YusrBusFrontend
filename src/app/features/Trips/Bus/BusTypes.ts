@@ -25,4 +25,5 @@ export interface BusProps {
   onMoveTicket?: (ticket: Ticket) => void;
   movingTicketId?: number | string;
   lastRowFull?: boolean; // If true, the back of the bus has 5 seats (no aisle)
+  isLoading?:boolean
 }

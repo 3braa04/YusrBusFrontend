@@ -4,6 +4,7 @@ import { Baby, Plus, ShipWheel, XCircle } from "lucide-react";
 import type { Ticket } from "../Data/Ticket";
 import BusSeat from "./BusSeat";
 import type { BusProps, SeatType } from "./BusTypes";
+import BusLoadingSkeleton from "./BusLoadingSkeleton";
 
 export default function BusLayout({
   seats,
@@ -13,10 +14,17 @@ export default function BusLayout({
   onMoveTicket,
   movingTicketId,
   lastRowFull = false,
+  isLoading = false,
 }: BusProps) {
+  if (isLoading) return <BusLoadingSkeleton columns={10} showLogo={true} />;
 
-  const { 
-    ticketMap, babyTickets, nextBabyId, columns, hoverFilter, handleHover 
+  const {
+    ticketMap,
+    babyTickets,
+    nextBabyId,
+    columns,
+    hoverFilter,
+    handleHover,
   } = useBusLogic(seats, tickets);
 
   const getHighlightStatus = (ticket?: Ticket) => {
@@ -28,10 +36,11 @@ export default function BusLayout({
     if (!hoverFilter) return { isHighlighted: false, isDimmed: false };
     if (!ticket) return { isHighlighted: false, isDimmed: true };
 
-    const match = ticket.passenger?.nationality?.name === hoverFilter.value ||
-                  ticket.fromCityName === hoverFilter.value ||
-                  ticket.toCityName === hoverFilter.value ||
-                  ticket.amount?.toString() === hoverFilter.value;
+    const match =
+      ticket.passenger?.nationality?.name === hoverFilter.value ||
+      ticket.fromCityName === hoverFilter.value ||
+      ticket.toCityName === hoverFilter.value ||
+      ticket.amount?.toString() === hoverFilter.value;
 
     return { isHighlighted: match, isDimmed: !match };
   };
@@ -78,7 +87,6 @@ export default function BusLayout({
 
       {/* Bus Structure */}
       <div className="relative flex w-max min-w-130 flex-row rounded-[2.2rem] border-2 border-border bg-muted/30 p-4 shadow-xl">
-
         {/* Lights & Mirrors */}
         <div className="absolute -right-1 top-10 h-8 w-2 rounded-l-full bg-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]" />
         <div className="absolute -right-1 bottom-10 h-8 w-2 rounded-l-full bg-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]" />
@@ -92,7 +100,7 @@ export default function BusLayout({
           <div className="h-4 w-6 rounded-b-sm bg-gray-800 dark:bg-gray-600 border border-gray-400" />
           <div className="h-2 w-1 bg-gray-400" />
         </div>
-        
+
         <div className="ml-4 flex flex-col items-center justify-end border-l border-dashed border-border pl-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground shadow-inner">
             <ShipWheel className="h-6 w-6" />
@@ -140,7 +148,6 @@ export default function BusLayout({
         <div className="absolute -bottom-3 right-24 h-4 w-14 rounded-b-xl bg-neutral-900 dark:bg-gray-400" />
         <div className="absolute -top-3 left-20 h-4 w-14 rounded-t-xl bg-neutral-900 dark:bg-gray-400" />
         <div className="absolute -top-3 right-24 h-4 w-14 rounded-t-xl bg-neutral-900 dark:bg-gray-400" />
-
       </div>
 
       <div className="flex flex-col items-center gap-3">

@@ -33,7 +33,7 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
   const [isEditPassengerDialogOpen, setIsEditPassengerDialogOpen] = useState(false);
 
   // APIs
-  const { entities: passengers, refreash: refreshPassengers } = useEntities<Passenger>(new PassengersApiService());
+  const { entities: passengers, refreash: refreshPassengers, isLoading } = useEntities<Passenger>(new PassengersApiService());
   const { entities: routes, isLoading: fetchingRoutes } = useEntities<Route>(new RoutesApiService());
 
   const handleSeatClick = (seat: SeatType) => {
@@ -110,6 +110,7 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
 
         <main className="flex-1 p-6 overflow-auto flex items-center justify-center bg-background">
           <Bus
+          isLoading = {isLoading}
             seats={Array.from({ length: 44 }, (_, i) => ({ id: i + 1 }))}
             tickets={formData.tickets ?? []}
             onSeatClick={handleSeatClick}
