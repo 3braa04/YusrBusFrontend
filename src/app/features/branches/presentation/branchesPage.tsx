@@ -1,20 +1,20 @@
-import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
-import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
-import useDialog from "@/app/core/Hooks/useDialog";
-import useEntities from "@/app/core/Hooks/useEntities";
-import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
+import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
+import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
+import useDialog from "@/app/core/hooks/useDialog";
+import useEntities from "@/app/core/hooks/useEntities";
+import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
 import { Building, MapPin } from "lucide-react";
-import SearchInput from "../../../core/components/Input/SearchInput";
-import BranchRow from "../../../core/components/Table/TableBodyRow";
-import TableCard from "../../../core/components/Table/TableCard";
-import TableHeader from "../../../core/components/Table/TableHeader";
-import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
-import TablePagination from "../../../core/components/Table/TablePagination";
-import Branch from "../data/Branch";
-import ChangeBranchDialog from "./ChangeBranchDialog";
-import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
+import SearchInput from "../../../core/components/input/searchInput";
+import BranchRow from "../../../core/components/table/tableBodyRow";
+import TableCard from "../../../core/components/table/tableCard";
+import TableHeader from "../../../core/components/table/tableHeader";
+import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
+import TablePagination from "../../../core/components/table/tablePagination";
+import Branch from "../data/branch";
+import ChangeBranchDialog from "./changeBranchDialog";
+import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 
 export default function BranchesPage() {
   const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Branch>(

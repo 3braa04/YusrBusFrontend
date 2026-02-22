@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import type { ValidatorFn } from "../utils/Validators";
+import type { ValidatorFn } from "../utils/validators";
 
 export interface ValidationRule<T> {
   field: keyof T | string; 

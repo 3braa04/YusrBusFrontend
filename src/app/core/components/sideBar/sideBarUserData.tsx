@@ -21,11 +21,11 @@ import {
 } from "@/components/ui/sidebar"
 import { CircleUserRoundIcon, EllipsisVerticalIcon, LogOutIcon } from "lucide-react"
 import { Link } from "react-router-dom"
-import { useAuth } from "../../Auth/AuthContext"
-import ApiConstants from "../../Networking/ApiConstants"
-import YusrApiHelper from "../../Networking/YusrApiHelper"
-import RoutesService from "../../Services/constants/RoutesService"
-import ApplicationLang from "../../Services/LangService/ApplicationLang"
+import { useAuth } from "../../auth/authContext"
+import ApiConstants from "../../networking/apiConstants"
+import YusrApiHelper from "../../networking/yusrApiHelper"
+import RoutesService from "../../services/constants/routesService"
+import ApplicationLang from "../../services/langService/applicationLang"
 
 export function SideBarUserData({
   user,
@@ -38,7 +38,7 @@ export function SideBarUserData({
   const sideBarUserDataLang = ApplicationLang.getAppLangText().sideBarUserData;
   
   const LogoutHandler = async() => {
-    let result = await YusrApiHelper.Post(
+    const result = await YusrApiHelper.Post(
       `${ApiConstants.baseUrl}/Logout`
     );
 

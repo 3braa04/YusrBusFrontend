@@ -1,5 +1,5 @@
-import type { DialogMode } from "@/app/core/components/Dialogs/DialogType";
-import type BaseApiService from "@/app/core/Networking/BaseApiService";
+import type { DialogMode } from "@/app/core/components/dialogs/dialogType";
+import type BaseApiService from "@/app/core/networking/baseApiService";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";

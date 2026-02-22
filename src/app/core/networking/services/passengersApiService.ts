@@ -1,5 +1,5 @@
-import type { Passenger } from "@/app/features/Passengers/Data/Passenger";
-import BaseApiService from "../BaseApiService";
+import type { Passenger } from "@/app/features/passengers/data/passenger";
+import BaseApiService from "../baseApiService";
 
 export default class PassengersApiService extends BaseApiService<Passenger>
 {

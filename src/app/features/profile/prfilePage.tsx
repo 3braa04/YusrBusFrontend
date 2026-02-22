@@ -1,5 +1,5 @@
-import ProfileContent from "./ProfileContent";
-import ProfileHeader from "./ProfileHeader";
+import ProfileContent from "./profileContent";
+import ProfileHeader from "./profileHeader";
 
 export default function PrfilePage() {
   return (

@@ -1,20 +1,20 @@
-import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
-import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
-import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
-import useDialog from "@/app/core/Hooks/useDialog";
-import useEntities from "@/app/core/Hooks/useEntities";
-import TripsApiService from "@/app/core/Networking/Services/TripsApiService";
+import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
+import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
+import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
+import useDialog from "@/app/core/hooks/useDialog";
+import useEntities from "@/app/core/hooks/useEntities";
+import TripsApiService from "@/app/core/networking/services/tripsApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
 import { Building } from "lucide-react";
-import SearchInput from "../../../core/components/Input/SearchInput";
-import BranchRow from "../../../core/components/Table/TableBodyRow";
-import TableCard from "../../../core/components/Table/TableCard";
-import TableHeader from "../../../core/components/Table/TableHeader";
-import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
-import TablePagination from "../../../core/components/Table/TablePagination";
-import type { Trip } from "../Data/Trip";
-import ChangeTripDialog from "./ChangeTripDialog";
+import SearchInput from "../../../core/components/input/searchInput";
+import BranchRow from "../../../core/components/table/tableBodyRow";
+import TableCard from "../../../core/components/table/tableCard";
+import TableHeader from "../../../core/components/table/tableHeader";
+import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
+import TablePagination from "../../../core/components/table/tablePagination";
+import type { Trip } from "../data/trip";
+import ChangeTripDialog from "./changeTripDialog";
 
 export default function TripsPage() {
   const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(

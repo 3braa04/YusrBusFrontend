@@ -1,7 +1,7 @@
-import { Dashboard } from "../../Data/Dashboard";
-import type { RequestResult } from "../../Data/RequestResult";
-import ApiConstants from "../ApiConstants";
-import YusrApiHelper from "../YusrApiHelper";
+import { Dashboard } from "../../data/dashboard";
+import type { RequestResult } from "../../data/requestResult";
+import ApiConstants from "../apiConstants";
+import YusrApiHelper from "../yusrApiHelper";
 
 export default class DashboardApiService
 {

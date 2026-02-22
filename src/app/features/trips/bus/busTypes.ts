@@ -1,4 +1,4 @@
-import type { Ticket } from "../Data/Ticket";
+import type { Ticket } from "../data/ticket";
 
 export interface SeatType {
   id: number;

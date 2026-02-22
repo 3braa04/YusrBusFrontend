@@ -1,20 +1,20 @@
-import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
-import Loading from "@/app/core/components/Loading/Loading";
-import useEntities from "@/app/core/Hooks/useEntities";
-import { useTripForm } from "@/app/core/Hooks/useTripForm";
-import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
-import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
+import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import Loading from "@/app/core/components/loading/loading";
+import useEntities from "@/app/core/hooks/useEntities";
+import { useTripForm } from "@/app/core/hooks/useTripForm";
+import PassengersApiService from "@/app/core/networking/services/passengersApiService";
+import RoutesApiService from "@/app/core/networking/services/routesApiService";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
-import type { Passenger } from "../../Passengers/Data/Passenger";
-import ChangePassengerDialog from "../../Passengers/Presentation/ChangePassengerDialog";
-import type { Route } from "../../Routes/Data/Route";
-import Bus from "../Bus/Bus";
-import type { SeatType } from "../Bus/BusTypes";
-import { Ticket } from "../Data/Ticket";
-import type { Trip } from "../Data/Trip";
-import ChangeTicketDialog from "./ChangeTicketDialog";
-import TripSidePanel from "./TripSidePanel";
+import type { Passenger } from "../../passengers/data/passenger";
+import ChangePassengerDialog from "../../passengers/presentation/changePassengerDialog";
+import type { Route } from "../../routes/data/route";
+import Bus from "../bus/bus";
+import type { SeatType } from "../bus/busTypes";
+import { Ticket } from "../data/ticket";
+import type { Trip } from "../data/trip";
+import ChangeTicketDialog from "./changeTicketDialog";
+import TripSidePanel from "./tripSidePanel";
 
 export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChangeDialogProps<Trip>) {
   const {

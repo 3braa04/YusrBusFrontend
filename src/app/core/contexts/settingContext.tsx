@@ -1,6 +1,6 @@
-import { Setting } from "@/app/core/Data/Setting";
+import { Setting } from "@/app/core/data/setting";
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { ContextConstants } from "./ContextConstants";
+import { ContextConstants } from "./contextConstants";
 
 type SettingContextType = {
   setting: Partial<Setting> | undefined;

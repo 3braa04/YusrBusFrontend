@@ -1,6 +1,6 @@
-import TripsApiService from "@/app/core/Networking/Services/TripsApiService";
-import type { Ticket } from "@/app/features/Trips/Data/Ticket";
-import type { Trip } from "@/app/features/Trips/Data/Trip";
+import TripsApiService from "@/app/core/networking/services/tripsApiService";
+import type { Ticket } from "@/app/features/trips/data/ticket";
+import type { Trip } from "@/app/features/trips/data/trip";
 import { useEffect, useState } from "react";
 
 export function useTripForm(entity: Trip | undefined, mode: string) {

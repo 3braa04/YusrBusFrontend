@@ -1,5 +1,5 @@
-import type { Trip } from "@/app/features/Trips/Data/Trip";
-import BaseApiService from "../BaseApiService";
+import type { Trip } from "@/app/features/trips/data/trip";
+import BaseApiService from "../baseApiService";
 
 export default class TripsApiService extends BaseApiService<Trip>
 {

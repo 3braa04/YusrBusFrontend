@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { Country } from "../Data/Country";
-import CountriesApiService from "../Networking/Services/CountriesApiService";
+import type { Country } from "../data/country";
+import CountriesApiService from "../networking/services/countriesApiService";
 
 export default function useCountries() {
   const [countries, setCountries] = useState<Country[]>([]);

@@ -1,13 +1,13 @@
-import SaveButton from "@/app/core/components/Buttons/SaveButton";
-import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
-import Loading from "@/app/core/components/Loading/Loading";
-import useCities from "@/app/core/Hooks/useCities";
+import SaveButton from "@/app/core/components/buttons/saveButton";
+import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import Loading from "@/app/core/components/loading/loading";
+import useCities from "@/app/core/hooks/useCities";
 import {
   useFormValidation,
   type ValidationRule,
-} from "@/app/core/Hooks/useFormValidation";
-import RoutesApiService from "@/app/core/Networking/Services/RoutesApiService";
-import { Validators } from "@/app/core/utils/Validators";
+} from "@/app/core/hooks/useFormValidation";
+import RoutesApiService from "@/app/core/networking/services/routesApiService";
+import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -30,7 +30,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Route, RouteStation } from "../Data/Route";
+import { Route, RouteStation } from "../data/route";
 
 export default function ChangeRouteDialog({
   entity,
@@ -67,7 +67,7 @@ export default function ChangeRouteDialog({
 
       getRoute();
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setFormData((prev) => ({ ...prev, routeStations: [] }));
     }
   }, [entity?.id, mode]);

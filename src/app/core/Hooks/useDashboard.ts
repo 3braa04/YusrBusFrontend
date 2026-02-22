@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Dashboard } from "../Data/Dashboard";
-import DashboardApiService from "../Networking/Services/DashboardApiService";
+import { Dashboard } from "../data/dashboard";
+import DashboardApiService from "../networking/services/dashboardApiService";
 
 export default function useDashbaord()
 {

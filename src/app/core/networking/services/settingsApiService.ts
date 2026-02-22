@@ -1,7 +1,7 @@
-import type { RequestResult } from "../../Data/RequestResult";
-import type { Setting } from "../../Data/Setting";
-import ApiConstants from "../ApiConstants";
-import YusrApiHelper from "../YusrApiHelper";
+import type { RequestResult } from "../../data/requestResult";
+import type { Setting } from "../../data/setting";
+import ApiConstants from "../apiConstants";
+import YusrApiHelper from "../yusrApiHelper";
 
 export default class SettingsApiService
 {

@@ -16,15 +16,15 @@ import {
   UsersIcon,
 } from "lucide-react";
 import * as React from "react";
-import { useLoggedInUser } from "../../Contexts/LoggedInUserContext";
-import { useSetting } from "../../Contexts/SettingContext";
-import ApplicationLang from "../../Services/LangService/ApplicationLang";
-import SidebarLogo from "./SidebarLogo";
+import { useLoggedInUser } from "../../contexts/loggedInUserContext";
+import { useSetting } from "../../contexts/settingContext";
+import ApplicationLang from "../../services/langService/applicationLang";
+import SidebarLogo from "./sidebarLogo";
 
-import { SideBarCompanyData } from "./SideBarCompanyData";
-import { SideBarMainMenu } from "./SideBarMainMenu";
-import { SideBarSecondaryMenu } from "./SideBarSecondaryMenu";
-import { SideBarUserData } from "./SideBarUserData";
+import { SideBarCompanyData } from "./sideBarCompanyData";
+import { SideBarMainMenu } from "./sideBarMainMenu";
+import { SideBarSecondaryMenu } from "./sideBarSecondaryMenu";
+import { SideBarUserData } from "./sideBarUserData";
 
 const appLang = ApplicationLang.getAppLangText();
 const appLangSections = appLang.sections;

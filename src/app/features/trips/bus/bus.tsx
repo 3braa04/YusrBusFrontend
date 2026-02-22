@@ -1,10 +1,10 @@
-import { useBusLogic } from "@/app/core/Hooks/useBusLogic";
+import { useBusLogic } from "@/app/core/hooks/useBusLogic";
 import { Button } from "@/components/ui/button";
 import { Baby, Plus, ShipWheel, XCircle } from "lucide-react";
-import type { Ticket } from "../Data/Ticket";
-import BusSeat from "./BusSeat";
-import type { BusProps, SeatType } from "./BusTypes";
-import BusLoadingSkeleton from "./BusLoadingSkeleton";
+import type { Ticket } from "../data/ticket";
+import BusSeat from "./busSeat";
+import type { BusProps, SeatType } from "./busTypes";
+import BusLoadingSkeleton from "./busLoadingSkeleton";
 
 export default function BusLayout({
   seats,

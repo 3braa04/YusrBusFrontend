@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { AuthConstants } from "./AuthConstants";
-import { useSetting } from "../Contexts/SettingContext";
-import { useLoggedInUser } from "../Contexts/LoggedInUserContext";
+import { AuthConstants } from "./authConstants";
+import { useSetting } from "../contexts/settingContext";
+import { useLoggedInUser } from "../contexts/loggedInUserContext";
 
 const AuthContext = createContext<{
   isAuthenticated: boolean;

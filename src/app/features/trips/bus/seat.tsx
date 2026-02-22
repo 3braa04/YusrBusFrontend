@@ -1,4 +1,4 @@
-import type { SeatType } from './BusTypes';
+import type { SeatType } from './busTypes';
 
 interface SeatProps {
   seat: SeatType;

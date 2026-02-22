@@ -1,6 +1,6 @@
-import YusrBusBackground from '@/app/core/components/Background/YusrBusBackground';
-import Lightbox from '@/app/core/components/Images/Lightbox';
-import useLightBox from '@/app/core/Hooks/useLightBox';
+import YusrBusBackground from '@/app/core/components/background/yusrBusBackground';
+import Lightbox from '@/app/core/components/images/lightbox';
+import useLightBox from '@/app/core/hooks/useLightBox';
 import { Separator } from '@/components/ui/separator';
 import {
   Bus,
@@ -14,12 +14,12 @@ import {
   ShieldCheck,
   Users
 } from 'lucide-react';
-import LandingFeatures from './LandingFeatures';
-import LandingFooter from './LandingFooter';
-import LandingHeader from './LandingHeader';
-import LandingHero from './LandingHero';
-import LandingSystemPreview from './LandingSystemPreview';
-import LandingWhyUs from './LandingWhyUs';
+import LandingFeatures from './landingFeatures';
+import LandingFooter from './landingFooter';
+import LandingHeader from './landingHeader';
+import LandingHero from './landingHero';
+import LandingSystemPreview from './landingSystemPreview';
+import LandingWhyUs from './landingWhyUs';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 

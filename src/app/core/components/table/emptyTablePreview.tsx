@@ -8,7 +8,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "../Empty";
+} from "../empty";
 type EmptyTableMode = "empty" | "loading" | "error";
 
 type EmptyTablePreviewProps = {

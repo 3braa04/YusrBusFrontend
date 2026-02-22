@@ -1,5 +1,5 @@
-import type Branch from "@/app/features/branches/data/Branch";
-import BaseApiService from "../BaseApiService";
+import type Branch from "@/app/features/branches/data/branch";
+import BaseApiService from "../baseApiService";
 
 export default class BranchesApiService extends BaseApiService<Branch>
 {

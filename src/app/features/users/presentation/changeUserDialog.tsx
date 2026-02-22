@@ -1,3 +1,8 @@
+import SaveButton from "@/app/core/components/buttons/saveButton";
+import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
+import UsersApiService from "@/app/core/networking/services/usersApiService";
+import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -10,8 +15,6 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import type User from "../Data/User";
 import {
   Select,
   SelectContent,
@@ -19,12 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
-import UsersApiService from "@/app/core/Networking/Services/UsersApiService";
-import SaveButton from "@/app/core/components/Buttons/SaveButton";
+import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
-import { useFormValidation, type ValidationRule } from "@/app/core/Hooks/useFormValidation";
-import { Validators } from "@/app/core/utils/Validators";
+import type User from "../data/user";
 
 export default function ChangeUserDialog({
   entity,

@@ -3,7 +3,7 @@ import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle
 import { Separator } from "@/components/ui/separator";
 import { Loader2, OctagonAlert } from "lucide-react";
 import { useState } from "react";
-import type BaseApiService from "../../Networking/BaseApiService";
+import type BaseApiService from "../../networking/baseApiService";
 
 interface Props<T> {
     entityName: string;

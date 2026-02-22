@@ -1,4 +1,4 @@
-import type { SeatType } from "@/app/features/Trips/Bus/BusTypes";
+import type { SeatType } from "@/app/features/trips/bus/busTypes";
 import type { Ticket } from "@/app/features/Trips/Data/Ticket";
 import { useMemo, useState } from "react";
 

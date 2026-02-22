@@ -1,5 +1,5 @@
-import type User from "@/app/features/Users/Data/User";
-import BaseApiService from "../BaseApiService";
+import type User from "@/app/features/users/data/user";
+import BaseApiService from "../baseApiService";
 
 export default class UsersApiService extends BaseApiService<User>
 {

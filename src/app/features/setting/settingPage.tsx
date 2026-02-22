@@ -1,13 +1,13 @@
-import { useSetting } from "@/app/core/Contexts/SettingContext";
-import { Setting } from "@/app/core/Data/Setting";
-import useCurrencies from "@/app/core/Hooks/useCurrencies";
+import { useSetting } from "@/app/core/contexts/settingContext";
+import { Setting } from "@/app/core/data/setting";
+import useCurrencies from "@/app/core/hooks/useCurrencies";
 import {
   useFormValidation,
   type ValidationRule,
-} from "@/app/core/Hooks/useFormValidation";
-import useStorageFile from "@/app/core/Hooks/useStorageFile";
-import SettingsApiService from "@/app/core/Networking/Services/SettingsApiService";
-import { Validators } from "@/app/core/utils/Validators";
+} from "@/app/core/hooks/useFormValidation";
+import useStorageFile from "@/app/core/hooks/useStorageFile";
+import SettingsApiService from "@/app/core/networking/services/settingsApiService";
+import { Validators } from "@/app/core/utils/validators";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {

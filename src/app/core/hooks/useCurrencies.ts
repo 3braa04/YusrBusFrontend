@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import type { Currency } from "../Data/Currency";
-import CurrenciesApiService from "../Networking/Services/CurrenciesApiService";
+import type { Currency } from "../data/currency";
+import CurrenciesApiService from "../networking/services/currenciesApiService";
 
 export default function useCurrencies() {
   const [currencies, setCurrencies] = useState<Currency[]>([]);

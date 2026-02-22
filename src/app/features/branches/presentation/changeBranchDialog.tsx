@@ -1,7 +1,7 @@
-import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
-import { useFormValidation, type ValidationRule } from "@/app/core/Hooks/useFormValidation";
-import BranchesApiService from "@/app/core/Networking/Services/BranchesApiService";
-import { Validators } from "@/app/core/utils/Validators";
+import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
+import BranchesApiService from "@/app/core/networking/services/branchesApiService";
+import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -23,9 +23,9 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
-import SaveButton from "../../../core/components/Buttons/SaveButton";
-import useCities from "../../../core/Hooks/useCities";
-import type Branch from "../data/Branch";
+import SaveButton from "../../../core/components/buttons/saveButton";
+import useCities from "../../../core/hooks/useCities";
+import type Branch from "../data/branch";
 
 export default function ChangeBranchDialog({
   entity,

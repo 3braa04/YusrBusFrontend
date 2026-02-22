@@ -1,13 +1,13 @@
-import { AuthConstants } from "@/app/core/Auth/AuthConstants";
-import { useAuth } from "@/app/core/Auth/AuthContext";
-import { useLoggedInUser } from "@/app/core/Contexts/LoggedInUserContext";
-import { useSetting } from "@/app/core/Contexts/SettingContext";
-import { LoginRequest } from "@/app/core/Data/LoginRequest";
-import { useFormValidation, type ValidationRule } from "@/app/core/Hooks/useFormValidation";
-import ApiConstants from "@/app/core/Networking/ApiConstants";
-import SettingsApiService from "@/app/core/Networking/Services/SettingsApiService";
-import YusrApiHelper from "@/app/core/Networking/YusrApiHelper";
-import { Validators } from "@/app/core/utils/Validators";
+import { AuthConstants } from "@/app/core/auth/authConstants";
+import { useAuth } from "@/app/core/auth/authContext";
+import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
+import { useSetting } from "@/app/core/contexts/settingContext";
+import { LoginRequest } from "@/app/core/data/loginRequest";
+import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
+import ApiConstants from "@/app/core/networking/apiConstants";
+import SettingsApiService from "@/app/core/networking/services/settingsApiService";
+import YusrApiHelper from "@/app/core/networking/yusrApiHelper";
+import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import type User from "../Users/Data/User";
+import type User from "../users/data/user";
 
 export function LoginForm({
   className,
@@ -62,7 +62,7 @@ export function LoginForm({
     if(!validate())
       return;
 
-    let request = new LoginRequest({
+    const request = new LoginRequest({
       companyEmail: formData.companyEmail,
       username: formData.username,
       password: formData.password,
@@ -70,7 +70,7 @@ export function LoginForm({
 
     setLoading(true);
 
-    let result = await YusrApiHelper.Post<User>(
+    const result = await YusrApiHelper.Post<User>(
       `${ApiConstants.baseUrl}/Login`,
       request,
     );
@@ -78,7 +78,7 @@ export function LoginForm({
     if(result.status === 200){
       login();
 
-      let setting = await new SettingsApiService().Filter();
+      const setting = await new SettingsApiService().Filter();
       if(setting.data)
         updateSetting(setting.data);
 

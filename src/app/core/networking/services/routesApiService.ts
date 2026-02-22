@@ -1,5 +1,5 @@
-import type { Route } from "@/app/features/Routes/Data/Route";
-import BaseApiService from "../BaseApiService";
+import type { Route } from "@/app/features/routes/data/route";
+import BaseApiService from "../baseApiService";
 
 export default class RoutesApiService extends BaseApiService<Route>
 {

@@ -1,4 +1,4 @@
-import ZoomableImage from "@/app/core/components/Images/ZoomableImage";
+import ZoomableImage from "@/app/core/components/images/zoomableImage";
 import type { LucideProps } from "lucide-react";
 
 

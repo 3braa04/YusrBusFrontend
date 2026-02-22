@@ -1,5 +1,5 @@
-import { AuthConstants } from "../Auth/AuthConstants";
-import type { RequestResult } from "../Data/RequestResult";
+import { AuthConstants } from "../auth/authConstants";
+import type { RequestResult } from "../data/requestResult";
 
 export default class YusrApiHelper 
 {

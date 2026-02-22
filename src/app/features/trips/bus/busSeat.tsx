@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { SeatProps } from "./BusTypes";
+import type { SeatProps } from "./busTypes";
 import {
   ContextMenu,
   ContextMenuContent,

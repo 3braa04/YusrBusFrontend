@@ -1,20 +1,20 @@
-import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
-import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
-import useDialog from "@/app/core/Hooks/useDialog";
-import useEntities from "@/app/core/Hooks/useEntities";
-import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
+import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
+import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
+import useDialog from "@/app/core/hooks/useDialog";
+import useEntities from "@/app/core/hooks/useEntities";
+import PassengersApiService from "@/app/core/networking/services/passengersApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
 import { Building } from "lucide-react";
-import SearchInput from "../../../core/components/Input/SearchInput";
-import BranchRow from "../../../core/components/Table/TableBodyRow";
-import TableCard from "../../../core/components/Table/TableCard";
-import TableHeader from "../../../core/components/Table/TableHeader";
-import TableHeaderRows from "../../../core/components/Table/TableHeaderRows";
-import TablePagination from "../../../core/components/Table/TablePagination";
-import { Passenger } from "../Data/Passenger";
-import ChangePassengerDialog from "./ChangePassengerDialog";
-import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
+import SearchInput from "../../../core/components/input/searchInput";
+import BranchRow from "../../../core/components/table/tableBodyRow";
+import TableCard from "../../../core/components/table/tableCard";
+import TableHeader from "../../../core/components/table/tableHeader";
+import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
+import TablePagination from "../../../core/components/table/tablePagination";
+import { Passenger } from "../data/passenger";
+import ChangePassengerDialog from "./changePassengerDialog";
+import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 
 export default function PassengersPage() {
   const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Passenger>(

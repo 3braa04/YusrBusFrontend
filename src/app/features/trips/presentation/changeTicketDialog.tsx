@@ -1,4 +1,9 @@
-import useCities from "@/app/core/Hooks/useCities";
+import useCities from "@/app/core/hooks/useCities";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/hooks/useFormValidation";
+import { Validators } from "@/app/core/utils/validators"; // تم تصغير v في validators
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -30,13 +35,8 @@ import { arSA } from "date-fns/locale";
 import { ChevronDownIcon, Edit, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
-import type { Passenger } from "../../Passengers/Data/Passenger";
-import type { Ticket } from "../Data/Ticket";
-import {
-  useFormValidation,
-  type ValidationRule,
-} from "@/app/core/Hooks/useFormValidation";
-import { Validators } from "@/app/core/utils/Validators";
+import type { Passenger } from "../../passengers/data/passenger";
+import type { Ticket } from "../data/ticket"; 
 
 type ChangeTicketDialogProps = {
   entity?: Ticket;

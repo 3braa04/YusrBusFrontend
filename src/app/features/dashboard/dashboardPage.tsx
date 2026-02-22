@@ -1,8 +1,8 @@
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { SectionCards } from "@/components/section-cards";
 
-import useDashbaord from "@/app/core/Hooks/useDashboard";
-import TripsPage from "../Trips/Presentation/TripsPage";
+import useDashbaord from "@/app/core/hooks/useDashboard";
+import TripsPage from "../trips/presentation/tripsPage";
 
 export default function DashboardPage() {
     const {data} = useDashbaord();

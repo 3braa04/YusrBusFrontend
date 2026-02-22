@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import type { BaseEntity } from "../Data/BaseEntity";
-import type { FilterResult } from "../Data/FilterResult";
-import BaseApiService from "../Networking/BaseApiService";
+import type { BaseEntity } from "../data/baseEntity";
+import type { FilterResult } from "../data/filterResult";
+import BaseApiService from "../networking/baseApiService";
 
 export default function useEntities<T extends BaseEntity>(service: BaseApiService<T>) 
 {

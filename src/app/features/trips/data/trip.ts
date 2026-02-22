@@ -1,6 +1,6 @@
-import { BaseEntity } from "@/app/core/Data/BaseEntity";
-import type { Route } from "../../Routes/Data/Route";
-import type { Ticket } from "./Ticket";
+import { BaseEntity } from "@/app/core/data/baseEntity";
+import type { Route } from "../../routes/data/route";
+import type { Ticket } from "./ticket";
 
 export class Trip extends BaseEntity
 {

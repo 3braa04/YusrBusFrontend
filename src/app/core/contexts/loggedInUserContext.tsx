@@ -1,4 +1,4 @@
-import type User from "@/app/features/Users/Data/User";
+import type User from "@/app/features/users/data/user";
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { ContextConstants } from "./ContextConstants";
 

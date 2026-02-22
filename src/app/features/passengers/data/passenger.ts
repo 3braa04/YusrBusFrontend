@@ -1,5 +1,5 @@
-import { BaseEntity } from "@/app/core/Data/BaseEntity";
-import { Country } from "@/app/core/Data/Country";
+import { BaseEntity } from "@/app/core/data/baseEntity";
+import { Country } from "@/app/core/data/country";
 
 export class Passenger extends BaseEntity
 {

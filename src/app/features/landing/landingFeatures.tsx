@@ -1,4 +1,4 @@
-import ZoomableImage from "@/app/core/components/Images/ZoomableImage";
+import ZoomableImage from "@/app/core/components/images/zoomableImage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, CheckCircle2, Link, type LucideProps } from "lucide-react";

@@ -1,5 +1,5 @@
-import type { City } from "@/app/core/Data/City";
-import CitiesApiService from "@/app/core/Networking/Services/CitiesApiService";
+import type { City } from "@/app/core/data/city";
+import CitiesApiService from "@/app/core/networking/services/citiesApiService";
 import { useEffect, useState } from "react";
 
 export default function useCities() {

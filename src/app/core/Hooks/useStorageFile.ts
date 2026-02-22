@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import { StorageFile, StorageFileStatus } from "../Data/StorageFile";
-import type { Setting } from "../Data/Setting";
+import { StorageFile, StorageFileStatus } from "../data/storageFile";
+import type { Setting } from "../data/setting";
 
 export default function useStorageFile(setFormData: React.Dispatch<React.SetStateAction<Setting>>) {
 

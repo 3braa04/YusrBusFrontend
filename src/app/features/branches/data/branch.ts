@@ -1,4 +1,4 @@
-import { BaseEntity } from "@/app/core/Data/BaseEntity";
+import { BaseEntity } from "@/app/core/data/baseEntity";
 
 export default class Branch extends BaseEntity
 {

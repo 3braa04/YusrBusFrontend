@@ -1,5 +1,5 @@
-import { BaseEntity } from "@/app/core/Data/BaseEntity";
-import type { Passenger } from "../../Passengers/Data/Passenger";
+import { BaseEntity } from "@/app/core/data/baseEntity";
+import type { Passenger } from "../../passengers/data/passenger";
 
 export class Ticket extends BaseEntity
 {

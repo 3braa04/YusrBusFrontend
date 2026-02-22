@@ -1,6 +1,6 @@
 import AppText from './app_text.json';
-import { LangConstants } from './LangConstants';
-import type { Languages } from './Languages';
+import { LangConstants } from './langConstants';
+import type { Languages } from './languages';
 
 export default class ApplicationLang
 {

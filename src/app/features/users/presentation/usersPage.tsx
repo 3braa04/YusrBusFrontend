@@ -1,21 +1,21 @@
-import DeleteDialog from "@/app/core/components/Dialogs/DeleteDialog";
-import SearchInput from "@/app/core/components/Input/SearchInput";
-import EmptyTablePreview from "@/app/core/components/Table/EmptyTablePreview";
-import TableBodyRow from "@/app/core/components/Table/TableBodyRow";
-import TableCard from "@/app/core/components/Table/TableCard";
-import TableHeader from "@/app/core/components/Table/TableHeader";
-import TableHeaderRows from "@/app/core/components/Table/TableHeaderRows";
-import TablePagination from "@/app/core/components/Table/TablePagination";
-import TableRowActionsMenu from "@/app/core/components/Table/TableRowActionsMenu";
-import { useLoggedInUser } from "@/app/core/Contexts/LoggedInUserContext";
-import useDialog from "@/app/core/Hooks/useDialog";
-import useEntities from "@/app/core/Hooks/useEntities";
-import UsersApiService from "@/app/core/Networking/Services/UsersApiService";
+import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
+import SearchInput from "@/app/core/components/input/searchInput";
+import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
+import TableBodyRow from "@/app/core/components/table/tableBodyRow";
+import TableCard from "@/app/core/components/table/tableCard";
+import TableHeader from "@/app/core/components/table/tableHeader";
+import TableHeaderRows from "@/app/core/components/table/tableHeaderRows";
+import TablePagination from "@/app/core/components/table/tablePagination";
+import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
+import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
+import useDialog from "@/app/core/hooks/useDialog";
+import useEntities from "@/app/core/hooks/useEntities";
+import UsersApiService from "@/app/core/networking/services/usersApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
 import { User2Icon } from "lucide-react";
-import User from "../Data/User";
-import ChangeUserDialog from "./ChangeUserDialog";
+import User from "../data/user";
+import ChangeUserDialog from "./changeUserDialog";
 
 export default function UsersPage() {
   const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<User>(

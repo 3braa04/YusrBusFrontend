@@ -1,5 +1,5 @@
-import { Currency } from "./Currency";
-import type { StorageFile } from "./StorageFile";
+import { Currency } from "./currency";
+import type { StorageFile } from "./storageFile";
 
 export class Setting
 {

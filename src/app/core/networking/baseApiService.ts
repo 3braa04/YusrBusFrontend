@@ -1,7 +1,7 @@
-import type { FilterResult } from "../Data/FilterResult";
-import type { RequestResult } from "../Data/RequestResult";
-import ApiConstants from "./ApiConstants";
-import YusrApiHelper from "./YusrApiHelper";
+import type { FilterResult } from "../data/filterResult";
+import type { RequestResult } from "../data/requestResult";
+import ApiConstants from "./apiConstants";
+import YusrApiHelper from "./yusrApiHelper";
 
  export default abstract class BaseApiService<T>
  {

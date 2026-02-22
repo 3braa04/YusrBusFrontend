@@ -1,5 +1,12 @@
-import type { CummonChangeDialogProps } from "@/app/core/components/Dialogs/CummonChangeDialogProps";
-import useCountries from "@/app/core/Hooks/useCountries";
+import SaveButton from "@/app/core/components/buttons/saveButton";
+import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import useCountries from "@/app/core/hooks/useCountries";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/hooks/useFormValidation";
+import PassengersApiService from "@/app/core/networking/services/passengersApiService";
+import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -31,14 +38,7 @@ import { arSA } from "date-fns/locale";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
-import type { Gender, Passenger } from "../Data/Passenger";
-import SaveButton from "@/app/core/components/Buttons/SaveButton";
-import PassengersApiService from "@/app/core/Networking/Services/PassengersApiService";
-import {
-  useFormValidation,
-  type ValidationRule,
-} from "@/app/core/Hooks/useFormValidation";
-import { Validators } from "@/app/core/utils/Validators";
+import type { Gender, Passenger } from "../data/passenger";
 
 export default function ChangePassengerDialog({
   entity,

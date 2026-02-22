@@ -1,4 +1,4 @@
-import type { Country } from "./Country";
+import type { Country } from "./country";
 
 export class City
 {

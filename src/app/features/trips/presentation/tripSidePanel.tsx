@@ -1,8 +1,6 @@
-import { format } from "date-fns";
-import { ChevronDownIcon } from "lucide-react";
-import { arSA as arSADayPicker } from "react-day-picker/locale";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { DialogClose } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,18 +16,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DialogClose } from "@/components/ui/dialog";
-import SaveButton from "@/app/core/components/Buttons/SaveButton";
-import TripsApiService from "@/app/core/Networking/Services/TripsApiService";
-import type { Trip } from "../Data/Trip";
-import type { Route } from "../../Routes/Data/Route";
-import TripStationsList from "./TripStationsList";
+import { format } from "date-fns";
+import { ChevronDownIcon } from "lucide-react";
+import { arSA as arSADayPicker } from "react-day-picker/locale";
+import SaveButton from "@/app/core/components/buttons/saveButton";
 import {
   useFormValidation,
   type ValidationRule,
-} from "@/app/core/Hooks/useFormValidation";
-import { Validators } from "@/app/core/utils/Validators";
+} from "@/app/core/hooks/useFormValidation";
+import TripsApiService from "@/app/core/networking/services/tripsApiService";
+import { Validators } from "@/app/core/utils/validators";
 import { cn } from "@/lib/utils";
+import type { Route } from "../../routes/data/route";
+import type { Trip } from "../data/trip";
+import TripStationsList from "./tripStationsList";
 
 interface TripSidePanelProps {
   entityId?: number;
