@@ -1,5 +1,10 @@
 import { useSidebar } from "@/components/ui/sidebar";
 
+import logoOnlyLight from "@/assets/yusrLogoOnly_Light.png";
+import logoOnlyDark from "@/assets/yusrLogoOnly_Dark.png";
+import logoFullLight from "@/assets/yusrBusLogoRTL_Light.png";
+import logoFullDark from "@/assets/yusrBusLogoRTL_Dark.png";
+
 export default function SidebarLogo() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
@@ -10,15 +15,15 @@ export default function SidebarLogo() {
         ${isCollapsed ? "w-8" : "w-35 px-2"} 
     `}>
         <img 
-        src={isCollapsed? 'src/assets/YusrLogoOnly_Light.png' : 'src/assets/YusrBusLogoRTL_Light.png'}
-        alt="Yusr Logo" 
-        className="block dark:hidden transition-all duration-300 h-auto object-contain w-full" 
+          src={isCollapsed ? logoOnlyLight : logoFullLight}
+          alt="Yusr Logo" 
+          className="block dark:hidden transition-all duration-300 h-auto object-contain w-full" 
         />
         
         <img 
-        src={isCollapsed? 'src/assets/YusrLogoOnly_Dark.png' : 'src/assets/YusrBusLogoRTL_Dark.png'}
-        alt="Yusr Logo" 
-        className="hidden dark:block transition-all duration-300 h-auto object-contain w-full" 
+          src={isCollapsed ? logoOnlyDark : logoFullDark}
+          alt="Yusr Logo" 
+          className="hidden dark:block transition-all duration-300 h-auto object-contain w-full" 
         />
     </div>
   );
