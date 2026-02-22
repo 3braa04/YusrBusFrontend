@@ -1,4 +1,4 @@
-import type { Dashboard } from "@/app/core/data/dashboard2"
+import type { Dashboard } from "@/app/core/data/dashboard";
 import ApplicationLang from "@/app/core/services/langService/applicationLang"
 import {
   Card,
