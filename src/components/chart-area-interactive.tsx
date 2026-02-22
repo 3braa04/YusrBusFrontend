@@ -37,16 +37,6 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-type TripInTimeData = {
-  totalTrips: number
-  date: string
-}
-
-type ChartAreaInteractiveProps = {
-  tripsInTime: TripInTimeData[]
-}
-
-
 const mockTripsInTime = [
   { totalTrips: 3, date: "2026-01-01T00:00:00Z" },
   { totalTrips: 5, date: "2026-01-02T00:00:00Z" },
@@ -149,7 +139,7 @@ const mockTripsInTime = [
   { totalTrips: 8, date: "2026-04-09T00:00:00Z" },
   { totalTrips: 3, date: "2026-04-10T00:00:00Z" }
 ];
-export function ChartAreaInteractive({ tripsInTime }: ChartAreaInteractiveProps) {
+export function ChartAreaInteractive() {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
 
@@ -207,7 +197,7 @@ export function ChartAreaInteractive({ tripsInTime }: ChartAreaInteractiveProps)
         </CardAction>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+        <ChartContainer config={chartConfig} className="aspect-auto h-62.5 w-full">
           <AreaChart data={filteredData}>
             <defs>
               <linearGradient id="fillTrips" x1="0" y1="0" x2="0" y2="1">
