@@ -10,7 +10,7 @@ import { SettingProvider } from "./core/Contexts/SettingContext";
 import RoutesService from "./core/Services/constants/RoutesService";
 import BranchesPage from "./features/branches/presentation/BranchesPage";
 import DashboardPage from "./features/dashboard/dashboardPage";
-import LandingPage from "./features/landing/landingPage";
+import LandingPage from "./features/landing/LandingPage";
 import LoginPage from "./features/login/loginPage";
 import MainPage from "./features/main/mainPage";
 import PassengersPage from "./features/Passengers/Presentation/PassengersPage";

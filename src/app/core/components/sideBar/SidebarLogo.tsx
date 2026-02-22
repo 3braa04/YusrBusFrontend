@@ -7,16 +7,16 @@ export default function SidebarLogo() {
   return (
     <div className={`
         animate-fadeSlide transition-all duration-300 pb-3
-        ${isCollapsed ? "w-8" : "w-24"} 
+        ${isCollapsed ? "w-8" : "w-35 px-2"} 
     `}>
         <img 
-        src={isCollapsed? 'src/assets/YusrLogoOnly_Light.png' : 'src/assets/YusrLogoRTL_Light.png'}
+        src={isCollapsed? 'src/assets/YusrLogoOnly_Light.png' : 'src/assets/YusrBusLogoRTL_Light.png'}
         alt="Yusr Logo" 
         className="block dark:hidden transition-all duration-300 h-auto object-contain w-full" 
         />
         
         <img 
-        src={isCollapsed? 'src/assets/YusrLogoOnly_Dark.png' : 'src/assets/YusrLogoRTL_Dark.png'}
+        src={isCollapsed? 'src/assets/YusrLogoOnly_Dark.png' : 'src/assets/YusrBusLogoRTL_Dark.png'}
         alt="Yusr Logo" 
         className="hidden dark:block transition-all duration-300 h-auto object-contain w-full" 
         />
