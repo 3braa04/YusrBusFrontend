@@ -1,6 +1,7 @@
 //https://legacy.reactjs.org/docs/error-boundaries.html
 
 import React from "react";
+import ErrorFallback from "./ErrorFallback";
 
 interface ErrorBoundaryProps {
   children?: React.ReactNode;
@@ -29,7 +30,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   render() {    
     if (this.state.hasError) {
-      return this.props.fallback || <h1>Something went wrong.</h1>;
+      return this.props.fallback || <ErrorFallback reset={() => this.setState({ hasError: false })} />;
     }
 
     return this.props.children;
