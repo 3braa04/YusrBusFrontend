@@ -1,7 +1,5 @@
-"use client"
-
-import type { Dashboard } from "@/app/core/Data/Dashboard"
-import ApplicationLang from "@/app/core/Services/LangService/ApplicationLang"
+import type { Dashboard } from "@/app/core/data/dashboard2"
+import ApplicationLang from "@/app/core/services/langService/applicationLang"
 import {
   Card,
   CardDescription,

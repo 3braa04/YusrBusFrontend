@@ -1,6 +1,6 @@
 import type User from "@/app/features/users/data/user";
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { ContextConstants } from "./ContextConstants";
+import { ContextConstants } from "./contextConstants";
 
 type LoggedInUserContextType = {
   loggedInUser: Partial<User> | undefined;

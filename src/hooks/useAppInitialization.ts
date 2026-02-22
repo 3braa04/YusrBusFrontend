@@ -1,5 +1,5 @@
-import ApplicationLang from "@/app/core/Services/LangService/ApplicationLang";
-import { Languages } from "@/app/core/Services/LangService/Languages";
+import ApplicationLang from "@/app/core/services/langService/applicationLang";
+import { Languages } from "@/app/core/services/langService/languages";
 import { useEffect, useState } from "react";
 
 export default function useAppInitialization()
