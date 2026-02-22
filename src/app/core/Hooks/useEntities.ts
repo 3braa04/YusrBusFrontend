@@ -30,7 +30,7 @@ export default function useEntities<T extends BaseEntity>(service: BaseApiServic
         return {
           ...prev,
           count: prev.count - 1,
-          data: prev.data?.filter((b) => b.id !== deletedId) ?? null,
+          data: prev.data?.filter((b) => b.id !== deletedId) ?? undefined,
         };
       });
     }
@@ -45,7 +45,7 @@ export default function useEntities<T extends BaseEntity>(service: BaseApiServic
         if (exists) {
           return {
             ...prev,
-            data: prev.data?.map(b => b.id === newData.id ? newData : b) ?? null
+            data: prev.data?.map(b => b.id === newData.id ? newData : b) ?? undefined
           };
         } 
         
