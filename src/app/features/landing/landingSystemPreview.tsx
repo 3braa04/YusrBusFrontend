@@ -1,6 +1,7 @@
 import ZoomableImage from "@/app/core/components/images/zoomableImage";
 import type { LucideProps } from "lucide-react";
-
+import dashboardLight from "@/assets/system/yusrBus_Dashboard_Light.webp";
+import dashboardDark from "@/assets/system/yusrBus_Dashboard_Dark.webp";
 
 export default function LandingSystemPreview({openLightbox, features}: {openLightbox: (srcLight: string, srcDark: string, alt: string) => void, features: {
     icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>;
@@ -31,8 +32,8 @@ export default function LandingSystemPreview({openLightbox, features}: {openLigh
             <span className="mx-auto text-xs text-muted-foreground/60">يُسر بص — لوحة التحكم الرئيسية</span>
           </div>
           <ZoomableImage
-            srcLight="src/assets/System/YusrBus_Dashboard_Light.webp"
-            srcDark="src/assets/System/YusrBus_Dashboard_Dark.webp"
+            srcLight={dashboardLight}
+            srcDark={dashboardDark}
             alt="لوحة التحكم الرئيسية"
             className="w-full object-cover object-top"
             onOpen={openLightbox}
