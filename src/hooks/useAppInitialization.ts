@@ -1,5 +1,5 @@
 import ApplicationLang from "@/app/core/Services/LangService/ApplicationLang";
-import { enLangs } from "@/app/core/Services/LangService/enLangs";
+import { Languages } from "@/app/core/Services/LangService/Languages";
 import { useEffect, useState } from "react";
 
 export default function useAppInitialization()
@@ -12,7 +12,7 @@ export default function useAppInitialization()
 
     if(!userLang) 
     {
-      ApplicationLang.setUserLang(enLangs.ar);
+      ApplicationLang.setUserLang(Languages.ar);
       console.log("language updated");
     }
 

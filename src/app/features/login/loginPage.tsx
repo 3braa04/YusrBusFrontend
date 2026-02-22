@@ -1,5 +1,5 @@
 import YusrBusBackground from "@/app/core/components/Background/YusrBusBackground"
-import { LoginForm } from "../login/loginForm"
+import { LoginForm } from "./LoginForm"
 
 export default function LoginPage() {
   return (

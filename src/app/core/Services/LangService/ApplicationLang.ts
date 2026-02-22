@@ -1,10 +1,10 @@
-import AppText from './app_text.json'
-import { enLangs } from './enLangs';
+import AppText from './app_text.json';
 import { LangConstants } from './LangConstants';
+import type { Languages } from './Languages';
 
 export default class ApplicationLang
 {
-    static setUserLang(lang:enLangs)
+    static setUserLang(lang:Languages)
     {
         localStorage.setItem(LangConstants.langKey,lang);
     }

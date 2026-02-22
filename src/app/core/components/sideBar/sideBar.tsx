@@ -22,9 +22,9 @@ import ApplicationLang from "../../Services/LangService/ApplicationLang";
 import SidebarLogo from "./SidebarLogo";
 
 import { SideBarCompanyData } from "./SideBarCompanyData";
-import { SideBarMainMenu } from "./sideBarMainMenu";
-import { SideBarSecondaryMenu } from "./sideBarSecondaryMenu";
-import { SideBarUserData } from "./sideBarUserData";
+import { SideBarMainMenu } from "./SideBarMainMenu";
+import { SideBarSecondaryMenu } from "./SideBarSecondaryMenu";
+import { SideBarUserData } from "./SideBarUserData";
 
 const appLang = ApplicationLang.getAppLangText();
 const appLangSections = appLang.sections;
