@@ -27,6 +27,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => window.removeEventListener(AuthConstants.UnauthorizedEventName, handleUnauthorized);
   }, []);
 
+  useEffect(() => {
+    const syncAuth = () => {
+      const authStatus = localStorage.getItem(AuthConstants.AuthCheckStorageItemName) === "true";
+      setIsAuthenticated(authStatus);
+    };
+
+    window.addEventListener("storage", syncAuth);
+    return () => window.removeEventListener("storage", syncAuth);
+  }, []);
+
   const login = () => {
     localStorage.setItem(AuthConstants.AuthCheckStorageItemName, "true");
     setIsAuthenticated(true);
