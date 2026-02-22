@@ -18,7 +18,8 @@ import RoutesPage from "./features/Routes/Presentation/RoutesPage";
 import SettingPage from "./features/Setting/SettingPage";
 import TripsPage from "./features/Trips/Presentation/TripsPage";
 import UsersPage from "./features/Users/Presentation/UsersPage";
-import LandingPage from "./features/landing/landingPage";
+import NotFoundPage from "./features/NotFound/NotFoundPage";
+import LandingPage from "./features/landing/LandingPage";
 
 function App() {  
   const { isLoading } = useAppInitialization();
@@ -75,7 +76,7 @@ function AppRoutes() {
           </Route>
         </Route>
 
-        <Route path="*" element={<h1>Page Not Found</h1>} />
+        <Route path="*" element={<NotFoundPage/>} />
       </Routes>
     </Router>
   );
