@@ -21,6 +21,38 @@ import LandingHero from './landingHero';
 import LandingSystemPreview from './landingSystemPreview';
 import LandingWhyUs from './landingWhyUs';
 
+// Trips
+import tripsDark from '@/assets/system/yusrBus_Trips_Dark.webp';
+import tripsLight from '@/assets/system/yusrBus_Trips_Light.webp';
+import changeTripDark from '@/assets/system/yusrBus_ChangeTrip_Dark.webp';
+import changeTripLight from '@/assets/system/yusrBus_ChangeTrip_Light.webp';
+
+// Passengers
+import passengersDark from '@/assets/system/yusrBus_Passengers_Dark.webp';
+import passengersLight from '@/assets/system/yusrBus_Passengers_Light.webp';
+import changePassengerDark from '@/assets/system/yusrBus_ChangePassenger_Dark.webp';
+import changePassengerLight from '@/assets/system/yusrBus_ChangePassenger_Light.webp';
+
+// Routes
+import routesDark from '@/assets/system/yusrBus_Routes_Dark.webp';
+import routesLight from '@/assets/system/yusrBus_Routes_Light.webp';
+import changeRouteDark from '@/assets/system/yusrBus_ChangeRoute_Dark.webp';
+import changeRouteLight from '@/assets/system/yusrBus_ChangeRoute_Light.webp';
+
+// Settings
+import settingDark from '@/assets/system/yusrBus_Setting_Dark.webp';
+import settingLight from '@/assets/system/yusrBus_Setting_Light.webp';
+
+// Users
+import usersDark from '@/assets/system/yusrBus_Users_Dark.webp';
+import usersLight from '@/assets/system/yusrBus_Users_Light.webp';
+import changeUserDark from '@/assets/system/yusrBus_ChangeUser_Dark.webp';
+import changeUserLight from '@/assets/system/yusrBus_ChangeUser_Light.webp';
+
+// Dashboard
+import dashboardDark from '@/assets/system/yusrBus_Dashboard_Dark.webp';
+import dashboardLight from '@/assets/system/yusrBus_Dashboard_Light.webp';
+
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const features = [
@@ -31,10 +63,10 @@ const features = [
     details: ['جدولة الرحلات المتكررة', 'تتبع الحالة لحظياً', 'ربط الرحلة بالمسار والحافلة'],
     cta: 'استعراض الرحلات',
     to: '/trips',
-    screenshotDark: 'src/assets/System/YusrBus_Trips_Dark.webp',
-    screenshotLight: 'src/assets/System/YusrBus_Trips_Light.webp',
-    changeScreenshotDark: 'src/assets/System/YusrBus_ChangeTrip_Dark.webp',
-    changeScreenshotLight: 'src/assets/System/YusrBus_ChangeTrip_Light.webp',
+    screenshotDark: tripsDark,
+    screenshotLight: tripsLight,
+    changeScreenshotDark: changeTripDark,
+    changeScreenshotLight: changeTripLight,
   },
   {
     icon: Users,
@@ -43,10 +75,10 @@ const features = [
     details: ['ملفات شخصية كاملة', 'سجل رحلات مفصّل', 'بحث وتصفية متقدمة'],
     cta: 'استعراض الركاب',
     to: '/passengers',
-    screenshotDark: 'src/assets/System/YusrBus_Passengers_Dark.webp',
-    screenshotLight: 'src/assets/System/YusrBus_Passengers_Light.webp',
-    changeScreenshotDark: 'src/assets/System/YusrBus_ChangePassenger_Dark.webp',
-    changeScreenshotLight: 'src/assets/System/YusrBus_ChangePassenger_Light.webp',
+    screenshotDark: passengersDark,
+    screenshotLight: passengersLight,
+    changeScreenshotDark: changePassengerDark,
+    changeScreenshotLight: changePassengerLight,
   },
   {
     icon: Map,
@@ -55,10 +87,10 @@ const features = [
     details: ['إضافة محطات متعددة', 'ترتيب التسلسل', 'مسارات قابلة لإعادة الاستخدام'],
     cta: 'استعراض المسارات',
     to: '/routes',
-    screenshotDark: 'src/assets/System/YusrBus_Routes_Dark.webp',
-    screenshotLight: 'src/assets/System/YusrBus_Routes_Light.webp',
-    changeScreenshotDark: 'src/assets/System/YusrBus_ChangeRoute_Dark.webp',
-    changeScreenshotLight: 'src/assets/System/YusrBus_ChangeRoute_Light.webp',
+    screenshotDark: routesDark,
+    screenshotLight: routesLight,
+    changeScreenshotDark: changeRouteDark,
+    changeScreenshotLight: changeRouteLight,
   },
   {
     icon: Settings,
@@ -67,10 +99,10 @@ const features = [
     details: ['تغيير الشعار', 'تغيير معلومات الشركة', 'متابعة معلومات الاشتراك'],
     cta: 'استعراض الإعدادات',
     to: '/settings',
-    screenshotDark: 'src/assets/System/YusrBus_Setting_Dark.webp',
-    screenshotLight: 'src/assets/System/YusrBus_Setting_Light.webp',
-    changeScreenshotDark: 'src/assets/System/YusrBus_Setting_Dark.webp',
-    changeScreenshotLight: 'src/assets/System/YusrBus_Setting_Light.webp',
+    screenshotDark: settingDark,
+    screenshotLight: settingLight,
+    changeScreenshotDark: settingDark,
+    changeScreenshotLight: settingLight,
   },
   {
     icon: ShieldCheck,
@@ -79,10 +111,10 @@ const features = [
     details: ['أدوار وصلاحيات مرنة', 'تسجيل نشاط المستخدمين', 'إدارة كلمات المرور'],
     cta: 'استعراض المستخدمين',
     to: '/users',
-    screenshotDark: 'src/assets/System/YusrBus_Users_Dark.webp',
-    screenshotLight: 'src/assets/System/YusrBus_Users_Light.webp',
-    changeScreenshotDark: 'src/assets/System/YusrBus_ChangeUser_Dark.webp',
-    changeScreenshotLight: 'src/assets/System/YusrBus_ChangeUser_Light.webp',
+    screenshotDark: usersDark,
+    screenshotLight: usersLight,
+    changeScreenshotDark: changeUserDark,
+    changeScreenshotLight: changeUserLight,
   },
   {
     icon: LayoutDashboardIcon,
@@ -95,10 +127,10 @@ const features = [
     ],
     cta: 'عرض الإحصائيات',
     to: '/dashboard',
-    screenshotDark: 'src/assets/System/YusrBus_Dashboard_Dark.webp',
-    screenshotLight: 'src/assets/System/YusrBus_Users_Light.webp',
-    changeScreenshotDark: 'src/assets/System/YusrBus_Trips_Dark.webp',
-    changeScreenshotLight: 'src/assets/System/YusrBus_Trips_Light.webp',
+    screenshotDark: dashboardDark,
+    screenshotLight: dashboardLight,
+    changeScreenshotDark: tripsDark,
+    changeScreenshotLight: tripsLight,
   },
 ];
 

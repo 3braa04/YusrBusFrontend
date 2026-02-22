@@ -23,6 +23,8 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type User from "../users/data/user";
 
+import placeholderImg from "@/assets/placeholder.svg";
+
 export function LoginForm({
   className,
   ...props
@@ -187,7 +189,7 @@ export function LoginForm({
           </form>
           <div className="bg-muted relative hidden md:block">
             <img
-              src="src\assets\placeholder.svg"
+              src={placeholderImg}
               alt="Image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />
