@@ -1,4 +1,3 @@
-import { AuthConstants } from "@/app/core/auth/authConstants";
 import { useAuth } from "@/app/core/auth/authContext";
 import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 import { useSetting } from "@/app/core/contexts/settingContext";
@@ -77,24 +76,25 @@ export function LoginForm({
       request,
     );
 
-    if(result.status === 200){
+    if (result.status === 200) {
       login();
 
-      const setting = await new SettingsApiService().Filter();
-      if(setting.data)
-        updateSetting(setting.data);
+      const settingPromise = new SettingsApiService().Filter();
+      settingPromise.then(setting => {
+        if (setting.data) updateSetting(setting.data);
+      });
 
-      if(result.data)
-        updateLoggedInUser(result.data)
+      if (result.data) {
+        updateLoggedInUser(result.data);
+      }
 
       const origin = location.state?.from?.pathname || "/dashboard";
-      navigate(origin, { replace: true });
-      console.log(localStorage.getItem(AuthConstants.AuthCheckStorageItemName))
+      
       setLoading(false);
-    }
-    else{
-      setApiError(result.errorDetails || "حدث خطأ غير متوقع");  
-      setLoading(false);
+
+      setTimeout(() => {
+        navigate(origin, { replace: true });
+      }, 10);
     }
   };
 
