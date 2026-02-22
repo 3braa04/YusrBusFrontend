@@ -10,7 +10,6 @@ import { SettingProvider } from "./core/Contexts/SettingContext";
 import RoutesService from "./core/Services/constants/RoutesService";
 import BranchesPage from "./features/branches/presentation/BranchesPage";
 import DashboardPage from "./features/dashboard/dashboardPage";
-import LandingPage from "./features/landing/LandingPage";
 import LoginPage from "./features/login/loginPage";
 import MainPage from "./features/main/mainPage";
 import PassengersPage from "./features/Passengers/Presentation/PassengersPage";
@@ -19,6 +18,7 @@ import RoutesPage from "./features/Routes/Presentation/RoutesPage";
 import SettingPage from "./features/Setting/SettingPage";
 import TripsPage from "./features/Trips/Presentation/TripsPage";
 import UsersPage from "./features/Users/Presentation/UsersPage";
+import LandingPage from "./features/landing/landingPage";
 
 function App() {  
   const { isLoading } = useAppInitialization();

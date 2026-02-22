@@ -13,7 +13,7 @@ export default function LandingWhyUs({whyUs}: {whyUs: {
     return (
         <section className="mx-auto max-w-6xl px-6 py-20">
             <div className="mb-12 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold">لماذا يُسر بص؟</h2>
+            <h2 className="text-3xl md:text-4xl font-bold">لماذا يُسر باص؟</h2>
             <p className="mt-3 text-muted-foreground">نظام مصمم خصيصاً لاحتياجات شركات النقل — بدون تعقيد وبدون مساومة على الجودة</p>
             </div>
 
@@ -38,7 +38,7 @@ export default function LandingWhyUs({whyUs}: {whyUs: {
 
             {/* Added color to CTA box */}
             <div className="mt-12 rounded-2xl border border-primary/20 bg-primary/5 p-8 text-center">
-            <p className="text-xl font-bold md:text-2xl text-primary">أوقف الفوضى في إدارة رحلاتك — ابدأ مع يُسر بص اليوم</p>
+            <p className="text-xl font-bold md:text-2xl text-primary">أوقف الفوضى في إدارة رحلاتك — ابدأ مع يُسر باص اليوم</p>
             <p className="mt-3 text-muted-foreground">سجّل دخولك وابدأ الاستخدام الفوري دون إعداد معقد</p>
             <Link to="/login">
                 <Button className="mt-6 gap-2 px-8 shadow-md shadow-primary/20" size="lg">
