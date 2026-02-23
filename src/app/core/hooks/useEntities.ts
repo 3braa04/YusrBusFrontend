@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { BaseEntity } from "../data/baseEntity";
 import type { FilterResult } from "../data/filterResult";
 import BaseApiService from "../networking/baseApiService";
+import type { FilterCondition } from "../data/filterCondition";
 
 export default function useEntities<T extends BaseEntity>(service: BaseApiService<T>) 
 {
@@ -11,15 +12,15 @@ export default function useEntities<T extends BaseEntity>(service: BaseApiServic
   const [rowsPerPage, setRowsPerPage] = useState(100);
 
   useEffect(() => {
-    const dataFetch = async () => {
-      setLoading(true);
-      const result = await service.Filter(currentPage, rowsPerPage);
-      setLoading(false);
-
-      if (result.data) setEntities(result.data);
-    };
-    dataFetch();
+    filter();
   }, [currentPage, rowsPerPage]);
+
+  const filter = async (condition?: FilterCondition) => {
+    setLoading(true);
+    const result = await service.Filter(currentPage, rowsPerPage, condition);
+    setLoading(false);
+    if (result.data) setEntities(result.data);
+  };
 
   const refreash = (newData?: T, deletedId?: number) => 
   {
@@ -58,6 +59,6 @@ export default function useEntities<T extends BaseEntity>(service: BaseApiServic
     }   
   };
 
-  return {entities, refreash, isLoading, currentPage, setCurrentPage, setRowsPerPage};
+  return {entities, refreash, filter, isLoading, currentPage, setCurrentPage, setRowsPerPage};
 }
 

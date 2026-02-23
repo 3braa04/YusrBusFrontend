@@ -1,4 +1,5 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
+import type { ColumnName } from "@/app/core/types/ColumnName";
 
 export default class Branch extends BaseEntity
 {
@@ -7,4 +8,12 @@ export default class Branch extends BaseEntity
   public cityName! : string;
 
   constructor(init?: Partial<Branch>) { super(); Object.assign(this, init); }
+}
+
+export class BranchFilterColumns 
+{
+    public static columnsNames: ColumnName[] = [
+        { label: "اسم الفرع", value: "Name" },
+        { label: "رقم الفرع", value: "Id" }, 
+    ];
 }

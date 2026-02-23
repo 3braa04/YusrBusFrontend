@@ -1,3 +1,4 @@
+import type { FilterCondition } from "../data/filterCondition";
 import type { FilterResult } from "../data/filterResult";
 import type { RequestResult } from "../data/requestResult";
 import ApiConstants from "./apiConstants";
@@ -7,9 +8,9 @@ import YusrApiHelper from "./yusrApiHelper";
  {
     abstract routeName : string; 
 
-    async Filter(pageNumber: number, rowsPerPage: number): Promise<RequestResult<FilterResult<T>>> 
+    async Filter(pageNumber: number, rowsPerPage: number, condition?: FilterCondition): Promise<RequestResult<FilterResult<T>>> 
     {        
-        return await YusrApiHelper.Post(`${ApiConstants.baseUrl}/${this.routeName}/Filter?pageNumber=${pageNumber}&rowsPerPage=${rowsPerPage}`);
+        return await YusrApiHelper.Post(`${ApiConstants.baseUrl}/${this.routeName}/Filter?pageNumber=${pageNumber}&rowsPerPage=${rowsPerPage}`, condition);
     }
 
     async Get(id: number): Promise<RequestResult<T>>

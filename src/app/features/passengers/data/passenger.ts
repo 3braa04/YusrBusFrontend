@@ -1,5 +1,6 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
 import { Country } from "@/app/core/data/country";
+import type { ColumnName } from "@/app/core/types/ColumnName";
 
 export class Passenger extends BaseEntity
 {
@@ -24,3 +25,14 @@ export const GENDER = {
   Male: 0 as Gender,
   Female: 1 as Gender,
 } as const;
+
+
+export class PassengerFilterColumns 
+{
+    public static columnsNames: ColumnName[] = [
+      { label: "اسم الراكب", value: "Name" },
+      { label: "رقم الجوال", value: "PhoneNumber" },
+      { label: "رقم جواز السفر", value: "PassportNo" },
+      { label: "رقم الراكب", value: "Id" }, 
+    ];
+}

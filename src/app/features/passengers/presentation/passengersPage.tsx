@@ -12,12 +12,12 @@ import TableCard from "../../../core/components/table/tableCard";
 import TableHeader from "../../../core/components/table/tableHeader";
 import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
-import { Passenger } from "../data/passenger";
+import { Passenger, PassengerFilterColumns } from "../data/passenger";
 import ChangePassengerDialog from "./changePassengerDialog";
 import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 
 export default function PassengersPage() {
-  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Passenger>(
+  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Passenger>(
     new PassengersApiService(),
   );
   const {
@@ -54,7 +54,7 @@ export default function PassengersPage() {
         ]}
       />
 
-      <SearchInput />
+      <SearchInput columnsNames={PassengerFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (

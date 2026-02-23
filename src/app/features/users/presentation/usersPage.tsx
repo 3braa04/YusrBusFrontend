@@ -14,11 +14,12 @@ import UsersApiService from "@/app/core/networking/services/usersApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
 import { User2Icon } from "lucide-react";
-import User from "../data/user";
+import User, { UserFilterColumns } from "../data/user";
 import ChangeUserDialog from "./changeUserDialog";
+import { FilterCondition } from "@/app/core/data/filterCondition";
 
 export default function UsersPage() {
-  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<User>(
+  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<User>(
     new UsersApiService(),
   );
 
@@ -58,7 +59,7 @@ export default function UsersPage() {
           },
         ]}
       />
-      <SearchInput />
+      <SearchInput columnsNames={UserFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (

@@ -1,6 +1,7 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
 import type { Route } from "../../routes/data/route";
 import type { Ticket } from "./ticket";
+import type { ColumnName } from "@/app/core/types/ColumnName";
 
 export class Trip extends BaseEntity
 {
@@ -14,4 +15,14 @@ export class Trip extends BaseEntity
     public tickets! : Ticket[];
 
     constructor(init?: Partial<Trip>) { super(); Object.assign(this, init); }
+}
+
+export class TripFilterColumns 
+{
+    public static columnsNames: ColumnName[] = [
+        { label: "رقم الرحلة", value: "Id" }, 
+        { label: "اسم القائد", value: "MainCaptainName" },
+        { label: "اسم المساعد", value: "SecondaryCaptainName" },
+        { label: "الحافلة", value: "BusName" },
+    ];
 }

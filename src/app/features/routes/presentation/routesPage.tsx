@@ -13,11 +13,11 @@ import TableCard from "../../../core/components/table/tableCard";
 import TableHeader from "../../../core/components/table/tableHeader";
 import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
-import type { Route } from "../data/route";
+import { RouteFilterColumns, type Route } from "../data/route";
 import ChangeRouteDialog from "./changeRouteDialog";
 
 export default function RoutesPage() {
-  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Route>(
+  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Route>(
     new RoutesApiService(),
   );
   const {
@@ -54,7 +54,7 @@ export default function RoutesPage() {
         ]}
       />
 
-      <SearchInput />
+      <SearchInput columnsNames={RouteFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (

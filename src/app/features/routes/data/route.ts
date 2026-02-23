@@ -1,4 +1,5 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
+import type { ColumnName } from "@/app/core/types/ColumnName";
 
 export class Route extends BaseEntity
 { 
@@ -23,4 +24,12 @@ export class RouteStation extends BaseEntity
     public cityName! : string;
 
     constructor(init?: Partial<RouteStation>) { super(); Object.assign(this, init); }
+}
+
+export class RouteFilterColumns 
+{
+    public static columnsNames: ColumnName[] = [
+        { label: "اسم الخط", value: "Name" },
+        { label: "رقم الخط", value: "Id" }, 
+    ];
 }

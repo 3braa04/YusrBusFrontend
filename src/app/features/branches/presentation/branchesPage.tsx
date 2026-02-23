@@ -1,4 +1,5 @@
 import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
+import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
 import useDialog from "@/app/core/hooks/useDialog";
 import useEntities from "@/app/core/hooks/useEntities";
@@ -12,12 +13,11 @@ import TableCard from "../../../core/components/table/tableCard";
 import TableHeader from "../../../core/components/table/tableHeader";
 import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
-import Branch from "../data/branch";
+import Branch, { BranchFilterColumns } from "../data/branch";
 import ChangeBranchDialog from "./changeBranchDialog";
-import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 
 export default function BranchesPage() {
-  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Branch>(
+  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Branch>(
     new BranchesApiService(),
   );
   const {
@@ -59,7 +59,7 @@ export default function BranchesPage() {
         ]}
       />
 
-      <SearchInput />
+      <SearchInput columnsNames={BranchFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (

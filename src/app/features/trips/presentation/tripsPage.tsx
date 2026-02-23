@@ -13,11 +13,11 @@ import TableCard from "../../../core/components/table/tableCard";
 import TableHeader from "../../../core/components/table/tableHeader";
 import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
-import type { Trip } from "../data/trip";
+import { TripFilterColumns, type Trip } from "../data/trip";
 import ChangeTripDialog from "./changeTripDialog";
 
 export default function TripsPage() {
-  const { entities, refreash, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(
+  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(
     new TripsApiService(),
   );
   const {
@@ -54,7 +54,7 @@ export default function TripsPage() {
         ]}
       />
 
-      <SearchInput />
+      <SearchInput columnsNames={TripFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (
