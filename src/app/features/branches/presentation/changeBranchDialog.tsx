@@ -1,5 +1,8 @@
 import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
-import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/hooks/useFormValidation";
 import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
@@ -36,6 +39,10 @@ export default function ChangeBranchDialog({
     id: entity?.id,
     name: entity?.name,
     cityId: entity?.cityId,
+    street: entity?.street,
+    district: entity?.district,
+    buildingNumber: entity?.buildingNumber,
+    postalCode: entity?.postalCode,
   });
 
   const { cities, fetchingCities } = useCities();
@@ -53,10 +60,8 @@ export default function ChangeBranchDialog({
     },
   ];
 
-  const { getError, isInvalid, validate, clearError, errorInputClass } = useFormValidation(
-    formData,
-    validationRules,
-  );
+  const { getError, isInvalid, validate, clearError, errorInputClass } =
+    useFormValidation(formData, validationRules);
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-sm">
@@ -68,17 +73,6 @@ export default function ChangeBranchDialog({
       <Separator></Separator>
 
       <FieldGroup className="py-2">
-        <Field>
-          <Label htmlFor="branchId">رقم الفرع</Label>
-          <Input
-            id="branchId"
-            name="branchId"
-            disabled={true}
-            value={formData.id || ""}
-            defaultValue={entity?.id}
-          />
-        </Field>
-
         <Field>
           <Label htmlFor="branchName">اسم الفرع</Label>
           <Input
@@ -122,6 +116,56 @@ export default function ChangeBranchDialog({
             <span className="text-xs text-red-500">{getError("cityId")}</span>
           )}
         </Field>
+
+        <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
+          <div className="col-span-full">
+            <Label className="text-sm font-semibold">الموقع</Label>
+          </div>
+
+          <Field>
+            <Label htmlFor="branchStreet">الشارع</Label>
+            <Input
+              id="branchStreet"
+              value={formData.street || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, street: e.target.value })
+              }
+            />
+          </Field>
+
+          <Field>
+            <Label htmlFor="branchDistrict">الحي</Label>
+            <Input
+              id="branchDistrict"
+              value={formData.district || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, district: e.target.value })
+              }
+            />
+          </Field>
+
+          <Field>
+            <Label htmlFor="branchBuildingNumber">رقم المبنى</Label>
+            <Input
+              id="branchBuildingNumber"
+              value={formData.buildingNumber || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, buildingNumber: e.target.value })
+              }
+            />
+          </Field>
+
+          <Field>
+            <Label htmlFor="branchPostalCode">الرمز البريدي</Label>
+            <Input
+              id="branchPostalCode"
+              value={formData.postalCode || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, postalCode: e.target.value })
+              }
+            />
+          </Field>
+        </FieldGroup>
       </FieldGroup>
 
       <DialogFooter>

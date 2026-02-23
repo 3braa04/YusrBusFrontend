@@ -6,7 +6,7 @@ export default class Branch extends BaseEntity
   public cityId! : number;
   public cityName! : string;
   public street!:string;
-  public distraict!:string;
+  public district!:string;
   public buildingNumber!:string;
   public postalCode!:string
 
