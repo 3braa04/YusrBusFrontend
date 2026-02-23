@@ -29,6 +29,7 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 import { useIsMobile } from "@/hooks/use-mobile"
+import type { TripInTimeData } from "@/app/core/data/dashboard"
 
 const chartConfig = {
   totalTrips: {
@@ -37,109 +38,12 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-const mockTripsInTime = [
-  { totalTrips: 3, date: "2026-01-01T00:00:00Z" },
-  { totalTrips: 5, date: "2026-01-02T00:00:00Z" },
-  { totalTrips: 2, date: "2026-01-03T00:00:00Z" },
-  { totalTrips: 7, date: "2026-01-04T00:00:00Z" },
-  { totalTrips: 4, date: "2026-01-05T00:00:00Z" },
-  { totalTrips: 6, date: "2026-01-06T00:00:00Z" },
-  { totalTrips: 8, date: "2026-01-07T00:00:00Z" },
-  { totalTrips: 3, date: "2026-01-08T00:00:00Z" },
-  { totalTrips: 9, date: "2026-01-09T00:00:00Z" },
-  { totalTrips: 5, date: "2026-01-10T00:00:00Z" },
-  { totalTrips: 2, date: "2026-01-11T00:00:00Z" },
-  { totalTrips: 4, date: "2026-01-12T00:00:00Z" },
-  { totalTrips: 7, date: "2026-01-13T00:00:00Z" },
-  { totalTrips: 6, date: "2026-01-14T00:00:00Z" },
-  { totalTrips: 8, date: "2026-01-15T00:00:00Z" },
-  { totalTrips: 3, date: "2026-01-16T00:00:00Z" },
-  { totalTrips: 5, date: "2026-01-17T00:00:00Z" },
-  { totalTrips: 2, date: "2026-01-18T00:00:00Z" },
-  { totalTrips: 7, date: "2026-01-19T00:00:00Z" },
-  { totalTrips: 4, date: "2026-01-20T00:00:00Z" },
-  { totalTrips: 6, date: "2026-01-21T00:00:00Z" },
-  { totalTrips: 8, date: "2026-01-22T00:00:00Z" },
-  { totalTrips: 3, date: "2026-01-23T00:00:00Z" },
-  { totalTrips: 5, date: "2026-01-24T00:00:00Z" },
-  { totalTrips: 2, date: "2026-01-25T00:00:00Z" },
-  { totalTrips: 7, date: "2026-01-26T00:00:00Z" },
-  { totalTrips: 4, date: "2026-01-27T00:00:00Z" },
-  { totalTrips: 6, date: "2026-01-28T00:00:00Z" },
-  { totalTrips: 8, date: "2026-01-29T00:00:00Z" },
-  { totalTrips: 3, date: "2026-01-30T00:00:00Z" },
-  { totalTrips: 5, date: "2026-01-31T00:00:00Z" },
-  { totalTrips: 2, date: "2026-02-01T00:00:00Z" },
-  { totalTrips: 7, date: "2026-02-02T00:00:00Z" },
-  { totalTrips: 4, date: "2026-02-03T00:00:00Z" },
-  { totalTrips: 6, date: "2026-02-04T00:00:00Z" },
-  { totalTrips: 8, date: "2026-02-05T00:00:00Z" },
-  { totalTrips: 3, date: "2026-02-06T00:00:00Z" },
-  { totalTrips: 5, date: "2026-02-07T00:00:00Z" },
-  { totalTrips: 2, date: "2026-02-08T00:00:00Z" },
-  { totalTrips: 7, date: "2026-02-09T00:00:00Z" },
-  { totalTrips: 4, date: "2026-02-10T00:00:00Z" },
-  { totalTrips: 6, date: "2026-02-11T00:00:00Z" },
-  { totalTrips: 8, date: "2026-02-12T00:00:00Z" },
-  { totalTrips: 3, date: "2026-02-13T00:00:00Z" },
-  { totalTrips: 5, date: "2026-02-14T00:00:00Z" },
-  { totalTrips: 2, date: "2026-02-15T00:00:00Z" },
-  { totalTrips: 7, date: "2026-02-16T00:00:00Z" },
-  { totalTrips: 4, date: "2026-02-17T00:00:00Z" },
-  { totalTrips: 6, date: "2026-02-18T00:00:00Z" },
-  { totalTrips: 8, date: "2026-02-19T00:00:00Z" },
-  { totalTrips: 1, date: "2026-02-20T00:00:00Z" },
-  { totalTrips: 5, date: "2026-02-21T00:00:00Z" },
-  { totalTrips: 3, date: "2026-02-22T00:00:00Z" },
-  { totalTrips: 7, date: "2026-02-23T00:00:00Z" },
-  { totalTrips: 4, date: "2026-02-24T00:00:00Z" },
-  { totalTrips: 6, date: "2026-02-25T00:00:00Z" },
-  { totalTrips: 8, date: "2026-02-26T00:00:00Z" },
-  { totalTrips: 3, date: "2026-02-27T00:00:00Z" },
-  { totalTrips: 5, date: "2026-02-28T00:00:00Z" },
-  { totalTrips: 2, date: "2026-03-01T00:00:00Z" },
-  { totalTrips: 7, date: "2026-03-02T00:00:00Z" },
-  { totalTrips: 4, date: "2026-03-03T00:00:00Z" },
-  { totalTrips: 6, date: "2026-03-04T00:00:00Z" },
-  { totalTrips: 8, date: "2026-03-05T00:00:00Z" },
-  { totalTrips: 3, date: "2026-03-06T00:00:00Z" },
-  { totalTrips: 5, date: "2026-03-07T00:00:00Z" },
-  { totalTrips: 2, date: "2026-03-08T00:00:00Z" },
-  { totalTrips: 7, date: "2026-03-09T00:00:00Z" },
-  { totalTrips: 4, date: "2026-03-10T00:00:00Z" },
-  { totalTrips: 6, date: "2026-03-11T00:00:00Z" },
-  { totalTrips: 8, date: "2026-03-12T00:00:00Z" },
-  { totalTrips: 3, date: "2026-03-13T00:00:00Z" },
-  { totalTrips: 5, date: "2026-03-14T00:00:00Z" },
-  { totalTrips: 2, date: "2026-03-15T00:00:00Z" },
-  { totalTrips: 7, date: "2026-03-16T00:00:00Z" },
-  { totalTrips: 4, date: "2026-03-17T00:00:00Z" },
-  { totalTrips: 6, date: "2026-03-18T00:00:00Z" },
-  { totalTrips: 8, date: "2026-03-19T00:00:00Z" },
-  { totalTrips: 3, date: "2026-03-20T00:00:00Z" },
-  { totalTrips: 5, date: "2026-03-21T00:00:00Z" },
-  { totalTrips: 2, date: "2026-03-22T00:00:00Z" },
-  { totalTrips: 7, date: "2026-03-23T00:00:00Z" },
-  { totalTrips: 4, date: "2026-03-24T00:00:00Z" },
-  { totalTrips: 6, date: "2026-03-25T00:00:00Z" },
-  { totalTrips: 8, date: "2026-03-26T00:00:00Z" },
-  { totalTrips: 3, date: "2026-03-27T00:00:00Z" },
-  { totalTrips: 5, date: "2026-03-28T00:00:00Z" },
-  { totalTrips: 2, date: "2026-03-29T00:00:00Z" },
-  { totalTrips: 7, date: "2026-03-30T00:00:00Z" },
-  { totalTrips: 4, date: "2026-03-31T00:00:00Z" },
-  { totalTrips: 6, date: "2026-04-01T00:00:00Z" },
-  { totalTrips: 8, date: "2026-04-02T00:00:00Z" },
-  { totalTrips: 3, date: "2026-04-03T00:00:00Z" },
-  { totalTrips: 5, date: "2026-04-04T00:00:00Z" },
-  { totalTrips: 2, date: "2026-04-05T00:00:00Z" },
-  { totalTrips: 7, date: "2026-04-06T00:00:00Z" },
-  { totalTrips: 4, date: "2026-04-07T00:00:00Z" },
-  { totalTrips: 6, date: "2026-04-08T00:00:00Z" },
-  { totalTrips: 8, date: "2026-04-09T00:00:00Z" },
-  { totalTrips: 3, date: "2026-04-10T00:00:00Z" }
-];
-export function ChartAreaInteractive() {
+
+type ChartAreaInteractiveProps = {
+  tripsInTime:TripInTimeData[];
+  
+}
+export function ChartAreaInteractive( {tripsInTime}:ChartAreaInteractiveProps) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
 
@@ -149,7 +53,7 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile])
 
-  const filteredData = mockTripsInTime.filter((item) => {
+  const filteredData = tripsInTime.filter((item) => {
     const date = new Date(item.date)
     const referenceDate = new Date()
     let daysToSubtract = 90

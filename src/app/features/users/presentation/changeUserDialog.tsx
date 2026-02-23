@@ -1,6 +1,9 @@
 import SaveButton from "@/app/core/components/buttons/saveButton";
 import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
-import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/hooks/useFormValidation";
 import UsersApiService from "@/app/core/networking/services/usersApiService";
 import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
@@ -37,6 +40,7 @@ export default function ChangeUserDialog({
     password: entity?.password || "",
     isActive: entity?.isActive ?? true,
     permissions: entity?.permissions || 0,
+    branches: entity?.branches || []
   });
 
   const validationRules: ValidationRule<Partial<User>>[] = [
@@ -49,6 +53,13 @@ export default function ChangeUserDialog({
       field: "password",
       selector: (d) => d.password,
       validators: [Validators.required("يرجى اختيار كلمة مرور")],
+    },
+    {
+      field: "branches",
+      selector: (d) => d.branches,
+      validators: [
+        Validators.min(1, "يجب ان ينتمي المستخدم الى فرع واحد على الاقل"),
+      ],
     },
   ];
   const { getError, isInvalid, validate, clearError, errorInputClass } =

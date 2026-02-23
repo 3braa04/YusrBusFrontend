@@ -10,6 +10,6 @@ export class Dashboard extends BaseEntity{
     public totalPassengers!:number;
     public totalIncome!:number;
     public grothRate!:number;
-
+    public tripsInTime!:TripInTimeData[];
     constructor(init?: Partial<Dashboard>) { super(); Object.assign(this, init); }
 }
