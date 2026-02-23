@@ -10,9 +10,10 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
       {data && <SectionCards data={data}/>}
-      <div className="px-4 lg:px-6">
-        <ChartAreaInteractive/>
-      </div>
+        <ChartAreaInteractive tripsInTime={(data?.tripsInTime || []).map(trip => ({
+          ...trip,
+          date: trip.date instanceof Date ? trip.date : new Date(trip.date)
+        }))}/>
       <TripsPage/>
     </div>
   )
