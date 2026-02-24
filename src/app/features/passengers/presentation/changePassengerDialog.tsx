@@ -39,6 +39,8 @@ import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
 import type { Gender, Passenger } from "../data/passenger";
+import SearchableSelect from "@/app/core/components/select/searchableSelect";
+import { CountryFilterColumns } from "@/app/core/data/country";
 
 export default function ChangePassengerDialog({
   entity,
@@ -46,7 +48,7 @@ export default function ChangePassengerDialog({
   onSuccess,
 }: CummonChangeDialogProps<Passenger>) {
   const [formData, setFormData] = useState<Partial<Passenger>>(entity || {});
-  const { countries, fetchingCountries } = useCountries();
+  const { countries, fetchingCountries, filterCountries } = useCountries();
 
   const validationRules: ValidationRule<Partial<Passenger>>[] = [
     {
@@ -133,8 +135,11 @@ export default function ChangePassengerDialog({
 
           <Field>
             <Label>الجنسية</Label>
-            <Select
-              dir="rtl"
+            <SearchableSelect 
+              items={countries} 
+              itemLabelKey="name" 
+              itemValueKey="id" 
+              placeholder="اختر المدينة"
               value={formData.nationalityId?.toString() || ""}
               onValueChange={(val) => {
                 const selectedCountry = countries.find(
@@ -149,19 +154,11 @@ export default function ChangePassengerDialog({
                   clearError("nationalityId");
                 }
               }}
+              columnsNames={CountryFilterColumns.columnsNames}
+              onSearch={(condition) => filterCountries(condition)} 
+              errorInputClass={errorInputClass("nationalityId")}
               disabled={fetchingCountries}
-            >
-              <SelectTrigger className={errorInputClass("nationalityId")}>
-                <SelectValue placeholder="اختر دولة" />
-              </SelectTrigger>
-              <SelectContent>
-                {countries.map((country) => (
-                  <SelectItem key={country.id} value={country.id.toString()}>
-                    {country.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            />
             {isInvalid("nationalityId") && (
               <span className="text-xs text-red-500">
                 {getError("nationalityId")}

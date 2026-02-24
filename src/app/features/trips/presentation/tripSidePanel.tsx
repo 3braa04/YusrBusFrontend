@@ -1,3 +1,13 @@
+import SaveButton from "@/app/core/components/buttons/saveButton";
+import SearchableSelect from "@/app/core/components/select/searchableSelect";
+import useEntities from "@/app/core/hooks/useEntities";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/hooks/useFormValidation";
+import RoutesApiService from "@/app/core/networking/services/routesApiService";
+import TripsApiService from "@/app/core/networking/services/tripsApiService";
+import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { DialogClose } from "@/components/ui/dialog";
@@ -9,25 +19,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ChevronDownIcon } from "lucide-react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
-import SaveButton from "@/app/core/components/buttons/saveButton";
-import {
-  useFormValidation,
-  type ValidationRule,
-} from "@/app/core/hooks/useFormValidation";
-import TripsApiService from "@/app/core/networking/services/tripsApiService";
-import { Validators } from "@/app/core/utils/validators";
-import { cn } from "@/lib/utils";
-import type { Route } from "../../routes/data/route";
+import { RouteFilterColumns, type Route } from "../../routes/data/route";
 import type { Trip } from "../data/trip";
 import TripStationsList from "./tripStationsList";
 
@@ -35,8 +31,6 @@ interface TripSidePanelProps {
   entityId?: number;
   formData: Partial<Trip>;
   setFormData: React.Dispatch<React.SetStateAction<Partial<Trip>>>;
-  routes?: Route[];
-  fetchingRoutes: boolean;
   onSuccess: (data: Trip) => void;
   mode: "create" | "update";
 }
@@ -45,11 +39,12 @@ export default function TripSidePanel({
   entityId,
   formData,
   setFormData,
-  routes,
-  fetchingRoutes,
   onSuccess,
   mode,
-}: TripSidePanelProps) {
+}: TripSidePanelProps) 
+{
+  const { entities: routes, filter: filterRoutes, isLoading: fetchingRoutes } = useEntities<Route>(new RoutesApiService());
+
   const validationRules: ValidationRule<Partial<Trip>>[] = [
     {
       field: "mainCaptainName",
@@ -236,11 +231,14 @@ export default function TripSidePanel({
 
         <Field>
           <Label className="text-xs">الخط</Label>
-          <Select
-            dir="rtl"
+          <SearchableSelect 
+            items={routes?.data ?? []} 
+            itemLabelKey="name" 
+            itemValueKey="id" 
+            placeholder="اختر الخط"
             value={formData.routeId?.toString() || ""}
             onValueChange={(val) => {
-              const selected = routes?.find((c) => c.id.toString() === val);
+              const selected = routes?.data?.find((c) => c.id.toString() === val);
               if (selected) {
                 setFormData((prev) => ({
                   ...prev,
@@ -251,21 +249,11 @@ export default function TripSidePanel({
                 clearError("routeId");
               }
             }}
+            columnsNames={RouteFilterColumns.columnsNames}
+            onSearch={(condition) => filterRoutes(condition)} 
+            errorInputClass={errorInputClass("routeId")}
             disabled={fetchingRoutes}
-          >
-            <SelectTrigger
-              className={`h-8 text-xs ${errorInputClass("routeId")}`}
-            >
-              <SelectValue placeholder="اختر خطًا" />
-            </SelectTrigger>
-            <SelectContent>
-              {routes?.map((route) => (
-                <SelectItem key={route.id} value={route.id.toString()}>
-                  {route.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />   
           {isInvalid("routeId") && (
             <span className="text-xs text-red-500">{getError("routeId")}</span>
           )}

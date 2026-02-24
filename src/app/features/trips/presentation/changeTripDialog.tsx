@@ -3,12 +3,10 @@ import Loading from "@/app/core/components/loading/loading";
 import useEntities from "@/app/core/hooks/useEntities";
 import { useTripForm } from "@/app/core/hooks/useTripForm";
 import PassengersApiService from "@/app/core/networking/services/passengersApiService";
-import RoutesApiService from "@/app/core/networking/services/routesApiService";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import type { Passenger } from "../../passengers/data/passenger";
 import ChangePassengerDialog from "../../passengers/presentation/changePassengerDialog";
-import type { Route } from "../../routes/data/route";
 import Bus from "../bus/bus";
 import type { SeatType } from "../bus/busTypes";
 import { Ticket } from "../data/ticket";
@@ -33,8 +31,7 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
   const [isEditPassengerDialogOpen, setIsEditPassengerDialogOpen] = useState(false);
 
   // APIs
-  const { entities: passengers, refreash: refreshPassengers, isLoading } = useEntities<Passenger>(new PassengersApiService());
-  const { entities: routes, isLoading: fetchingRoutes } = useEntities<Route>(new RoutesApiService());
+  const { entities: passengers, refreash: refreshPassengers, filter:filterPassengers, isLoading: fetchingPassengers } = useEntities<Passenger>(new PassengersApiService());
 
   const handleSeatClick = (seat: SeatType) => {
     // 1. Move Logic
@@ -102,15 +99,13 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
           entityId={entity?.id}
           formData={formData}
           setFormData={setFormData}
-          routes={routes?.data}
-          fetchingRoutes={fetchingRoutes}
           onSuccess={(trip) => onSuccess?.(trip)}
           mode={mode}
         />
 
         <main className="flex-1 p-6 overflow-auto flex items-center justify-center bg-background">
           <Bus
-          isLoading = {isLoading}
+          isLoading = {initLoading}
             seats={Array.from({ length: 44 }, (_, i) => ({ id: i + 1 }))}
             tickets={formData.tickets ?? []}
             onSeatClick={handleSeatClick}
@@ -128,6 +123,8 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
           <ChangeTicketDialog
             entity={selectedTicket}
             passengers={passengers?.data}
+            filterPassengers={filterPassengers}
+            fetchingPassengers={fetchingPassengers}
             onPassengerDialogClicked={(p) => {
               setSelectedPassenger(p);
               setIsEditPassengerDialogOpen(true);

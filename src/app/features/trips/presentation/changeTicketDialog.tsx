@@ -1,3 +1,5 @@
+import SearchableSelect from "@/app/core/components/select/searchableSelect";
+import { CityFilterColumns } from "@/app/core/data/city";
 import useCities from "@/app/core/hooks/useCities";
 import {
   useFormValidation,
@@ -22,25 +24,21 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import { ChevronDownIcon, Edit, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
-import type { Passenger } from "../../passengers/data/passenger";
-import type { Ticket } from "../data/ticket"; 
+import { PassengerFilterColumns, type Passenger } from "../../passengers/data/passenger";
+import type { Ticket } from "../data/ticket";
+import type { FilterCondition } from "@/app/core/data/filterCondition";
 
 type ChangeTicketDialogProps = {
   entity?: Ticket;
   passengers?: Passenger[];
+  filterPassengers: (condition?: FilterCondition | undefined) => Promise<void>;
+  fetchingPassengers: boolean;
   onPassengerDialogClicked?: (passenger?: Passenger) => void;
   onSuccess?: (newData: Ticket) => void;
 };
@@ -48,11 +46,13 @@ type ChangeTicketDialogProps = {
 export default function ChangeTicketDialog({
   entity,
   passengers,
+  filterPassengers,
   onPassengerDialogClicked,
+  fetchingPassengers,
   onSuccess,
 }: ChangeTicketDialogProps) {
   const [formData, setFormData] = useState<Partial<Ticket>>(entity || {});
-  const { cities, fetchingCities } = useCities();
+  const { cities, fetchingCities, filterCities } = useCities();
 
   useEffect(() => {
     if (entity) {
@@ -94,6 +94,11 @@ export default function ChangeTicketDialog({
     },
   ];
 
+  const passengerItems = passengers?.map((p) => ({
+    ...p,
+    displayLabel: `${p.name} - ${p.passportNo}`, 
+  })) || [];
+
   const { getError, isInvalid, validate, clearError, errorInputClass } =
     useFormValidation(formData, validationRules);
 
@@ -130,9 +135,12 @@ export default function ChangeTicketDialog({
         <Field>
           <Label>الراكب</Label>
           <div className="flex w-full gap-2">
-            <div className="flex-10">
-              <Select
-                dir="rtl"
+            <div className="flex-10"> 
+              <SearchableSelect 
+                items={passengerItems} 
+                itemLabelKey="displayLabel" 
+                itemValueKey="id" 
+                placeholder="اختر الراكب"
                 value={formData.passengerId?.toString() || ""}
                 onValueChange={(val) => {
                   const selectedPassenger = passengers?.find(
@@ -147,24 +155,11 @@ export default function ChangeTicketDialog({
                     clearError("passengerId");
                   }
                 }}
-                disabled={fetchingCities}
-              >
-                <SelectTrigger
-                  className={errorInputClass("passengerId") + " w-full"}
-                >
-                  <SelectValue placeholder="اختر الراكب" />
-                </SelectTrigger>
-                <SelectContent>
-                  {passengers?.map((passenger) => (
-                    <SelectItem
-                      key={passenger.id}
-                      value={passenger.id.toString()}
-                    >
-                      {passenger.name} - {passenger.passportNo}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                columnsNames={PassengerFilterColumns.columnsNames}
+                onSearch={(condition) => filterPassengers(condition)} 
+                errorInputClass={errorInputClass("passengerId")}
+                disabled={fetchingPassengers}
+              />             
             </div>
 
             <Button
@@ -196,8 +191,11 @@ export default function ChangeTicketDialog({
         <div className="flex gap-3">
           <Field>
             <Label>من المدينة</Label>
-            <Select
-              dir="rtl"
+            <SearchableSelect 
+              items={cities} 
+              itemLabelKey="name" 
+              itemValueKey="id" 
+              placeholder="اختر المدينة"
               value={formData.fromCityId?.toString() || ""}
               onValueChange={(val) => {
                 const selectedCity = cities.find(
@@ -210,19 +208,11 @@ export default function ChangeTicketDialog({
                 });
                 clearError("fromCityId");
               }}
+              columnsNames={CityFilterColumns.columnsNames}
+              onSearch={(condition) => filterCities(condition)} 
+              errorInputClass={errorInputClass("fromCityId")}
               disabled={fetchingCities}
-            >
-              <SelectTrigger className={errorInputClass("fromCityId")}>
-                <SelectValue placeholder="اختر المدينة" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.id} value={city.id.toString()}>
-                    {city.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            />
             {isInvalid("fromCityId") && (
               <span className="text-xs text-red-500">
                 {getError("fromCityId")}
@@ -232,8 +222,11 @@ export default function ChangeTicketDialog({
 
           <Field>
             <Label>إلى المدينة</Label>
-            <Select
-              dir="rtl"
+            <SearchableSelect 
+              items={cities} 
+              itemLabelKey="name" 
+              itemValueKey="id" 
+              placeholder="اختر المدينة"
               value={formData.toCityId?.toString() || ""}
               onValueChange={(val) => {
                 const selectedCity = cities.find(
@@ -246,19 +239,11 @@ export default function ChangeTicketDialog({
                 });
                 clearError("toCityId");
               }}
+              columnsNames={CityFilterColumns.columnsNames}
+              onSearch={(condition) => filterCities(condition)} 
+              errorInputClass={errorInputClass("toCityId")}
               disabled={fetchingCities}
-            >
-              <SelectTrigger className={errorInputClass("toCityId")}>
-                <SelectValue placeholder="اختر المدينة" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.id} value={city.id.toString()}>
-                    {city.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            />
           </Field>
         </div>
 
@@ -340,26 +325,21 @@ export default function ChangeTicketDialog({
 
           <Field>
             <Label>مكان الإصدار</Label>
-            <Select
-              dir="rtl"
+            <SearchableSelect 
+              items={cities} 
+              itemLabelKey="name" 
+              itemValueKey="id" 
+              placeholder="اختر المدينة"
               value={formData.issueCityId?.toString() || ""}
               onValueChange={(val) => {
                 setFormData({ ...formData, issueCityId: Number(val) });
                 clearError("issueCityId");
               }}
+              columnsNames={CityFilterColumns.columnsNames}
+              onSearch={(condition) => filterCities(condition)} 
+              errorInputClass={errorInputClass("issueCityId")}
               disabled={fetchingCities}
-            >
-              <SelectTrigger className={errorInputClass("issueCityId")}>
-                <SelectValue placeholder="اختر المدينة" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.id} value={city.id.toString()}>
-                    {city.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            />
             {isInvalid("issueCityId") && (
             <span className="text-xs text-red-500">
               {getError("issueCityId")}

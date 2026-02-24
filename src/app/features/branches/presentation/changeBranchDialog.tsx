@@ -29,6 +29,8 @@ import { useState } from "react";
 import SaveButton from "../../../core/components/buttons/saveButton";
 import useCities from "../../../core/hooks/useCities";
 import type Branch from "../data/branch";
+import SearchableSelect from "@/app/core/components/select/searchableSelect";
+import { CityFilterColumns } from "@/app/core/data/city";
 
 export default function ChangeBranchDialog({
   entity,
@@ -45,7 +47,7 @@ export default function ChangeBranchDialog({
     postalCode: entity?.postalCode,
   });
 
-  const { cities, fetchingCities } = useCities();
+  const { cities, fetchingCities, filterCities } = useCities();
 
   const validationRules: ValidationRule<Partial<Branch>>[] = [
     {
@@ -92,26 +94,21 @@ export default function ChangeBranchDialog({
 
         <Field>
           <Label htmlFor="branchCity">المدينة</Label>
-          <Select
-            dir="rtl"
-            defaultValue={formData.cityId?.toString()}
+          <SearchableSelect 
+            items={cities} 
+            itemLabelKey="name" 
+            itemValueKey="id" 
+            placeholder="اختر المدينة"
+            value={formData.cityId?.toString() || ""} 
             onValueChange={(val) => {
               setFormData({ ...formData, cityId: Number(val) });
               clearError("cityId");
             }}
+            columnsNames={CityFilterColumns.columnsNames}
+            onSearch={(condition) => filterCities(condition)} 
+            errorInputClass={isInvalid("fromCityId") ? "border-red-500 ring-red-500" : ""}
             disabled={fetchingCities}
-          >
-            <SelectTrigger className={errorInputClass("cityId")}>
-              <SelectValue placeholder="اختر المدينة" />
-            </SelectTrigger>
-            <SelectContent>
-              {cities.map((city) => (
-                <SelectItem key={city.id} value={city.id.toString()}>
-                  {city.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
           {isInvalid("cityId") && (
             <span className="text-xs text-red-500">{getError("cityId")}</span>
           )}

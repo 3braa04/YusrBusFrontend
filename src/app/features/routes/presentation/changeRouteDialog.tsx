@@ -1,6 +1,8 @@
 import SaveButton from "@/app/core/components/buttons/saveButton";
 import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
 import Loading from "@/app/core/components/loading/loading";
+import SearchableSelect from "@/app/core/components/select/searchableSelect";
+import { CityFilterColumns } from "@/app/core/data/city";
 import useCities from "@/app/core/hooks/useCities";
 import {
   useFormValidation,
@@ -20,13 +22,6 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -72,7 +67,7 @@ export default function ChangeRouteDialog({
     }
   }, [entity?.id, mode]);
 
-  const { cities, fetchingCities } = useCities();
+  const { cities, fetchingCities, filterCities } = useCities();
 
   const addStation = () => {
     const newStation = new RouteStation({
@@ -152,6 +147,10 @@ export default function ChangeRouteDialog({
   if (initLoading) {
     return (
       <DialogContent dir="rtl" >
+        <DialogHeader>
+          <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} خط</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </DialogHeader>
         <Loading entityName="الخط"/>
       </DialogContent>
     );
@@ -190,13 +189,14 @@ export default function ChangeRouteDialog({
         <div className="flex gap-3">
           <Field>
             <Label>من المدينة</Label>
-            <Select
-              dir="rtl"
-              value={formData.fromCityId?.toString() || ""}
+            <SearchableSelect 
+              items={cities} 
+              itemLabelKey="name" 
+              itemValueKey="id" 
+              placeholder="اختر المدينة"
+              value={formData.fromCityId?.toString() || ""} 
               onValueChange={(val) => {
-                const selectedCity = cities.find(
-                  (c) => c.id.toString() === val,
-                );
+                const selectedCity = cities.find((c) => c.id.toString() === val);
                 if (selectedCity) {
                   setFormData((prev) => ({
                     ...prev,
@@ -206,19 +206,11 @@ export default function ChangeRouteDialog({
                   clearError("fromCityId");
                 }
               }}
+              columnsNames={CityFilterColumns.columnsNames}
+              onSearch={(condition) => filterCities(condition)} 
+              errorInputClass={errorInputClass("fromCityId")}
               disabled={fetchingCities}
-            >
-              <SelectTrigger className={errorInputClass("fromCityId")}>
-                <SelectValue placeholder="اختر المدينة" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.id} value={city.id.toString()}>
-                    {city.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            />
             {isInvalid("fromCityId") && (
               <span className="text-xs text-red-500">
                 {getError("fromCityId")}
@@ -228,13 +220,14 @@ export default function ChangeRouteDialog({
 
           <Field>
             <Label>إلى المدينة</Label>
-            <Select
-              dir="rtl"
-              value={formData.toCityId?.toString() || ""}
+            <SearchableSelect 
+              items={cities} 
+              itemLabelKey="name" 
+              itemValueKey="id" 
+              placeholder="اختر المدينة"
+              value={formData.toCityId?.toString() || ""} 
               onValueChange={(val) => {
-                const selectedCity = cities.find(
-                  (c) => c.id.toString() === val,
-                );
+                const selectedCity = cities.find((c) => c.id.toString() === val);
                 if (selectedCity) {
                   setFormData((prev) => ({
                     ...prev,
@@ -244,19 +237,11 @@ export default function ChangeRouteDialog({
                   clearError("toCityId");
                 }
               }}
+              columnsNames={CityFilterColumns.columnsNames}
+              onSearch={(condition) => filterCities(condition)} 
+              errorInputClass={errorInputClass("toCityId")}
               disabled={fetchingCities}
-            >
-              <SelectTrigger className={errorInputClass("toCityId")}>
-                <SelectValue placeholder="اختر المدينة" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.id} value={city.id.toString()}>
-                    {city.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            />
             {isInvalid("toCityId") && <span className="text-xs text-red-500">{getError("toCityId")}</span>}
           </Field>
         </div>
@@ -302,9 +287,12 @@ export default function ChangeRouteDialog({
                       className="flex items-center gap-3 p-2 border rounded-md hover:bg-secondary/5 transition-colors"
                     >
                       <Field className="flex-1 cursor-pointer">
-                        <Select
-                          dir="rtl"
-                          value={station.cityId?.toString() || ""}
+                        <SearchableSelect 
+                          items={cities} 
+                          itemLabelKey="name" 
+                          itemValueKey="id" 
+                          placeholder="اختر المدينة"
+                          value={station.cityId?.toString() || ""} 
                           onValueChange={(val) => {
                             updateStation(index, "cityId", Number(val));
                             const city = cities.find((c) => c.id.toString() === val);
@@ -314,25 +302,13 @@ export default function ChangeRouteDialog({
                             if (hasGlobalError) 
                               clearError("stations");
                           }}
-                          disabled={fetchingCities}
-                        >
-                          <SelectTrigger
-                            className={
-                              hasGlobalError && isCityMissing
+                          columnsNames={CityFilterColumns.columnsNames}
+                          onSearch={(condition) => filterCities(condition)} 
+                          errorInputClass={hasGlobalError && isCityMissing
                                 ? "border-red-500 ring-red-500 text-red-900"
-                                : ""
-                            }
-                          >
-                            <SelectValue placeholder="اختر المدينة" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {cities.map((city) => (
-                              <SelectItem key={city.id} value={city.id.toString()}>
-                                {city.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                                : ""}
+                          disabled={fetchingCities}
+                        />
                       </Field>
 
                       <Field className="w-24">

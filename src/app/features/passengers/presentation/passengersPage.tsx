@@ -54,7 +54,7 @@ export default function PassengersPage() {
         ]}
       />
 
-      <SearchInput columnsNames={PassengerFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
+      <SearchInput columnsNames={PassengerFilterColumns.columnsNames} onSearch={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (

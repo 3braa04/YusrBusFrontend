@@ -59,7 +59,7 @@ export default function BranchesPage() {
         ]}
       />
 
-      <SearchInput columnsNames={BranchFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
+      <SearchInput columnsNames={BranchFilterColumns.columnsNames} onSearch={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (

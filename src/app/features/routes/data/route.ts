@@ -30,6 +30,5 @@ export class RouteFilterColumns
 {
     public static columnsNames: ColumnName[] = [
         { label: "اسم الخط", value: "Name" },
-        { label: "رقم الخط", value: "Id" }, 
     ];
 }

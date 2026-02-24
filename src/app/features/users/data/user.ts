@@ -1,9 +1,13 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
+import type { ColumnName } from "@/app/core/types/ColumnName";
 
-export class UserBranchDto {
+export class UserBranch {
   public userId!: number;
   public branchId!: number;
-  constructor(init?: Partial<UserBranchDto>) {
+  public username!: string;
+  public branchName!: string;
+
+  constructor(init?: Partial<UserBranch>) {
     Object.assign(this, init);
   }
 }
@@ -13,10 +17,18 @@ export default class User extends BaseEntity {
   public password!: string;
   public isActive!: boolean;
   public permissions!: number;
-  public branches!: UserBranchDto[];
+  public branches!: UserBranch[];
 
   constructor(init?: Partial<User>) {
     super();
     Object.assign(this, init);
   }
+}
+
+export class UserFilterColumns 
+{
+    public static columnsNames: ColumnName[] = [
+        { label: "رقم المستخدم", value: "Id" }, 
+        { label: "اسم المستخدم", value: "Username" },
+    ];
 }

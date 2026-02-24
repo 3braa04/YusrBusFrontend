@@ -1,3 +1,4 @@
+import type { ColumnName } from "../types/ColumnName";
 import type { Country } from "./country";
 
 export class City
@@ -8,4 +9,11 @@ export class City
     public country! : Country;
 
     constructor(init?: Partial<City>) { Object.assign(this, init); }
+}
+
+export class CityFilterColumns 
+{
+    public static columnsNames: ColumnName[] = [
+        { label: "اسم المدينة", value: "Name" },
+    ];
 }

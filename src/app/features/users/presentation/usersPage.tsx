@@ -16,7 +16,6 @@ import { Table, TableBody } from "@/components/ui/table";
 import { User2Icon } from "lucide-react";
 import User, { UserFilterColumns } from "../data/user";
 import ChangeUserDialog from "./changeUserDialog";
-import { FilterCondition } from "@/app/core/data/filterCondition";
 
 export default function UsersPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<User>(
@@ -59,7 +58,7 @@ export default function UsersPage() {
           },
         ]}
       />
-      <SearchInput columnsNames={UserFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
+      <SearchInput columnsNames={UserFilterColumns.columnsNames} onSearch={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (

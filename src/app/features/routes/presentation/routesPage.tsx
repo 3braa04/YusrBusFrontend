@@ -54,7 +54,7 @@ export default function RoutesPage() {
         ]}
       />
 
-      <SearchInput columnsNames={RouteFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
+      <SearchInput columnsNames={RouteFilterColumns.columnsNames} onSearch={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (

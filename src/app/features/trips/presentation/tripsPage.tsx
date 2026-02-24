@@ -54,7 +54,7 @@ export default function TripsPage() {
         ]}
       />
 
-      <SearchInput columnsNames={TripFilterColumns.columnsNames} onClicked={(condition) => filter(condition)}/>
+      <SearchInput columnsNames={TripFilterColumns.columnsNames} onSearch={(condition) => filter(condition)}/>
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (
