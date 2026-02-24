@@ -1,4 +1,6 @@
 import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import SearchableSelect from "@/app/core/components/select/searchableSelect";
+import { CityFilterColumns } from "@/app/core/data/city";
 import {
   useFormValidation,
   type ValidationRule,
@@ -17,20 +19,11 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import SaveButton from "../../../core/components/buttons/saveButton";
 import useCities from "../../../core/hooks/useCities";
 import type Branch from "../data/branch";
-import SearchableSelect from "@/app/core/components/select/searchableSelect";
-import { CityFilterColumns } from "@/app/core/data/city";
 
 export default function ChangeBranchDialog({
   entity,

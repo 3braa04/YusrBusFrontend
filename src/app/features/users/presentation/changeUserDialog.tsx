@@ -28,6 +28,14 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import type User from "../data/user";
+import { useDynamicList } from "@/app/core/hooks/useDynamicList";
+import SearchableSelect from "@/app/core/components/select/searchableSelect";
+import useEntities from "@/app/core/hooks/useEntities";
+import BranchesApiService from "@/app/core/networking/services/branchesApiService";
+import type { UserBranch } from "../data/user";
+import DynamicListContainer from "@/app/core/components/containers/dynamicListContainer";
+import { BranchFilterColumns } from "../../branches/data/branch";
+import { Trash2 } from "lucide-react";
 
 export default function ChangeUserDialog({
   entity,
@@ -40,7 +48,7 @@ export default function ChangeUserDialog({
     password: entity?.password || "",
     isActive: entity?.isActive ?? true,
     permissions: entity?.permissions || 0,
-    branches: entity?.branches || []
+    userBranches: entity?.userBranches || []
   });
 
   const validationRules: ValidationRule<Partial<User>>[] = [
@@ -55,15 +63,20 @@ export default function ChangeUserDialog({
       validators: [Validators.required("يرجى اختيار كلمة مرور")],
     },
     {
-      field: "branches",
-      selector: (d) => d.branches,
+      field: "userBranches",
+      selector: (d) => d.userBranches,
       validators: [
-        Validators.min(1, "يجب ان ينتمي المستخدم الى فرع واحد على الاقل"),
+        Validators.arrayMinLength(1, "يجب أن ينتمي المستخدم إلى فرع واحد على الاقل"),
       ],
     },
   ];
   const { getError, isInvalid, validate, clearError, errorInputClass } =
     useFormValidation(formData, validationRules);
+
+  const {entities: branches, filter: filterBranches, isLoading: fetchingBranches} = useEntities(new BranchesApiService);
+  const { addRow, removeRow, updateRow } = useDynamicList("userBranches", setFormData, clearError);
+    
+  const handleAdd = () => addRow({ userId: formData.id, branchId: 0, branchName: "", username: "" });
 
   return (
     <DialogContent dir="rtl" className="sm:max-w-xl">
@@ -133,6 +146,82 @@ export default function ChangeUserDialog({
             </SelectContent>
           </Select>
         </Field>
+
+        <DynamicListContainer
+          title="الفروع المسموح باستخدامها"
+          addLabel="إضافة فرع"
+          emptyMessage="لا توجد فروع مضافة لهذا المستخدم بعد."
+          items={formData.userBranches || []}
+          onAdd={handleAdd}
+          headers={["الفرع"]}
+          error={getError("userBranches")}
+        >
+          {(userBranch : UserBranch, index) => {
+
+            const hasGlobalError = !!getError("userBranches");
+            const isBranchMissing = !userBranch.branchId;
+            
+            const assignedIds = formData.userBranches?.map(ub => ub.branchId) || [];
+
+            let currentOptions = branches?.data?.filter((b) => {
+              const isNotAssignedAtAll = !assignedIds.includes(b.id);
+              const isSelectedInThisRow = b.id === userBranch.branchId;
+              
+              return isNotAssignedAtAll || isSelectedInThisRow;
+            }) ?? [];
+
+            // 3. SAFETY NET: Explicitly double-check that the currently selected item is in the list.
+            // This prevents the label from disappearing during delete/re-render cycles if the 
+            // filter logic above gets out of sync with the rendered index.
+            if (userBranch.branchId) {
+               const selectedBranchInData = branches?.data?.find(b => b.id === userBranch.branchId);
+               const isAlreadyInOptions = currentOptions.some(b => b.id === userBranch.branchId);
+               
+               if (selectedBranchInData && !isAlreadyInOptions) {
+                   currentOptions = [selectedBranchInData, ...currentOptions];
+               }
+            }
+
+            return (
+              <div key={userBranch.id || `row-${index}`} className="flex items-center gap-3 p-2 border rounded-md hover:bg-secondary/5 transition-colors">
+                <div className="flex-1 cursor-pointer">
+                  
+                  <SearchableSelect 
+                    items={currentOptions}
+                    itemLabelKey="name" 
+                    itemValueKey="id" 
+                    placeholder="اختر الفرع"
+                    value={userBranch.branchId?.toString() || ""} 
+                    onValueChange={(val) => {
+                      updateRow(index, "branchId", Number(val));
+                      
+                      const branch = branches?.data?.find((c) => c.id.toString() === val);
+                      if (branch) {
+                        updateRow(index, "branchName", branch.name);
+                      }
+                    }}
+                    columnsNames={BranchFilterColumns.columnsNames}
+                    onSearch={(condition) => filterBranches(condition)} 
+                    errorInputClass={hasGlobalError && isBranchMissing
+                      ? "border-red-500 ring-red-500 text-red-900"
+                      : ""}
+                    disabled={fetchingBranches}
+                  />
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-10 text-destructive hover:bg-destructive/10"
+                  onClick={() => removeRow(index)} 
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            );
+          }}
+        </DynamicListContainer>
+
       </FieldGroup>
 
       <DialogFooter>

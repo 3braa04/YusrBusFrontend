@@ -1,13 +1,14 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
 import type { ColumnName } from "@/app/core/types/ColumnName";
 
-export class UserBranch {
+export class UserBranch extends BaseEntity {
   public userId!: number;
   public branchId!: number;
   public username!: string;
   public branchName!: string;
 
   constructor(init?: Partial<UserBranch>) {
+    super();
     Object.assign(this, init);
   }
 }
@@ -17,7 +18,7 @@ export default class User extends BaseEntity {
   public password!: string;
   public isActive!: boolean;
   public permissions!: number;
-  public branches!: UserBranch[];
+  public userBranches!: UserBranch[];
 
   constructor(init?: Partial<User>) {
     super();

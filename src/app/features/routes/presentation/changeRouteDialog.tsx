@@ -1,9 +1,11 @@
 import SaveButton from "@/app/core/components/buttons/saveButton";
+import DynamicListContainer from "@/app/core/components/containers/dynamicListContainer";
 import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
 import Loading from "@/app/core/components/loading/loading";
 import SearchableSelect from "@/app/core/components/select/searchableSelect";
 import { CityFilterColumns } from "@/app/core/data/city";
 import useCities from "@/app/core/hooks/useCities";
+import { useDynamicList } from "@/app/core/hooks/useDynamicList";
 import {
   useFormValidation,
   type ValidationRule,
@@ -23,7 +25,7 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Route, RouteStation } from "../data/route";
 
@@ -69,49 +71,6 @@ export default function ChangeRouteDialog({
 
   const { cities, fetchingCities, filterCities } = useCities();
 
-  const addStation = () => {
-    const newStation = new RouteStation({
-      index: (formData.routeStations?.length || 0) + 1,
-      period: 0,
-      cityName: "",
-    });
-    setFormData((prev) => ({
-      ...prev,
-      routeStations: [...(prev.routeStations || []), newStation],
-    }));
-    clearError("stations");
-  };
-
-  const removeStation = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      routeStations:
-        prev.routeStations
-          ?.filter((_, i) => i !== index)
-          .map((station, i) => ({ ...station, index: i + 1 })) || [],
-    }));
-    clearError("stations");
-  };
-
-  const updateStation = (
-    index: number,
-    field: keyof RouteStation,
-    value: unknown,
-  ) => {
-    setFormData((prev) => {
-      const updatedStations = [...(prev.routeStations || [])];
-      updatedStations[index] = {
-        ...updatedStations[index],
-        [field]: value,
-      };
-      return {
-        ...prev,
-        routeStations: updatedStations,
-      };
-    });
-    clearError(field);
-  };
-
   const validationRules: ValidationRule<Partial<Route>>[] = [
     {
       field: "name",
@@ -143,6 +102,10 @@ export default function ChangeRouteDialog({
     formData,
     validationRules,
   );
+
+  const { addRow, removeRow, updateRow } = useDynamicList("routeStations", setFormData, clearError);
+
+  const handleAdd = () => addRow({ index: (formData.routeStations?.length || 0) + 1, period: 0, cityName: "" });
 
   if (initLoading) {
     return (
@@ -248,108 +211,77 @@ export default function ChangeRouteDialog({
 
         <Separator />
 
-        <div className="space-y-3">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-sm font-bold">محطات الخط</h3>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addStation}
-            >
-              <Plus className="h-4 w-4 ml-2" /> إضافة محطة
-            </Button>
-          </div>
+        <DynamicListContainer
+          title="محطات الخط"
+          addLabel="إضافة محطة"
+          emptyMessage="لا توجد محطات مضافة لهذا الخط بعد."
+          items={formData.routeStations || []}
+          onAdd={handleAdd}
+          headers={["المدينة", "مدة الوصول (ساعة)"]}
+          error={getError("stations")}
+        >
+          {(station: RouteStation, index) => {
 
-          <div className={isInvalid("stations") ? "border border-red-600 rounded-md p-2" : ""}>
-            {(formData.routeStations?.length ?? 0) > 0 && (
-              <div className="flex gap-3 px-3 mb-1 text-muted-foreground text-xs font-medium">
-                <div className="flex-1">المدينة</div>
-                <div>مدة الوصول (ساعة)</div>
-                <div className="w-10">{/* Empty for trash icon */}</div>
+            const hasGlobalError = !!getError("stations");
+            const isCityMissing = !station.cityId;
+            const isPeriodInvalid = (station.period ?? 0) <= 0;
+
+            return (
+              <div key={index} className="flex items-center gap-3 p-2 border rounded-md hover:bg-secondary/5 transition-colors">
+                <div className="flex-1 cursor-pointer">
+                  
+                  <SearchableSelect 
+                    items={cities} 
+                    itemLabelKey="name" 
+                    itemValueKey="id" 
+                    placeholder="اختر المدينة"
+                    value={station.cityId?.toString() || ""} 
+                    onValueChange={(val) => {
+                      updateRow(index, "cityId", Number(val));
+                      
+                      const city = cities.find((c) => c.id.toString() === val);
+                      if (city) {
+                        updateRow(index, "cityName", city.name);
+                      }
+                    }}
+                    columnsNames={CityFilterColumns.columnsNames}
+                    onSearch={(condition) => filterCities(condition)} 
+                    errorInputClass={hasGlobalError && isCityMissing
+                      ? "border-red-500 ring-red-500 text-red-900"
+                      : ""}
+                    disabled={fetchingCities}
+                  />
+                </div>
+
+                <div className="w-24">
+                  <Input
+                    type="number"
+                    step="0.1"
+                    value={station.period ?? ""}
+                    onChange={(e) => {
+                      updateRow(index, "period", parseFloat(e.target.value) || 0);
+                    }}
+                    className={
+                      hasGlobalError && isPeriodInvalid
+                        ? "border-red-500 ring-red-500 text-red-900"
+                        : ""
+                    }
+                  />
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-10 text-destructive hover:bg-destructive/10"
+                  onClick={() => removeRow(index, "index")} // Pass "index" to reorder
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
-            )}
+            );
+          }}
+        </DynamicListContainer>
 
-            {(formData.routeStations?.length ?? 0) === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-6 border-2 border-dashed rounded-lg">
-                لا توجد محطات مضافة لهذا الخط بعد.
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {formData.routeStations?.map((station, index) => {
-                  const hasGlobalError = isInvalid("stations");
-                  const isCityMissing = !station.cityId;
-                  const isPeriodInvalid = (station.period ?? 0) <= 0;
-
-                  return (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 p-2 border rounded-md hover:bg-secondary/5 transition-colors"
-                    >
-                      <Field className="flex-1 cursor-pointer">
-                        <SearchableSelect 
-                          items={cities} 
-                          itemLabelKey="name" 
-                          itemValueKey="id" 
-                          placeholder="اختر المدينة"
-                          value={station.cityId?.toString() || ""} 
-                          onValueChange={(val) => {
-                            updateStation(index, "cityId", Number(val));
-                            const city = cities.find((c) => c.id.toString() === val);
-                            if (city) {
-                              updateStation(index, "cityName", city.name);
-                            }
-                            if (hasGlobalError) 
-                              clearError("stations");
-                          }}
-                          columnsNames={CityFilterColumns.columnsNames}
-                          onSearch={(condition) => filterCities(condition)} 
-                          errorInputClass={hasGlobalError && isCityMissing
-                                ? "border-red-500 ring-red-500 text-red-900"
-                                : ""}
-                          disabled={fetchingCities}
-                        />
-                      </Field>
-
-                      <Field className="w-24">
-                        <Input
-                          type="number"
-                          step="0.1"
-                          value={station.period ?? ""}
-                          onChange={(e) => {
-                            updateStation(
-                              index,
-                              "period",
-                              parseFloat(e.target.value) || 0
-                            );
-                            if (hasGlobalError) 
-                              clearError("stations");
-                          }}
-                          className={
-                            hasGlobalError && isPeriodInvalid
-                              ? "border-red-500 ring-red-500 text-red-900"
-                              : ""
-                          }
-                        />
-                      </Field>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-10 text-destructive hover:bg-destructive/10"
-                        onClick={() => removeStation(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  );
-                })}
-
-              </div>
-            )}
-          </div>
-          {isInvalid("stations") && <p className="text-xs text-red-500 font-bold mt-2">{getError("stations")}</p>}
-        </div>
       </FieldGroup>
 
       <DialogFooter>
