@@ -193,12 +193,23 @@ export default function ChangeUserDialog({
                     placeholder="اختر الفرع"
                     value={userBranch.branchId?.toString() || ""} 
                     onValueChange={(val) => {
-                      updateRow(index, "branchId", Number(val));
-                      
-                      const branch = branches?.data?.find((c) => c.id.toString() === val);
-                      if (branch) {
-                        updateRow(index, "branchName", branch.name);
-                      }
+                      const newBranchId = Number(val);
+                      const branch = branches?.data?.find((c) => c.id === newBranchId);
+                      const newBranchName = branch ? branch.name : "";
+
+                      setFormData((prev) => {
+                        const updatedBranches = [...(prev.userBranches || [])];
+                        
+                        updatedBranches[index] = {
+                          ...updatedBranches[index],
+                          branchId: newBranchId,
+                          branchName: newBranchName
+                        };
+
+                        return { ...prev, userBranches: updatedBranches };
+                      });
+
+                      clearError("userBranches");
                     }}
                     columnsNames={BranchFilterColumns.columnsNames}
                     onSearch={(condition) => filterBranches(condition)} 

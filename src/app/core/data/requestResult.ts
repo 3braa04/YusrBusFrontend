@@ -1,5 +1,5 @@
 export type RequestResult<T> = {
-    data: T | null;
+    data?: T;
     status: number;
     errorTitle: string;
     errorDetails: string;

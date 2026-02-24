@@ -77,7 +77,7 @@ export function LoginForm({
     );
 
     if (result.status === 200) {
-      login();
+      login(result.data);
 
       const settingPromise = new SettingsApiService().Filter();
       settingPromise.then(setting => {

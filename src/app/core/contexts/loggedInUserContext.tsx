@@ -1,10 +1,13 @@
 import type User from "@/app/features/users/data/user";
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { ContextConstants } from "./contextConstants";
+import type { UserBranch } from "@/app/features/users/data/user";
 
 type LoggedInUserContextType = {
   loggedInUser: Partial<User> | undefined;
+  activeBranch: UserBranch | null;
   updateLoggedInUser: (data: Partial<User>) => void;
+  setActiveBranch: (branch: UserBranch) => void;
   clearUser: () => void;
 };
 
@@ -17,21 +20,34 @@ export function LoggedInUserProvider({ children }: { children: ReactNode }) {
     return savedUser ? JSON.parse(savedUser) : undefined;
   });
 
-  const updateLoggedInUser = (data: Partial<User>) => {
-    setLoggedInUser((prev) => {
-      const newUser = { ...prev, ...data };
-      localStorage.setItem(ContextConstants.LoggedInUserStorageItemName, JSON.stringify(newUser));
-      return newUser;
-    });
+  const [activeBranch, setActiveBranchState] = useState<UserBranch | null>(() => {
+    const stored = localStorage.getItem(ContextConstants.ActiveBranchStorageItemName);
+    return stored ? JSON.parse(stored) : null;
+  });
+
+  const setActiveBranch = (branch: UserBranch) => {
+    setActiveBranchState(branch);
+    localStorage.setItem(ContextConstants.ActiveBranchStorageItemName, JSON.stringify(branch));
+  };
+
+  const updateLoggedInUser = (user: Partial<User>) => {
+    setLoggedInUser(user);
+    localStorage.setItem(ContextConstants.LoggedInUserStorageItemName, JSON.stringify(user));
+    
+    if (!activeBranch && user.userBranches?.length) {
+      setActiveBranch(user.userBranches[0]);
+    }
   };
 
   const clearUser = () => {
     localStorage.removeItem(ContextConstants.LoggedInUserStorageItemName);
+    localStorage.removeItem(ContextConstants.ActiveBranchStorageItemName);
     setLoggedInUser(undefined);
+    setActiveBranchState(null);
   };
 
   return (
-    <LoggedInUserContext.Provider value={{ loggedInUser, updateLoggedInUser, clearUser }}>
+    <LoggedInUserContext.Provider value={{ loggedInUser, activeBranch, updateLoggedInUser, setActiveBranch, clearUser }}>
       {children}
     </LoggedInUserContext.Provider>
   );

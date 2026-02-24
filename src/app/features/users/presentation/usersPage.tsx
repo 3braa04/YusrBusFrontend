@@ -22,7 +22,7 @@ export default function UsersPage() {
     new UsersApiService(),
   );
 
-  const { loggedInUser, updateLoggedInUser } = useLoggedInUser();
+  const { loggedInUser, updateLoggedInUser, setActiveBranch } = useLoggedInUser();
 
   const {
     selectedRow,
@@ -120,6 +120,9 @@ export default function UsersPage() {
                 setIsEditDialogOpen(false);
                 if(data.id === loggedInUser?.id){
                   updateLoggedInUser(data);
+                  if(data.userBranches && data.userBranches.length > 0) {
+                    setActiveBranch(data.userBranches[0]); 
+                  }
                 }
               }}
             />

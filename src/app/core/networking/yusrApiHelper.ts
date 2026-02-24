@@ -63,11 +63,11 @@ export default class YusrApiHelper
     {
         if (response.status === 401) {
             window.dispatchEvent(new Event(AuthConstants.UnauthorizedEventName));
-            return { data: null, status: 401, errorTitle: "Unauthorized", errorDetails: "Session expired" };
+            return { data: undefined, status: 401, errorTitle: "Unauthorized", errorDetails: "Session expired" };
         }
 
         if (response.status === 404) {
-            return { data: null, status: 404, errorTitle: "Not Found", errorDetails: "" };
+            return { data: undefined, status: 404, errorTitle: "Not Found", errorDetails: "" };
         }
 
         if (!response.ok) 
@@ -75,7 +75,7 @@ export default class YusrApiHelper
             const errorData = await response.json();
             console.log(errorData)
             console.error(`[Error ${response.status}]: ${errorData.title}`, errorData.detail);
-            return {data:null, status:response.status, errorTitle: errorData.title, errorDetails: errorData.detail}
+            return {data: undefined, status:response.status, errorTitle: errorData.title, errorDetails: errorData.detail}
         }
 
         const data = await response.json() as T;

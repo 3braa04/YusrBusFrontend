@@ -9,8 +9,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { ThemeToggle } from "../theme/themeToggle"
 import { Link } from "react-router-dom"
+import UserBranchesSelect from "../select/userBranchesSelect"
+import { ThemeToggle } from "../theme/themeToggle"
 
 export function SideBarSecondaryMenu({
   items,
@@ -40,6 +41,10 @@ export function SideBarSecondaryMenu({
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+
+          <SidebarMenuItem>
+              <UserBranchesSelect/>
+          </SidebarMenuItem>
 
           <SidebarMenuItem>
               <ThemeToggle variant="sidebar"/>

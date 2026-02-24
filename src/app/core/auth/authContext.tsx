@@ -2,17 +2,19 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { AuthConstants } from "./authConstants";
 import { useSetting } from "../contexts/settingContext";
 import { useLoggedInUser } from "../contexts/loggedInUserContext";
+import type User from "@/app/features/users/data/user";
+import { ContextConstants } from "../contexts/contextConstants";
 
 const AuthContext = createContext<{
   isAuthenticated: boolean;
-  login: () => void;
+  login: (user?: User) => void;
   logout: () => void;
 } | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const {clearSetting} = useSetting();
-  const {clearUser} = useLoggedInUser();
+  const { updateLoggedInUser, clearUser } = useLoggedInUser();
 
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem(AuthConstants.AuthCheckStorageItemName) === "true"
@@ -37,13 +39,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => window.removeEventListener("storage", syncAuth);
   }, []);
 
-  const login = () => {
+  const login = (user?: User) => {
     localStorage.setItem(AuthConstants.AuthCheckStorageItemName, "true");
+    
+    if(user)
+      updateLoggedInUser(user);
+    
     setIsAuthenticated(true);
   };
 
   const logout = () => {
     localStorage.removeItem(AuthConstants.AuthCheckStorageItemName);
+    localStorage.removeItem(ContextConstants.ActiveBranchStorageItemName);
     setIsAuthenticated(false);
     clearSetting();
     clearUser();
