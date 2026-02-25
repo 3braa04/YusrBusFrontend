@@ -38,12 +38,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-
 type ChartAreaInteractiveProps = {
-  tripsInTime:TripInTimeData[];
-  
+  tripsInTime: TripInTimeData[];
 }
-export function ChartAreaInteractive( {tripsInTime}:ChartAreaInteractiveProps) {
+
+export function ChartAreaInteractive({ tripsInTime }: ChartAreaInteractiveProps) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
 
@@ -53,8 +52,26 @@ export function ChartAreaInteractive( {tripsInTime}:ChartAreaInteractiveProps) {
     }
   }, [isMobile])
 
+  // 1. SAFE DATE FORMATTER HELPER
+  const formatDate = (value: string | number | Date) => {
+    if (!value) return ""
+    const date = new Date(value)
+    // Check if the date is valid
+    if (isNaN(date.getTime())) return String(value) 
+    
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })
+  }
+
+  // 2. SAFE FILTERING
   const filteredData = tripsInTime.filter((item) => {
+    if (!item.date) return false // Skip if date is missing
+    
     const date = new Date(item.date)
+    if (isNaN(date.getTime())) return false // Skip if date is invalid
+
     const referenceDate = new Date()
     let daysToSubtract = 90
     if (timeRange === "30d") {
@@ -64,6 +81,7 @@ export function ChartAreaInteractive( {tripsInTime}:ChartAreaInteractiveProps) {
     }
     const startDate = new Date(referenceDate)
     startDate.setDate(startDate.getDate() - daysToSubtract)
+    
     return date >= startDate
   })
 
@@ -116,24 +134,13 @@ export function ChartAreaInteractive( {tripsInTime}:ChartAreaInteractiveProps) {
               axisLine={false}
               tickMargin={8}
               minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value)
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
-              }}
+              tickFormatter={formatDate} // <-- 3. USED HELPER HERE
             />
             <ChartTooltip
               cursor={false}
               content={
                 <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })
-                  }}
+                  labelFormatter={formatDate} // <-- 4. USED HELPER HERE
                   indicator="dot"
                 />
               }
