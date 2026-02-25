@@ -27,7 +27,8 @@ export default function TripsPage()
         return undefined
       
       return new TripsApiService().FilterInBranch(pageNumber, rowsPerPage, activeBranch?.branchId, condition)
-    }
+    },
+    [activeBranch?.branchId]
   );
   const {
     selectedRow,

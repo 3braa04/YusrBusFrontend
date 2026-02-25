@@ -5,7 +5,11 @@ import BaseApiService from "../networking/baseApiService";
 import type { FilterCondition } from "../data/filterCondition";
 import type { RequestResult } from "../data/requestResult";
 
-export default function useEntities<T extends BaseEntity>(service: BaseApiService<T>, filterMethod?: (pageNumber: number, rowsPerPage: number, condition?: FilterCondition | undefined) => Promise<RequestResult<FilterResult<T>>> | undefined) 
+export default function useEntities<T extends BaseEntity>(
+  service: BaseApiService<T>, 
+  filterMethod?: (pageNumber: number, rowsPerPage: number, condition?: FilterCondition | undefined) => Promise<RequestResult<FilterResult<T>>> | undefined,
+  deps: any[] = []
+)
 {
   const [entities, setEntities] = useState<FilterResult<T>>();
   const [isLoading, setLoading] = useState(false);
@@ -14,7 +18,7 @@ export default function useEntities<T extends BaseEntity>(service: BaseApiServic
 
   useEffect(() => {
     filter();
-  }, [currentPage, rowsPerPage]);
+  }, [currentPage, rowsPerPage, ...deps]);
 
   const filter = async (condition?: FilterCondition) => {
     setLoading(true);
