@@ -3,7 +3,13 @@ import Loading from "@/app/core/components/loading/loading";
 import useEntities from "@/app/core/hooks/useEntities";
 import { useTripForm } from "@/app/core/hooks/useTripForm";
 import PassengersApiService from "@/app/core/networking/services/passengersApiService";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useState } from "react";
 import type { Passenger } from "../../passengers/data/passenger";
 import ChangePassengerDialog from "../../passengers/presentation/changePassengerDialog";
@@ -13,25 +19,40 @@ import { Ticket } from "../data/ticket";
 import type { Trip } from "../data/trip";
 import ChangeTicketDialog from "./changeTicketDialog";
 import TripSidePanel from "./tripSidePanel";
+import TripAmountSummary from "./TripAmountSummary";
 
-export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChangeDialogProps<Trip>) {
+export default function ChangeTripDialog({
+  entity,
+  mode,
+  onSuccess,
+}: CummonChangeDialogProps<Trip>) {
   const {
-    formData, 
+    formData,
     setFormData,
-    movingTicket, 
+    movingTicket,
     setMovingTicket,
     updateTicketChair,
-    initLoading
+    initLoading,
   } = useTripForm(entity, mode);
 
   // Modal States
-  const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>(undefined);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>(
+    undefined,
+  );
   const [isTicketDialogOpen, setIsTicketDialogOpen] = useState(false);
-  const [selectedPassenger, setSelectedPassenger] = useState<Passenger | undefined>(undefined);
-  const [isEditPassengerDialogOpen, setIsEditPassengerDialogOpen] = useState(false);
+  const [selectedPassenger, setSelectedPassenger] = useState<
+    Passenger | undefined
+  >(undefined);
+  const [isEditPassengerDialogOpen, setIsEditPassengerDialogOpen] =
+    useState(false);
 
   // APIs
-  const { entities: passengers, refreash: refreshPassengers, filter:filterPassengers, isLoading: fetchingPassengers } = useEntities<Passenger>(new PassengersApiService());
+  const {
+    entities: passengers,
+    refreash: refreshPassengers,
+    filter: filterPassengers,
+    isLoading: fetchingPassengers,
+  } = useEntities<Passenger>(new PassengersApiService());
 
   const handleSeatClick = (seat: SeatType) => {
     // 1. Move Logic
@@ -68,27 +89,32 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
   const handleTicketUpdate = (updatedTicket: Ticket) => {
     setFormData((prev) => {
       const tickets = [...(prev.tickets || [])];
-      const index = tickets.findIndex(t => t.chairNo === updatedTicket.chairNo);
-      
+      const index = tickets.findIndex(
+        (t) => t.chairNo === updatedTicket.chairNo,
+      );
+
       if (index > -1) tickets[index] = updatedTicket;
       else tickets.push(updatedTicket);
 
       return { ...prev, tickets };
     });
-    
+
     setIsTicketDialogOpen(false);
   };
 
   if (initLoading) {
     return (
-      <DialogContent dir="rtl" >
-        <Loading entityName="الرحلة"/>
+      <DialogContent dir="rtl">
+        <Loading entityName="الرحلة" />
       </DialogContent>
     );
   }
 
   return (
-    <DialogContent dir="rtl" className="sm:max-w-[90vw] sm:w-[90vw] sm:h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
+    <DialogContent
+      dir="rtl"
+      className="sm:max-w-[90vw] sm:w-[90vw] sm:h-[90vh] flex flex-col p-0 gap-0 overflow-hidden"
+    >
       <DialogHeader className="p-4 border-b">
         <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} رحلة</DialogTitle>
         <DialogDescription></DialogDescription>
@@ -103,17 +129,25 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
           mode={mode}
         />
 
-        <main className="flex-1 p-6 overflow-auto flex items-center justify-center bg-background">
-          <Bus
-          isLoading = {initLoading}
-            seats={Array.from({ length: 44 }, (_, i) => ({ id: i + 1 }))}
-            tickets={formData.tickets ?? []}
-            onSeatClick={handleSeatClick}
-            onMoveTicket={(t) => setMovingTicket(t || undefined)}
-            movingTicketId={movingTicket?.id || movingTicket?.chairNo}
-            onDeleteTicket={(id) => setFormData(p => ({ ...p, tickets: p.tickets?.filter(t => t.id !== id) }))}
-            lastRowFull
-          />
+        <main className="flex-1 overflow-auto flex flex-col bg-background">
+          <TripAmountSummary tickets={formData.tickets ?? []} />
+          <div className="flex-1 flex items-center justify-center p-6">
+            <Bus
+              isLoading={initLoading}
+              seats={Array.from({ length: 44 }, (_, i) => ({ id: i + 1 }))}
+              tickets={formData.tickets ?? []}
+              onSeatClick={handleSeatClick}
+              onMoveTicket={(t) => setMovingTicket(t || undefined)}
+              movingTicketId={movingTicket?.id || movingTicket?.chairNo}
+              onDeleteTicket={(id) =>
+                setFormData((p) => ({
+                  ...p,
+                  tickets: p.tickets?.filter((t) => t.id !== id),
+                }))
+              }
+              lastRowFull
+            />
+          </div>
         </main>
       </div>
 
@@ -135,14 +169,21 @@ export default function ChangeTripDialog({ entity, mode, onSuccess }: CummonChan
       </Dialog>
 
       {/* Nested Passenger Dialog */}
-      <Dialog open={isEditPassengerDialogOpen} onOpenChange={setIsEditPassengerDialogOpen}>
+      <Dialog
+        open={isEditPassengerDialogOpen}
+        onOpenChange={setIsEditPassengerDialogOpen}
+      >
         {isEditPassengerDialogOpen && (
           <ChangePassengerDialog
             entity={selectedPassenger}
             mode={selectedPassenger ? "update" : "create"}
             onSuccess={(data) => {
               refreshPassengers(data);
-              setSelectedTicket(prev => prev ? { ...prev, passengerId: data.id, passenger: data } : prev);
+              setSelectedTicket((prev) =>
+                prev
+                  ? { ...prev, passengerId: data.id, passenger: data }
+                  : prev,
+              );
               setIsEditPassengerDialogOpen(false);
             }}
           />
