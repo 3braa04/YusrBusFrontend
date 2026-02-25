@@ -68,7 +68,7 @@ export function ChartAreaInteractive( {tripsInTime}:ChartAreaInteractiveProps) {
   })
 
   return (
-    <Card className="@container/card">
+    <Card className="@container/card m-4">
       <CardHeader>
         <CardTitle>مجموع الرحلات</CardTitle>
         <CardDescription></CardDescription>
