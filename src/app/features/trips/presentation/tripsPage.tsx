@@ -68,10 +68,10 @@ export default function TripsPage() {
             <TableHeaderRows
               tableHeadRows={[
                 { rowName: "", rowStyles: "text-left w-12.5" },
-                { rowName: "رقم الخط", rowStyles: "w-30" },
+                { rowName: "رقم الرحلة", rowStyles: "w-30" },
                 { rowName: "اسم قائد الباص", rowStyles: "" },
-                { rowName: "من المدينة", rowStyles: "" },
-                { rowName: "إلى المدينة", rowStyles: "" },
+                { rowName: "اسم مساعد قائد الباص", rowStyles: "" },
+                { rowName: "إسم الباص (اذا توفر)", rowStyles: "" },
               ]}
             />
 
