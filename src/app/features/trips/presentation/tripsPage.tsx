@@ -69,7 +69,7 @@ export default function TripsPage() {
               tableHeadRows={[
                 { rowName: "", rowStyles: "text-left w-12.5" },
                 { rowName: "رقم الخط", rowStyles: "w-30" },
-                { rowName: "اسم الخط", rowStyles: "" },
+                { rowName: "اسم قائد الباص", rowStyles: "" },
                 { rowName: "من المدينة", rowStyles: "" },
                 { rowName: "إلى المدينة", rowStyles: "" },
               ]}
