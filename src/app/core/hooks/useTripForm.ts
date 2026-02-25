@@ -2,6 +2,7 @@ import TripsApiService from "@/app/core/networking/services/tripsApiService";
 import type { Ticket } from "@/app/features/trips/data/ticket";
 import type { Trip } from "@/app/features/trips/data/trip";
 import { useEffect, useState } from "react";
+import { useLoggedInUser } from "../contexts/loggedInUserContext";
 
 export function useTripForm(entity: Trip | undefined, mode: string) {
   const [formData, setFormData] = useState<Partial<Trip>>(entity || {});
@@ -10,6 +11,7 @@ export function useTripForm(entity: Trip | undefined, mode: string) {
   );
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
   const [initLoading, setInitLoading] = useState(false);
+  const {activeBranch} = useLoggedInUser();
 
   useEffect(() => {
     if (mode === "update" && entity?.id) {
@@ -25,6 +27,9 @@ export function useTripForm(entity: Trip | undefined, mode: string) {
 
           setInitLoading(false);
         });
+    }
+    else{
+      setFormData({branchId: activeBranch?.branchId});
     }
   }, [entity?.id, mode]);
 

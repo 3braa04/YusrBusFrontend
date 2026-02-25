@@ -15,10 +15,19 @@ import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
 import { TripFilterColumns, type Trip } from "../data/trip";
 import ChangeTripDialog from "./changeTripDialog";
+import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 
-export default function TripsPage() {
+export default function TripsPage() 
+{
+  const {activeBranch} = useLoggedInUser();
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(
     new TripsApiService(),
+    (pageNumber, rowsPerPage, condition) => {
+      if(activeBranch?.branchId == undefined)
+        return undefined
+      
+      return new TripsApiService().FilterInBranch(pageNumber, rowsPerPage, activeBranch?.branchId, condition)
+    }
   );
   const {
     selectedRow,

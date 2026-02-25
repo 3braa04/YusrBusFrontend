@@ -3,8 +3,9 @@ import type { BaseEntity } from "../data/baseEntity";
 import type { FilterResult } from "../data/filterResult";
 import BaseApiService from "../networking/baseApiService";
 import type { FilterCondition } from "../data/filterCondition";
+import type { RequestResult } from "../data/requestResult";
 
-export default function useEntities<T extends BaseEntity>(service: BaseApiService<T>) 
+export default function useEntities<T extends BaseEntity>(service: BaseApiService<T>, filterMethod?: (pageNumber: number, rowsPerPage: number, condition?: FilterCondition | undefined) => Promise<RequestResult<FilterResult<T>>> | undefined) 
 {
   const [entities, setEntities] = useState<FilterResult<T>>();
   const [isLoading, setLoading] = useState(false);
@@ -17,9 +18,15 @@ export default function useEntities<T extends BaseEntity>(service: BaseApiServic
 
   const filter = async (condition?: FilterCondition) => {
     setLoading(true);
-    const result = await service.Filter(currentPage, rowsPerPage, condition);
+
+    let result;
+    if(filterMethod)
+      result = await filterMethod(currentPage, rowsPerPage, condition);
+    else
+      result = await service.Filter(currentPage, rowsPerPage, condition);
+
     setLoading(false);
-    if (result.data) setEntities(result.data);
+    if (result?.data) setEntities(result.data);
   };
 
   const refreash = (newData?: T, deletedId?: number) => 
