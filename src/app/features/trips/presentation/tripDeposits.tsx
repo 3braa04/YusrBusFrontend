@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Archive, ArrowLeft, Banknote, Box, Edit, PackagePlus, Trash2 } from "lucide-react";
 import type { Deposit } from "../data/deposit";
-import { useSetting } from "@/app/core/contexts/settingContext";
 
 type TripDepositsParams = {
   deposits: Deposit[];
