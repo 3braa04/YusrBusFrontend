@@ -147,7 +147,7 @@ export default function ChangeTripDialog({
 
   const handleDepositOpen = (deposit: Deposit | undefined) => {
 
-    if (!deposit) {
+    if (deposit == undefined) {
       deposit = new Deposit({
         fromCityId: formData.route?.fromCityId,
         fromCityName: formData.route?.fromCityName,
@@ -312,10 +312,20 @@ export default function ChangeTripDialog({
           <ChangeDepositDialog 
             entity={selectedDeposit}
             onSuccess={(dep) => {
-              setFormData((prev) => ({
-                ...prev,
-                deposits: [...(prev.deposits ?? []), dep],
-              }));
+              setFormData((prev) => {
+                const existingDeposits = prev.deposits ?? [];
+                const isExisting = dep.id && existingDeposits.some((d) => d.id === dep.id);
+
+                const updatedDeposits = isExisting
+                  ? existingDeposits.map((d) => (d.id === dep.id ? dep : d)) 
+                  : [...existingDeposits, dep];
+
+                return {
+                  ...prev,
+                  deposits: updatedDeposits,
+                };
+              });
+              
               setIsChangeDepositDialogOpen(false);
             }}
           />
