@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-import type { Ticket } from "../data/ticket";
-import type { Deposit } from "../data/deposit";
 import { Badge } from "@/components/ui/badge";
-import { Ticket as TicketIcon, Banknote, Wallet, Archive, Calculator, Coins } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Archive, Calculator, Coins, Ticket as TicketIcon, Wallet } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import type { Deposit } from "../data/deposit";
+import type { Ticket } from "../data/ticket";
 
 interface TripAmountSummaryProps {
   tickets: Ticket[];

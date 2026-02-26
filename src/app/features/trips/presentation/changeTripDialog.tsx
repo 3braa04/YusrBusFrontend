@@ -1,8 +1,13 @@
+import SaveButton from "@/app/core/components/buttons/saveButton";
 import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
 import Loading from "@/app/core/components/loading/loading";
 import useEntities from "@/app/core/hooks/useEntities";
+import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
 import { useTripForm } from "@/app/core/hooks/useTripForm";
 import PassengersApiService from "@/app/core/networking/services/passengersApiService";
+import TripsApiService from "@/app/core/networking/services/tripsApiService";
+import { Validators } from "@/app/core/utils/validators";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -11,11 +16,13 @@ import {
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import type { Passenger } from "../../passengers/data/passenger";
 import ChangePassengerDialog from "../../passengers/presentation/changePassengerDialog";
 import Bus from "../bus/bus";
 import type { SeatType } from "../bus/busTypes";
+import { Deposit } from "../data/deposit";
 import { Ticket } from "../data/ticket";
 import type { Trip } from "../data/trip";
 import TripAmountSummary from "./TripAmountSummary";
@@ -23,13 +30,6 @@ import ChangeDepositDialog from "./changeDepositDialog";
 import ChangeTicketDialog from "./changeTicketDialog";
 import TripDeposits from "./tripDeposits";
 import TripHeader from "./tripHeader";
-import { Button } from "@/components/ui/button";
-import SaveButton from "@/app/core/components/buttons/saveButton";
-import TripsApiService from "@/app/core/networking/services/tripsApiService";
-import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
-import { Validators } from "@/app/core/utils/validators";
-import { Separator } from "@/components/ui/separator";
-import { Deposit } from "../data/deposit";
 
 export default function ChangeTripDialog({
   entity,
