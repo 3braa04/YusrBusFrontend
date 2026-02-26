@@ -18,20 +18,18 @@ import ChangeTripDialog from "./changeTripDialog";
 import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 
 export default function TripsPage() {
-  // const {activeBranch} = useLoggedInUser();
-  // const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(
-  //   new TripsApiService(),
-  //   (pageNumber, rowsPerPage, condition) => {
-  //     if(activeBranch?.branchId == undefined)
-  //       return undefined
+  const {activeBranch} = useLoggedInUser();
+  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(
+    new TripsApiService(),
+    (pageNumber, rowsPerPage, condition) => {
+      if(activeBranch?.branchId == undefined)
+        return undefined
 
-  //     return new TripsApiService().FilterInBranch(pageNumber, rowsPerPage, activeBranch?.branchId, condition)
-  //   },
-  //   [activeBranch?.branchId]
-  // );
-
-  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
-    useEntities<Trip>(new TripsApiService());
+      return new TripsApiService().FilterInBranch(pageNumber, rowsPerPage, activeBranch?.branchId, condition)
+    },
+    [activeBranch?.branchId]
+  );
+  
   const {
     selectedRow,
     isEditDialogOpen,

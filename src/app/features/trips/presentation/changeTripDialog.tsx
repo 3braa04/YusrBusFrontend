@@ -5,11 +5,11 @@ import { useTripForm } from "@/app/core/hooks/useTripForm";
 import PassengersApiService from "@/app/core/networking/services/passengersApiService";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import type { Passenger } from "../../passengers/data/passenger";
@@ -18,11 +18,17 @@ import Bus from "../bus/bus";
 import type { SeatType } from "../bus/busTypes";
 import { Ticket } from "../data/ticket";
 import type { Trip } from "../data/trip";
-import ChangeTicketDialog from "./changeTicketDialog";
-import TripSidePanel from "./tripSidePanel";
 import TripAmountSummary from "./TripAmountSummary";
 import ChangeDepositDialog from "./changeDepositDialog";
-import { Archive, Box, PackagePlus, X } from "lucide-react";
+import ChangeTicketDialog from "./changeTicketDialog";
+import TripDeposits from "./tripDeposits";
+import TripHeader from "./tripHeader";
+import { Button } from "@/components/ui/button";
+import SaveButton from "@/app/core/components/buttons/saveButton";
+import TripsApiService from "@/app/core/networking/services/tripsApiService";
+import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
+import { Validators } from "@/app/core/utils/validators";
+import { Separator } from "@/components/ui/separator";
 
 export default function ChangeTripDialog({
   entity,
@@ -38,7 +44,6 @@ export default function ChangeTripDialog({
     initLoading,
   } = useTripForm(entity, mode);
 
-  const [isDepositDialogOpen, setIsDepositDialogOpen] = useState(false);
   // Modal States
   const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>(
     undefined,
@@ -49,6 +54,8 @@ export default function ChangeTripDialog({
   >(undefined);
   const [isEditPassengerDialogOpen, setIsEditPassengerDialogOpen] =
     useState(false);
+  const [isChangeDepositDialogOpen, setIsChangeDepositDialogOpen] =
+    useState(false);
 
   // APIs
   const {
@@ -57,6 +64,34 @@ export default function ChangeTripDialog({
     filter: filterPassengers,
     isLoading: fetchingPassengers,
   } = useEntities<Passenger>(new PassengersApiService());
+
+  const validationRules: ValidationRule<Partial<Trip>>[] = [
+    {
+      field: "mainCaptainName",
+      selector: (d) => d.mainCaptainName,
+      validators: [Validators.required("يرجى إدخال اسم قائد الحافلة")],
+    },
+
+    {
+      field: "startDate",
+      selector: (d) => d.startDate,
+      validators: [Validators.required("يرجى إدخال تاريخ ووقت التحرك")],
+    },
+    {
+      field: "ticketPrice",
+      selector: (d) => d.ticketPrice,
+      validators: [Validators.required("يرجى إدخال سعر التذكرة")],
+    },
+
+    {
+      field: "routeId",
+      selector: (d) => d.routeId,
+      validators: [Validators.required("يرجى تحديد خط السفر")],
+    },
+  ];
+
+  const { getError, isInvalid, validate, clearError, errorInputClass } =
+    useFormValidation(formData, validationRules);
 
   const handleSeatClick = (seat: SeatType) => {
     // 1. Move Logic
@@ -117,129 +152,99 @@ export default function ChangeTripDialog({
   return (
     <DialogContent
       dir="rtl"
-      className="sm:max-w-[90vw] sm:w-[90vw] sm:h-[90vh] flex flex-col p-0 gap-0 overflow-hidden"
+      className="sm:max-w-[100vw] sm:w-screen sm:h-screen flex flex-col p-0 gap-0 overflow-hidden"
     >
-      <DialogHeader className="p-4 border-b">
-        <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} رحلة</DialogTitle>
-        <DialogDescription></DialogDescription>
+      <DialogHeader className="p-4 border-b flex flex-row items-center justify-between">
+        <div>
+          <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} رحلة</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </div>
       </DialogHeader>
 
       <div className="flex flex-1 overflow-hidden">
-        <TripSidePanel
-          entityId={entity?.id}
-          formData={formData}
-          setFormData={setFormData}
-          onSuccess={(trip) => onSuccess?.(trip)}
-          mode={mode}
-        />
 
-        <main className="flex-1 overflow-hidden flex flex-col bg-background">
+        <aside 
+          className="w-100 transition-all duration-300 border-l bg-muted/10 shrink-0 shadow-inner flex flex-col overflow-hidden"
+        >
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-4 flex flex-col gap-6">
+
+            <section>
+              <h3 className="font-bold tracking-widest mb-3">
+                تفاصيل الرحلة
+                <Separator className="mt-1 mb-3"/>
+              </h3>
+              <TripHeader
+                formData={formData}
+                setFormData={setFormData}
+                errorInputClass={errorInputClass}
+                clearError={clearError}
+                isInvalid={isInvalid}
+                getError={getError}
+              />
+            </section>
+
+            <section>
+              <h3 className="font-bold tracking-widest">
+                الأمانات
+                <Separator className="mt-1 mb-3"/>
+              </h3>
+              <TripDeposits 
+                deposits={formData.deposits ?? []} 
+                onDepositDeleted={(i) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    deposits: prev.deposits?.filter((_, idx) => idx !== i),
+                  }))
+                } 
+                onDepositDialogOpened={() => setIsChangeDepositDialogOpen(true)}
+              />
+            </section>
+
+          </div>
+
+          <section className="p-4 border-t bg-background/50 backdrop-blur-sm flex flex-col gap-2">
+            <SaveButton
+              formData={formData as Trip}
+              dialogMode={mode}
+              service={new TripsApiService()}
+              onSuccess={(trip) => onSuccess?.(trip)}
+              validation={validate}
+            />
+            <DialogClose asChild>
+              <Button variant="outline" className="w-full h-8 text-xs">
+                إلغاء
+              </Button>
+            </DialogClose>
+          </section>
+
+        </aside>
+
+        <main className="flex-1 overflow-hidden flex flex-col bg-background relative">
+          
           <TripAmountSummary tickets={formData.tickets ?? []} />
 
-          <div className="flex-1 overflow-auto flex flex-col items-center p-6 gap-4 min-w-0">
-            {/* Bus */}
-            <div className="flex items-center justify-center shrink-0">
-              <Bus
-                isLoading={initLoading}
-                seats={Array.from({ length: 44 }, (_, i) => ({ id: i + 1 }))}
-                tickets={formData.tickets ?? []}
-                onSeatClick={handleSeatClick}
-                onMoveTicket={(t) => setMovingTicket(t || undefined)}
-                movingTicketId={movingTicket?.id || movingTicket?.chairNo}
-                onDeleteTicket={(id) =>
-                  setFormData((p) => ({
-                    ...p,
-                    tickets: p.tickets?.filter((t) => t.id !== id),
-                  }))
-                }
-                lastRowFull
-              />
-            </div>
+          <div className="flex-1 overflow-auto custom-scrollbar flex flex-col items-center justify-start p-4">
+            
+            <Bus
+              isLoading={initLoading}
+              seats={Array.from({ length: 44 }, (_, i) => ({ id: i + 1 }))}
+              tickets={formData.tickets ?? []}
+              onSeatClick={handleSeatClick}
+              onMoveTicket={(t) => setMovingTicket(t || undefined)}
+              movingTicketId={movingTicket?.id || movingTicket?.chairNo}
+              onDeleteTicket={(id) =>
+                setFormData((p) => ({
+                  ...p,
+                  tickets: p.tickets?.filter((t) => t.id !== id),
+                }))
+              }
+              lastRowFull
+            />      
 
-            {/* Deposits Box */}
-            <div className="w-52 h-48 shrink-0 flex flex-col rounded-xl bg-amber-950/20 border border-amber-800/30 overflow-hidden">
-              <div className="flex items-center justify-between px-3 py-2 border-b border-amber-800/30 shrink-0">
-                <div className="flex items-center gap-1.5">
-                  <Archive className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-xs font-bold text-amber-300">
-                    الأمانات ({formData.deposit?.length ?? 0})
-                  </span>
-                </div>
-                <Dialog
-                  open={isDepositDialogOpen}
-                  onOpenChange={setIsDepositDialogOpen}
-                >
-                  <DialogTrigger asChild>
-                    <button className="flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-700 hover:bg-amber-600 text-white text-[10px] font-bold transition-colors">
-                      <PackagePlus className="w-3 h-3" />
-                      إضافة
-                    </button>
-                  </DialogTrigger>
-                  <ChangeDepositDialog
-                    onSuccess={(dep) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        deposit: [...(prev.deposit ?? []), dep],
-                      }));
-                      setIsDepositDialogOpen(false);
-                    }}
-                  />
-                </Dialog>
-              </div>
-
-              <div className="flex-1 overflow-y-auto overflow-x-hidden p-2 flex flex-col gap-1.5">
-                {!formData.deposit?.length ? (
-                  <div className="flex-1 flex flex-col items-center justify-center gap-2 text-center">
-                    <Box className="w-8 h-8 text-amber-800/50" />
-                    <p className="text-[10px] text-amber-700/60">
-                      لا توجد أمانات
-                    </p>
-                  </div>
-                ) : (
-                  formData.deposit.map((dep, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-amber-950/50 border border-amber-700/30 group"
-                    >
-                      {dep.image?.url || dep.image?.base64File ? (
-                        <img
-                          src={
-                            dep.image.url ||
-                            `data:${dep.image.contentType};base64,${dep.image.base64File}`
-                          }
-                          className="w-6 h-6 rounded object-cover border border-amber-700/40 shrink-0"
-                        />
-                      ) : (
-                        <Box className="w-4 h-4 text-amber-600/50 shrink-0" />
-                      )}
-                      <div className="flex-1 min-w-0 leading-tight">
-                        <p className="text-[11px] font-semibold text-amber-100 truncate">
-                          {dep.description}
-                        </p>
-                        <p className="text-[9px] text-amber-500/70 truncate">
-                          {dep.sender} ← {dep.recipient}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            deposit: prev.deposit?.filter(
-                              (_, idx) => idx !== i,
-                            ),
-                          }))
-                        }
-                        className="w-4 h-4 rounded flex items-center justify-center text-red-500/40 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all shrink-0"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
           </div>
+
         </main>
+        
       </div>
 
       {/* Nested Ticket Dialog */}
@@ -280,6 +285,22 @@ export default function ChangeTripDialog({
           />
         )}
       </Dialog>
+
+      {/* Nested Deposit Dialog */}
+      <Dialog open={isChangeDepositDialogOpen} onOpenChange={setIsChangeDepositDialogOpen}>
+        {isChangeDepositDialogOpen && (
+          <ChangeDepositDialog 
+            onSuccess={(dep) => {
+              setFormData((prev) => ({
+                ...prev,
+                deposits: [...(prev.deposits ?? []), dep],
+              }));
+              setIsChangeDepositDialogOpen(false);
+            }}
+          />
+        )}
+      </Dialog>
+
     </DialogContent>
   );
 }

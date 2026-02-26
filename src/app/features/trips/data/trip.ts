@@ -14,7 +14,7 @@ export class Trip extends BaseEntity {
   public ticketPrice!: number;
   public route!: Route;
   public tickets!: Ticket[];
-  public deposit!: Deposit[];
+  public deposits!: Deposit[];
 
   constructor(init?: Partial<Trip>) {
     super();

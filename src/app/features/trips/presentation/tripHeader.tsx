@@ -1,16 +1,8 @@
-import SaveButton from "@/app/core/components/buttons/saveButton";
 import SearchableSelect from "@/app/core/components/select/searchableSelect";
 import useEntities from "@/app/core/hooks/useEntities";
-import {
-  useFormValidation,
-  type ValidationRule,
-} from "@/app/core/hooks/useFormValidation";
 import RoutesApiService from "@/app/core/networking/services/routesApiService";
-import TripsApiService from "@/app/core/networking/services/tripsApiService";
-import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { DialogClose } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,19 +20,21 @@ import type { Trip } from "../data/trip";
 import TripStationsList from "./tripStationsList";
 
 interface TripSidePanelProps {
-  entityId?: number;
   formData: Partial<Trip>;
   setFormData: React.Dispatch<React.SetStateAction<Partial<Trip>>>;
-  onSuccess: (data: Trip) => void;
-  mode: "create" | "update";
+  errorInputClass: (field: string) => string;
+  clearError: (field: string) => void;
+  isInvalid: (field: string) => boolean;
+  getError: (field: string) => string;
 }
 
-export default function TripSidePanel({
-  entityId,
+export default function TripHeader({
   formData,
   setFormData,
-  onSuccess,
-  mode,
+  errorInputClass,
+  clearError,
+  isInvalid,
+  getError
 }: TripSidePanelProps) {
   const {
     entities: routes,
@@ -48,36 +42,9 @@ export default function TripSidePanel({
     isLoading: fetchingRoutes,
   } = useEntities<Route>(new RoutesApiService());
 
-  const validationRules: ValidationRule<Partial<Trip>>[] = [
-    {
-      field: "mainCaptainName",
-      selector: (d) => d.mainCaptainName,
-      validators: [Validators.required("يرجى إدخال اسم قائد الحافلة")],
-    },
-
-    {
-      field: "startDate",
-      selector: (d) => d.startDate,
-      validators: [Validators.required("يرجى إدخال تاريخ ووقت التحرك")],
-    },
-    {
-      field: "ticketPrice",
-      selector: (d) => d.ticketPrice,
-      validators: [Validators.required("يرجى إدخال سعر التذكرة")],
-    },
-
-    {
-      field: "routeId",
-      selector: (d) => d.routeId,
-      validators: [Validators.required("يرجى تحديد خط السفر")],
-    },
-  ];
-
-  const { getError, isInvalid, validate, clearError, errorInputClass } =
-    useFormValidation(formData, validationRules);
+  
 
   return (
-    <aside className="w-80 flex flex-col justify-between shrink-0 border-l bg-muted/40 dark:bg-muted/40 p-4 overflow-y-auto">
       <FieldGroup>
         {/* <Field>
           <Label className="text-xs">رقم الرحلة</Label>
@@ -271,21 +238,5 @@ export default function TripSidePanel({
           startDate={formData.startDate}
         />
       </FieldGroup>
-
-      <div className="mt-8 flex flex-col gap-2">
-        <SaveButton
-          formData={formData as Trip}
-          dialogMode={mode}
-          service={new TripsApiService()}
-          onSuccess={onSuccess}
-          validation={validate}
-        />
-        <DialogClose asChild>
-          <Button variant="outline" className="w-full h-8 text-xs">
-            إلغاء
-          </Button>
-        </DialogClose>
-      </div>
-    </aside>
-  );
+   );
 }
