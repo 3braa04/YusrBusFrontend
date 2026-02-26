@@ -241,7 +241,7 @@ export default function ChangeTripDialog({
 
         <main className="flex-1 overflow-hidden flex flex-col bg-background relative">
           
-          <TripAmountSummary tickets={formData.tickets ?? []} />
+          <TripAmountSummary tickets={formData.tickets ?? []} deposits={formData.deposits ?? []} />
 
           <div className="flex-1 overflow-auto custom-scrollbar flex flex-col items-center justify-start p-4">
             
