@@ -17,19 +17,21 @@ import { TripFilterColumns, type Trip } from "../data/trip";
 import ChangeTripDialog from "./changeTripDialog";
 import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 
-export default function TripsPage() 
-{
-  const {activeBranch} = useLoggedInUser();
-  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(
-    new TripsApiService(),
-    (pageNumber, rowsPerPage, condition) => {
-      if(activeBranch?.branchId == undefined)
-        return undefined
-      
-      return new TripsApiService().FilterInBranch(pageNumber, rowsPerPage, activeBranch?.branchId, condition)
-    },
-    [activeBranch?.branchId]
-  );
+export default function TripsPage() {
+  // const {activeBranch} = useLoggedInUser();
+  // const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(
+  //   new TripsApiService(),
+  //   (pageNumber, rowsPerPage, condition) => {
+  //     if(activeBranch?.branchId == undefined)
+  //       return undefined
+
+  //     return new TripsApiService().FilterInBranch(pageNumber, rowsPerPage, activeBranch?.branchId, condition)
+  //   },
+  //   [activeBranch?.branchId]
+  // );
+
+  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
+    useEntities<Trip>(new TripsApiService());
   const {
     selectedRow,
     isEditDialogOpen,
@@ -64,7 +66,10 @@ export default function TripsPage()
         ]}
       />
 
-      <SearchInput columnsNames={TripFilterColumns.columnsNames} onSearch={(condition) => filter(condition)}/>
+      <SearchInput
+        columnsNames={TripFilterColumns.columnsNames}
+        onSearch={(condition) => filter(condition)}
+      />
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (
@@ -125,7 +130,12 @@ export default function TripsPage()
             </TableBody>
           </Table>
         )}
-        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} currentPage={currentPage || 1} onPageChanged={setCurrentPage} />
+        <TablePagination
+          pageSize={10}
+          totalNumber={entities?.count ?? 0}
+          currentPage={currentPage || 1}
+          onPageChanged={setCurrentPage}
+        />
 
         {isEditDialogOpen && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -137,7 +147,7 @@ export default function TripsPage()
                 setIsEditDialogOpen(false);
               }}
             />
-          </Dialog>          
+          </Dialog>
         )}
 
         {isDeleteDialogOpen && (

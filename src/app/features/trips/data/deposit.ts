@@ -1,23 +1,25 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
 import type { StorageFile } from "@/app/core/data/storageFile";
 
-export class deposit extends BaseEntity
-{
-    public tripId! : number;
-    public fromCityId! : number;
-    public toCityId! : number;
-    public sender! : string;
-    public recipient! : string;
-    public senderPhone! : string;
-    public recipientPhone! : string;
-    public description! : string;
-    public amount! : number;
-    public paidAmount? : number;
-    public notes? : string;
-    public image? : StorageFile;
-    
-    public fromCityName! : string;
-    public toCityName! : string;
+export class Deposit extends BaseEntity {
+  public tripId!: number;
+  public fromCityId!: number;
+  public toCityId!: number;
+  public sender!: string;
+  public recipient!: string;
+  public senderPhone!: string;
+  public recipientPhone!: string;
+  public description!: string;
+  public amount!: number;
+  public paidAmount?: number;
+  public notes?: string;
+  public image?: StorageFile;
 
-    constructor(init?: Partial<deposit>) { super(); Object.assign(this, init); }
+  public fromCityName!: string;
+  public toCityName!: string;
+
+  constructor(init?: Partial<Deposit>) {
+    super();
+    Object.assign(this, init);
+  }
 }

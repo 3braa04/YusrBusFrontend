@@ -41,9 +41,12 @@ export default function TripSidePanel({
   setFormData,
   onSuccess,
   mode,
-}: TripSidePanelProps) 
-{
-  const { entities: routes, filter: filterRoutes, isLoading: fetchingRoutes } = useEntities<Route>(new RoutesApiService());
+}: TripSidePanelProps) {
+  const {
+    entities: routes,
+    filter: filterRoutes,
+    isLoading: fetchingRoutes,
+  } = useEntities<Route>(new RoutesApiService());
 
   const validationRules: ValidationRule<Partial<Trip>>[] = [
     {
@@ -76,10 +79,10 @@ export default function TripSidePanel({
   return (
     <aside className="w-80 flex flex-col justify-between shrink-0 border-l bg-muted/40 dark:bg-muted/40 p-4 overflow-y-auto">
       <FieldGroup>
-        <Field>
+        {/* <Field>
           <Label className="text-xs">رقم الرحلة</Label>
           <Input disabled value={entityId || ""} className="h-8 text-xs" />
-        </Field>
+        </Field> */}
 
         <Field>
           <Label className="text-xs">اسم قائد الحافلة</Label>
@@ -118,7 +121,7 @@ export default function TripSidePanel({
         <Field>
           <Label className="text-xs">الحافلة</Label>
           <Input
-            className={'h-8 text-xs'}
+            className={"h-8 text-xs"}
             value={formData.busName || ""}
             onChange={(e) => {
               setFormData((prev) => ({ ...prev, busName: e.target.value }));
@@ -136,7 +139,8 @@ export default function TripSidePanel({
                   className={cn(
                     "h-8 w-full justify-between text-left text-xs font-normal border",
                     !formData.startDate && "text-muted-foreground",
-                    isInvalid("startDate") && "border-red-500! ring-red-500! text-red-900!"
+                    isInvalid("startDate") &&
+                      "border-red-500! ring-red-500! text-red-900!",
                   )}
                 >
                   {formData.startDate instanceof Date ? (
@@ -148,7 +152,7 @@ export default function TripSidePanel({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <Calendar 
+                <Calendar
                   mode="single"
                   captionLayout="dropdown"
                   selected={
@@ -231,14 +235,16 @@ export default function TripSidePanel({
 
         <Field>
           <Label className="text-xs">الخط</Label>
-          <SearchableSelect 
-            items={routes?.data ?? []} 
-            itemLabelKey="name" 
-            itemValueKey="id" 
+          <SearchableSelect
+            items={routes?.data ?? []}
+            itemLabelKey="name"
+            itemValueKey="id"
             placeholder="اختر الخط"
             value={formData.routeId?.toString() || ""}
             onValueChange={(val) => {
-              const selected = routes?.data?.find((c) => c.id.toString() === val);
+              const selected = routes?.data?.find(
+                (c) => c.id.toString() === val,
+              );
               if (selected) {
                 setFormData((prev) => ({
                   ...prev,
@@ -250,10 +256,10 @@ export default function TripSidePanel({
               }
             }}
             columnsNames={RouteFilterColumns.columnsNames}
-            onSearch={(condition) => filterRoutes(condition)} 
+            onSearch={(condition) => filterRoutes(condition)}
             errorInputClass={errorInputClass("routeId")}
             disabled={fetchingRoutes}
-          />   
+          />
           {isInvalid("routeId") && (
             <span className="text-xs text-red-500">{getError("routeId")}</span>
           )}
