@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Archive, Box, PackagePlus, X } from "lucide-react";
+import { Archive, ArrowLeft, Box, PackagePlus, X } from "lucide-react";
 import type { Deposit } from "../data/deposit";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 type TripDepositsParams = {
   deposits: Deposit[];
   onDepositDeleted: (index: number) => void;
-  onDepositDialogOpened: () => void;
+  onDepositDialogOpened: (deposit: Deposit | undefined) => void;
 };
 
 export default function TripDeposits({ deposits, onDepositDeleted, onDepositDialogOpened }: TripDepositsParams) {
@@ -17,13 +17,13 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
         <div className="flex items-center gap-2">
           <Archive className="w-4 h-4 text-muted-foreground" />
           <span className="text-xs font-semibold">
-            الأمانات ({deposits.length})
+            ({deposits.length})
           </span>
         </div>
         <Button 
           variant="outline" 
           size="sm" 
-          onClick={onDepositDialogOpened}
+          onClick={() => onDepositDialogOpened(undefined)}
           className="h-7 px-2 text-[10px] gap-1"
         >
           <PackagePlus className="w-3.5 h-3.5" />
@@ -32,7 +32,7 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
       </div>
 
       {/* Content Area */}
-      <ScrollArea className="h-[200px]">
+      <ScrollArea className="h-50">
         <div className="p-2 flex flex-col gap-2">
           {!deposits.length ? (
             <div className="flex flex-col items-center justify-center py-8 text-center opacity-50">
@@ -41,7 +41,7 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
             </div>
           ) : (
             deposits.map((dep, i) => (
-              <div
+              <div dir="rtl"
                 key={i}
                 className="flex items-center gap-2 p-2 rounded-md border bg-background group transition-colors hover:bg-muted/30"
               >
@@ -49,21 +49,23 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
                   <img
                     alt="deposit"
                     src={dep.image.url || `data:${dep.image.contentType};base64,${dep.image.base64File}`}
-                    className="w-8 h-8 rounded-sm object-cover border"
+                    className="w-9 h-9 rounded-sm object-cover border"
                   />
                 ) : (
-                  <div className="w-8 h-8 rounded-sm bg-muted flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-sm bg-muted flex items-center justify-center">
                     <Box className="w-4 h-4 text-muted-foreground" />
                   </div>
                 )}
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-medium leading-none truncate">
+                  <p className="text-sm font-medium leading-none truncate">
                     {dep.description}
                   </p>
-                  <p className="text-[9px] text-muted-foreground mt-1 truncate">
-                    {dep.sender} ← {dep.recipient}
-                  </p>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1 min-w-0">
+                    <span className="font-medium text-foreground/80">{dep.sender}</span>
+                    <ArrowLeft className="h-3 w-3" />
+                    <span className="font-medium text-foreground/80">{dep.recipient}</span>
+                  </div>
                 </div>
 
                 <Button

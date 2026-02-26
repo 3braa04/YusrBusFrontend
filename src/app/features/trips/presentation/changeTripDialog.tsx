@@ -29,6 +29,7 @@ import TripsApiService from "@/app/core/networking/services/tripsApiService";
 import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
 import { Validators } from "@/app/core/utils/validators";
 import { Separator } from "@/components/ui/separator";
+import { Deposit } from "../data/deposit";
 
 export default function ChangeTripDialog({
   entity,
@@ -46,6 +47,9 @@ export default function ChangeTripDialog({
 
   // Modal States
   const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>(
+    undefined,
+  );
+  const [selectedDeposit, setSelectedDeposit] = useState<Deposit | undefined>(
     undefined,
   );
   const [isTicketDialogOpen, setIsTicketDialogOpen] = useState(false);
@@ -141,6 +145,22 @@ export default function ChangeTripDialog({
     setIsTicketDialogOpen(false);
   };
 
+  const handleDepositOpen = (deposit: Deposit | undefined) => {
+
+    if (!deposit) {
+      deposit = new Deposit({
+        fromCityId: formData.route?.fromCityId,
+        fromCityName: formData.route?.fromCityName,
+        toCityId: formData.route?.toCityId,
+        toCityName: formData.route?.toCityName,
+        amount: formData.ticketPrice,
+        paidAmount: formData.ticketPrice,
+      });
+    }
+    setSelectedDeposit(deposit);
+    setIsChangeDepositDialogOpen(true);
+  };
+
   if (initLoading) {
     return (
       <DialogContent dir="rtl">
@@ -196,7 +216,7 @@ export default function ChangeTripDialog({
                     deposits: prev.deposits?.filter((_, idx) => idx !== i),
                   }))
                 } 
-                onDepositDialogOpened={() => setIsChangeDepositDialogOpen(true)}
+                onDepositDialogOpened={(deposit) => handleDepositOpen(deposit)}
               />
             </section>
 
@@ -290,6 +310,7 @@ export default function ChangeTripDialog({
       <Dialog open={isChangeDepositDialogOpen} onOpenChange={setIsChangeDepositDialogOpen}>
         {isChangeDepositDialogOpen && (
           <ChangeDepositDialog 
+            entity={selectedDeposit}
             onSuccess={(dep) => {
               setFormData((prev) => ({
                 ...prev,
