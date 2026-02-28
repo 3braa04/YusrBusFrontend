@@ -1,9 +1,5 @@
-import type User from "@/app/features/users/data/user"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import type User from "@/app/features/users/data/user";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,37 +8,34 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { CircleUserRoundIcon, EllipsisVerticalIcon, LogOutIcon } from "lucide-react"
-import { Link } from "react-router-dom"
-import { useAuth } from "../../auth/authContext"
-import ApiConstants from "../../networking/apiConstants"
-import YusrApiHelper from "../../networking/yusrApiHelper"
-import RoutesService from "../../services/constants/routesService"
-import ApplicationLang from "../../services/langService/applicationLang"
+} from "@/components/ui/sidebar";
+import {
+  CircleUserRoundIcon,
+  EllipsisVerticalIcon,
+  LogOutIcon,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../auth/authContext";
+import ApiConstants from "../../networking/apiConstants";
+import YusrApiHelper from "../../networking/yusrApiHelper";
+import RoutesService from "../../services/constants/routesService";
+import ApplicationLang from "../../services/langService/applicationLang";
 
-export function SideBarUserData({
-  user,
-}: {
-  user: Partial<User> | undefined
-}) {
-  
-  const {logout} = useAuth();
+export function SideBarUserData({ user }: { user: Partial<User> | undefined }) {
+  const { logout } = useAuth();
   const { isMobile } = useSidebar();
   const sideBarUserDataLang = ApplicationLang.getAppLangText().sideBarUserData;
-  
-  const LogoutHandler = async() => {
-    const result = await YusrApiHelper.Post(
-      `${ApiConstants.baseUrl}/Logout`
-    );
 
-    if(result.status === 200 || result.status === 204){
+  const LogoutHandler = async () => {
+    const result = await YusrApiHelper.Post(`${ApiConstants.baseUrl}/Logout`);
+
+    if (result.status === 200 || result.status === 204) {
       logout();
     }
   };
@@ -84,24 +77,22 @@ export function SideBarUserData({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem>
-                <CircleUserRoundIcon
-                />
+                <CircleUserRoundIcon />
                 <Link to={RoutesService.Profile}>
-                {sideBarUserDataLang.account}
+                  {sideBarUserDataLang.account}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuItem className="text-red-600" onClick={LogoutHandler}>
-              <LogOutIcon
-              />
+              <LogOutIcon />
               {sideBarUserDataLang.logout}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
