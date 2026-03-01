@@ -24,7 +24,7 @@ export default function LandingHero()
         {/* 2. Main Title: Using foreground gradient to muted-foreground */}
         <h1 className="text-6xl font-extrabold leading-[1.1] tracking-tighter md:text-8xl">
           <span className="bg-linear-to-b from-foreground to-foreground/60 bg-clip-text text-transparent">
-            يُسر باص
+            حافلات يُسر
           </span>
         </h1>
 
