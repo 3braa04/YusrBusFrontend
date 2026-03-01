@@ -79,7 +79,7 @@ export function LoginForm({
     if (result.status === 200) {
       login(result.data);
 
-      const settingPromise = new SettingsApiService().Filter();
+      const settingPromise = new SettingsApiService().Get();
       settingPromise.then(setting => {
         if (setting.data) updateSetting(setting.data);
       });

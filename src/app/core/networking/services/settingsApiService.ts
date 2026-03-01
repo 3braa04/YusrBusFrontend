@@ -7,9 +7,9 @@ export default class SettingsApiService
 {
     routeName: string = "Settings";
     
-    async Filter(): Promise<RequestResult<Setting>> 
+    async Get(): Promise<RequestResult<Setting>> 
     {
-        return await YusrApiHelper.Post(`${ApiConstants.baseUrl}/${this.routeName}/Filter`);
+        return await YusrApiHelper.Get(`${ApiConstants.baseUrl}/${this.routeName}/Get`);
     }
 
     async Update(entity: Setting)

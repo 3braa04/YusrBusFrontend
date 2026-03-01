@@ -69,7 +69,7 @@ export default function SettingPage() {
   useEffect(() => {
     const fetchSettings = async () => {
       setInitLoading(true);
-      const response = await new SettingsApiService().Filter();
+      const response = await new SettingsApiService().Get();
 
       if (response.data) {
         setFormData(response.data);
