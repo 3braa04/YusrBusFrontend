@@ -1,4 +1,5 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
+import type { Role } from "@/app/core/data/role";
 import type { ColumnName } from "@/app/core/types/ColumnName";
 
 export class UserBranch extends BaseEntity {
@@ -17,7 +18,8 @@ export default class User extends BaseEntity {
   public username!: string;
   public password!: string;
   public isActive!: boolean;
-  public permissions!: number;
+  public roleId!: number;
+  public role!: Role;
   public userBranches!: UserBranch[];
 
   constructor(init?: Partial<User>) {
