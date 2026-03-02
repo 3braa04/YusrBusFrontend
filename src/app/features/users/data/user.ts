@@ -1,6 +1,6 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
-import type { Role } from "@/app/core/data/role";
 import type { ColumnName } from "@/app/core/types/ColumnName";
+import type { Role } from "@/app/features/roles/data/role";
 
 export class UserBranch extends BaseEntity {
   public userId!: number;

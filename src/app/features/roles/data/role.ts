@@ -1,4 +1,4 @@
-import type { ColumnName } from "../types/ColumnName";
+import type { ColumnName } from "../../../core/types/ColumnName";
 
 export class Role
 {
