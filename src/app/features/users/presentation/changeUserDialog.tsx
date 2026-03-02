@@ -1,9 +1,15 @@
 import SaveButton from "@/app/core/components/buttons/saveButton";
+import DynamicListContainer from "@/app/core/components/containers/dynamicListContainer";
 import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import SearchableSelect from "@/app/core/components/select/searchableSelect";
+import { useDynamicList } from "@/app/core/hooks/useDynamicList";
+import useEntities from "@/app/core/hooks/useEntities";
 import {
   useFormValidation,
   type ValidationRule,
 } from "@/app/core/hooks/useFormValidation";
+import BranchesApiService from "@/app/core/networking/services/branchesApiService";
+import RolesApiService from "@/app/core/networking/services/rolesApiService";
 import UsersApiService from "@/app/core/networking/services/usersApiService";
 import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
@@ -26,16 +32,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
-import type User from "../data/user";
-import { useDynamicList } from "@/app/core/hooks/useDynamicList";
-import SearchableSelect from "@/app/core/components/select/searchableSelect";
-import useEntities from "@/app/core/hooks/useEntities";
-import BranchesApiService from "@/app/core/networking/services/branchesApiService";
-import type { UserBranch } from "../data/user";
-import DynamicListContainer from "@/app/core/components/containers/dynamicListContainer";
-import { BranchFilterColumns } from "../../branches/data/branch";
 import { Trash2 } from "lucide-react";
+import { useState } from "react";
+import { BranchFilterColumns } from "../../branches/data/branch";
+import { RoleFilterColumns } from "../../roles/data/role";
+import type User from "../data/user";
+import type { UserBranch } from "../data/user";
 
 export default function ChangeUserDialog({
   entity,
@@ -47,7 +49,8 @@ export default function ChangeUserDialog({
     username: entity?.username || "",
     password: entity?.password || "",
     isActive: entity?.isActive ?? true,
-    permissions: entity?.permissions || 0,
+    roleId: entity?.roleId,
+    role: entity?.role,
     userBranches: entity?.userBranches || []
   });
 
@@ -63,6 +66,11 @@ export default function ChangeUserDialog({
       validators: [Validators.required("يرجى اختيار كلمة مرور")],
     },
     {
+      field: "roleId",
+      selector: (d) => d.roleId,
+      validators: [Validators.required("يرجى اختيار دور")],
+    },
+    {
       field: "userBranches",
       selector: (d) => d.userBranches,
       validators: [
@@ -74,6 +82,7 @@ export default function ChangeUserDialog({
     useFormValidation(formData, validationRules);
 
   const {entities: branches, filter: filterBranches, isLoading: fetchingBranches} = useEntities(new BranchesApiService);
+  const {entities: roles, filter: filterRoles, isLoading: fetchingRoles} = useEntities(new RolesApiService);
   const { addRow, removeRow, updateRow } = useDynamicList("userBranches", setFormData, clearError);
     
   const handleAdd = () => addRow({ userId: formData.id, branchId: 0, branchName: "", username: "" });
@@ -122,6 +131,37 @@ export default function ChangeUserDialog({
           />
           {isInvalid("password") && (
             <span className="text-xs text-red-500">{getError("password")}</span>
+          )}
+        </Field>
+
+        <Field>
+          <Label>الدور</Label>
+          <SearchableSelect 
+            items={roles?.data ?? []} 
+            itemLabelKey="name" 
+            itemValueKey="id" 
+            placeholder="اختر الدور"
+            value={formData.roleId?.toString() || ""} 
+            onValueChange={(val) => {
+              const selectedRole = roles?.data?.find((c) => c.id.toString() === val);
+              if (selectedRole) {
+                setFormData((prev) => ({
+                  ...prev,
+                  roleId: selectedRole.id,
+                  role: selectedRole,
+                }));
+                clearError("roleId");
+              }
+            }}
+            columnsNames={RoleFilterColumns.columnsNames}
+            onSearch={(condition) => filterRoles(condition)} 
+            errorInputClass={errorInputClass("roleId")}
+            disabled={fetchingRoles}
+          />
+          {isInvalid("roleId") && (
+            <span className="text-xs text-red-500">
+              {getError("roleId")}
+            </span>
           )}
         </Field>
 
