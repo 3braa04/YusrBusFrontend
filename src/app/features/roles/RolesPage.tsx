@@ -1,20 +1,18 @@
 import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
+import SearchInput from "@/app/core/components/input/searchInput";
 import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
+import TableCard from "@/app/core/components/table/tableCard";
+import TableHeader from "@/app/core/components/table/tableHeader";
 import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
 import useDialog from "@/app/core/hooks/useDialog";
 import useEntities from "@/app/core/hooks/useEntities";
 import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
-import { Building, MapPin } from "lucide-react";
-import SearchInput from "../../../core/components/input/searchInput";
-import BranchRow from "../../../core/components/table/tableBodyRow";
-import TableCard from "../../../core/components/table/tableCard";
-import TableHeader from "../../../core/components/table/tableHeader";
-import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
-import TablePagination from "../../../core/components/table/tablePagination";
-import Branch, { BranchFilterColumns } from "../data/branch";
-import ChangeBranchDialog from "./changeBranchDialog";
+import { Building } from "lucide-react";
+import ChangeBranchDialog from "../branches/presentation/changeBranchDialog";
+import TableHeaderRows from "@/app/core/components/table/tableHeaderRows";
+import TablePagination from "@/app/core/components/table/tablePagination";
 
 export default function RolesPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
