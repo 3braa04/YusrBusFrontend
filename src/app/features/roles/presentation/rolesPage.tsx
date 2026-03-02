@@ -12,11 +12,11 @@ import { Table, TableBody } from "@/components/ui/table";
 import { Building } from "lucide-react";
 import TableHeaderRows from "@/app/core/components/table/tableHeaderRows";
 import TablePagination from "@/app/core/components/table/tablePagination";
-import type { Role } from "./data/role";
 import RolesApiService from "@/app/core/networking/services/rolesApiService";
-import { RouteFilterColumns } from "../routes/data/route";
 import TableBodyRow from "@/app/core/components/table/tableBodyRow";
-import ChangeRoleDialog from "./presentation/changeRoleDialog";
+import type { Role } from "../data/role";
+import ChangeRoleDialog from "./changeRoleDialog";
+import { RouteFilterColumns } from "../../routes/data/route";
 
 export default function RolesPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
