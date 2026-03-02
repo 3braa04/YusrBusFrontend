@@ -83,7 +83,7 @@ export default function ChangeUserDialog({
 
   const {entities: branches, filter: filterBranches, isLoading: fetchingBranches} = useEntities(new BranchesApiService);
   const {entities: roles, filter: filterRoles, isLoading: fetchingRoles} = useEntities(new RolesApiService);
-  const { addRow, removeRow, updateRow } = useDynamicList("userBranches", setFormData, clearError);
+  const { addRow, removeRow } = useDynamicList("userBranches", setFormData, clearError);
     
   const handleAdd = () => addRow({ userId: formData.id, branchId: 0, branchName: "", username: "" });
 
