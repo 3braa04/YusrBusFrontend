@@ -9,7 +9,7 @@ import useEntities from "@/app/core/hooks/useEntities";
 import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
-import { Building } from "lucide-react";
+import { Settings2 } from "lucide-react";
 import TableHeaderRows from "@/app/core/components/table/tableHeaderRows";
 import TablePagination from "@/app/core/components/table/tablePagination";
 import type { Role } from "./data/role";
@@ -50,7 +50,7 @@ export default function RolesPage() {
           {
             title: "إجمالي الادوار",
             data: (entities?.count ?? 0).toString(),
-            icon: <Building className="h-4 w-4 text-muted-foreground" />,
+            icon: <Settings2 className="h-4 w-4 text-muted-foreground" />,
           },
         ]}
       />
