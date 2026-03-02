@@ -96,6 +96,11 @@ export function LoginForm({
         navigate(origin, { replace: true });
       }, 10);
     }
+    else{
+      setLoading(false);
+      console.log(result)
+      setApiError(result.errorDetails);
+    }
   };
 
   return (
