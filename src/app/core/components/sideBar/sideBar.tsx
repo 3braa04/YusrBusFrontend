@@ -35,7 +35,9 @@ const appLangSections = appLang.sections;
 export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { setting } = useSetting();
   const { loggedInUser } = useLoggedInUser();
-  const permissions: string[] = loggedInUser?.role?.permissions;
+  const permissions: string[] = loggedInUser?.role?.permissions || [];
+  console.log("User permissions", loggedInUser);
+
   const data = {
     navMain: [
       {
