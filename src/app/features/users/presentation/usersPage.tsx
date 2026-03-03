@@ -17,13 +17,14 @@ import { User2Icon } from "lucide-react";
 import User, { UserFilterColumns } from "../data/user";
 import ChangeUserDialog from "./changeUserDialog";
 import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
+import useUserPermissions from "@/app/core/hooks/useUserPermissions";
 
 export default function UsersPage() {
-  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<User>(
-    new UsersApiService(),
-  );
+  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
+    useEntities<User>(new UsersApiService());
 
-  const { loggedInUser, updateLoggedInUser, setActiveBranch } = useLoggedInUser();
+  const { loggedInUser, updateLoggedInUser, setActiveBranch } =
+    useLoggedInUser();
 
   const {
     selectedRow,
@@ -35,6 +36,9 @@ export default function UsersPage() {
     openDeleteDialog,
   } = useDialog<User>();
 
+  const { addPermission, updatePermission, deletePermission } =
+    useUserPermissions(SystemPermissionsResources.Users);
+
   return (
     <div className="px-5 py-3">
       <TableHeader
@@ -44,10 +48,13 @@ export default function UsersPage() {
           <ChangeUserDialog
             entity={undefined}
             mode="create"
-            onSuccess={(newData) => {console.log(23232);
-            ;refreash(newData)}}
+            onSuccess={(newData) => {
+              console.log(23232);
+              refreash(newData);
+            }}
           />
         }
+        isButtonVisible={addPermission}
       />
 
       <TableCard
@@ -59,16 +66,19 @@ export default function UsersPage() {
           },
         ]}
       />
-      <SearchInput columnsNames={UserFilterColumns.columnsNames} onSearch={(condition) => filter(condition)}/>
+      <SearchInput
+        columnsNames={UserFilterColumns.columnsNames}
+        onSearch={(condition) => filter(condition)}
+      />
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
         {isLoading ? (
           <EmptyTablePreview mode="loading" />
         ) : entities?.count == 0 ? (
           <EmptyTablePreview mode="empty" />
-        ) : entities == undefined?(
-          <EmptyTablePreview mode="error"/>
-        ):
+        ) : entities == undefined ? (
+          <EmptyTablePreview mode="error" />
+        ) : (
           <Table>
             <TableHeaderRows
               tableHeadRows={[
@@ -110,10 +120,15 @@ export default function UsersPage() {
               ))}
             </TableBody>
           </Table>
-        }
-        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} currentPage={currentPage || 1} onPageChanged={setCurrentPage} />
+        )}
+        <TablePagination
+          pageSize={10}
+          totalNumber={entities?.count ?? 0}
+          currentPage={currentPage || 1}
+          onPageChanged={setCurrentPage}
+        />
 
-        {isEditDialogOpen && (
+        {isEditDialogOpen && updatePermission && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <ChangeUserDialog
               entity={selectedRow || undefined}
@@ -121,10 +136,10 @@ export default function UsersPage() {
               onSuccess={(data) => {
                 refreash(data);
                 setIsEditDialogOpen(false);
-                if(data.id === loggedInUser?.id){
+                if (data.id === loggedInUser?.id) {
                   updateLoggedInUser(data);
-                  if(data.userBranches && data.userBranches.length > 0) {
-                    setActiveBranch(data.userBranches[0]); 
+                  if (data.userBranches && data.userBranches.length > 0) {
+                    setActiveBranch(data.userBranches[0]);
                   }
                 }
               }}
@@ -132,7 +147,7 @@ export default function UsersPage() {
           </Dialog>
         )}
 
-        {isDeleteDialogOpen && (
+        {isDeleteDialogOpen && deletePermission && (
           <Dialog
             open={isDeleteDialogOpen}
             onOpenChange={setIsDeleteDialogOpen}
