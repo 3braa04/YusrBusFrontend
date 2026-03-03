@@ -20,7 +20,8 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Database, FileBarChart, LayoutDashboard, Pencil, Plus, ShieldCheck, Trash2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Database, FileBarChart, LayoutDashboard, Loader2, Pencil, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { Role } from "../data/role";
 
@@ -57,11 +58,17 @@ export default function ChangeRoleDialog({ entity, mode, onSuccess }: CummonChan
   });
 
   const [systemPermissions, setSystemPermissions] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getPerms = async () => {
-      const res = await new SystemApiService().GetSystemPermissions();
-      setSystemPermissions(res.data ?? []);
+      setIsLoading(true);
+      try {
+        const res = await new SystemApiService().GetSystemPermissions();
+        setSystemPermissions(res.data ?? []);
+      } finally {
+        setIsLoading(false);
+      }
     };
     getPerms();
   }, []);
@@ -163,10 +170,28 @@ export default function ChangeRoleDialog({ entity, mode, onSuccess }: CummonChan
     );
   };
 
+  const renderSkeleton = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {[1, 2, 3].map((i) => (
+        <Card key={i} className="shadow-none border-2">
+          <CardHeader className="flex flex-row items-center justify-between border-b p-4">
+            <Skeleton className="h-4 w-25" />
+            <Skeleton className="h-5 w-5 rounded-md" />
+          </CardHeader>
+          <CardContent className="p-4 space-y-3">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
   return (
-    <DialogContent dir="rtl" className="sm:max-w-6xl max-h-[90vh] flex flex-col">
+    <DialogContent aria-describedby={undefined} dir="rtl" className="sm:max-w-6xl max-h-[90vh] flex flex-col">
       <DialogHeader>
         <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} دور</DialogTitle>
+        {isLoading && <Loader2 className="inline-block mr-2 h-4 w-4 animate-spin text-muted-foreground" />}
       </DialogHeader>
 
       <Separator />
@@ -181,27 +206,40 @@ export default function ChangeRoleDialog({ entity, mode, onSuccess }: CummonChan
               {isInvalid("name") && <span className="text-xs text-red-500">{getError("name")}</span>}
             </Field>
           </div>
-
-          <section className="space-y-4">
-            <div className="flex items-center gap-2 text-primary font-bold"><Database className="w-5 h-5"/> <span>بيانات النظام الأساسية</span></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categorizedPermissions.tables.map(item => renderCard(item.resource, item))}
+          
+          {isLoading ? (
+            <div className="space-y-8">
+               <section className="space-y-4">
+                  <Skeleton className="h-6 w-40" />
+                  {renderSkeleton()}
+               </section>
             </div>
-          </section>
+          ) 
+          : 
+          (
+            <>
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-primary font-bold"><Database className="w-5 h-5"/> <span>بيانات النظام الأساسية</span></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {categorizedPermissions.tables.map(item => renderCard(item.resource, item))}
+                </div>
+              </section>
 
-          <section className="space-y-4">
-            <div className="flex items-center gap-2 text-primary font-bold"><LayoutDashboard className="w-5 h-5"/> <span>الإعدادات والتحكم</span></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categorizedPermissions.system.map(item => renderCard(item.resource, item))}
-            </div>
-          </section>
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-primary font-bold"><LayoutDashboard className="w-5 h-5"/> <span>الإعدادات والتحكم</span></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {categorizedPermissions.system.map(item => renderCard(item.resource, item))}
+                </div>
+              </section>
 
-          <section className="space-y-4">
-            <div className="flex items-center gap-2 text-primary font-bold"><FileBarChart className="w-5 h-5"/> <span>تقارير النظام</span></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categorizedPermissions.reports.map(item => renderCard(item.resource, item))}
-            </div>
-          </section>
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-primary font-bold"><FileBarChart className="w-5 h-5"/> <span>تقارير النظام</span></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {categorizedPermissions.reports.map(item => renderCard(item.resource, item))}
+                </div>
+              </section>
+            </>
+          )}
         </FieldGroup>
       </div>
 
