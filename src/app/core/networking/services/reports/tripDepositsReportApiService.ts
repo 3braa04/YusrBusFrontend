@@ -2,13 +2,14 @@ import ApiConstants from "../../apiConstants";
 import YusrApiHelper from "../../yusrApiHelper";
 import { ReportHelper } from "./reportHelper";
 
-export default class TicketReportApiService
+export default class TripDepositsReportApiService
 {
-    static async getReport(ticketId: number, userId: number) 
+    static async getReport(tripId: number, commission: number, userId: number) 
     {
-        const url = `${ApiConstants.baseUrl}/Reports/Ticket`;
+        const url = `${ApiConstants.baseUrl}/Reports/TripDeposits`;
         const requestBody = { 
-            ticketId: ticketId,
+            tripId: tripId,
+            commission: commission,
             userId: userId 
         };
 

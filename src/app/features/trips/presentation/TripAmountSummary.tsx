@@ -1,15 +1,30 @@
 "use client";
 
+import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
+import TripDepositsReportApiService from "@/app/core/networking/services/reports/tripDepositsReportApiService";
+import TripTicketsReportApiService from "@/app/core/networking/services/reports/tripTicketsReportApiService";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Archive, Calculator, Coins, Ticket as TicketIcon, Wallet } from "lucide-react";
+import { Archive, Calculator, Coins, Loader2, Printer, Receipt, Ticket as TicketIcon, Wallet } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import type { Deposit } from "../data/deposit";
-import type { Ticket } from "../data/ticket";
+import type { Trip } from "../data/trip";
+import { SystemPermissions } from "@/app/core/auth/systemPermissions";
+import { SystemPermissionsActions } from "@/app/core/auth/systemPermissionsActions";
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 interface TripAmountSummaryProps {
-  tickets: Ticket[];
-  deposits: Deposit[];
+  trip: Trip;
   discountPercentage?: number;
   className?: string;
 }
@@ -39,21 +54,47 @@ function AnimatedNumber({ value }: { value: number }) {
 }
 
 export default function TripAmountSummary({
-  tickets,
-  deposits = [],
+  trip,
   discountPercentage,
   className,
 }: TripAmountSummaryProps) {
   // Aggregate Calculations (Tickets + Deposits)
-  const ticketTotal = tickets.reduce((s, t) => s + (t.amount ?? 0), 0);
-  const ticketPaid = tickets.reduce((s, t) => s + (t.paidAmount ?? 0), 0);
+  const ticketTotal = trip.tickets.reduce((s, t) => s + (t.amount ?? 0), 0);
+  const ticketPaid = trip.tickets.reduce((s, t) => s + (t.paidAmount ?? 0), 0);
   
-  const depositTotal = deposits.reduce((s, d) => s + (d.amount ?? 0), 0);
-  const depositPaid = deposits.reduce((s, d) => s + (d.paidAmount ?? 0), 0);
+  const depositTotal = trip.deposits.reduce((s, d) => s + (d.amount ?? 0), 0);
+  const depositPaid = trip.deposits.reduce((s, d) => s + (d.paidAmount ?? 0), 0);
 
   const grandTotal = ticketTotal + depositTotal;
   const grandPaid = ticketPaid + depositPaid;
   const grandRemaining = grandTotal - grandPaid;
+
+  const [commission, setCommission] = useState<number>(0);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isPrintingTickets, setIsPrintingTickets] = useState(false);
+  const [isPrintingDeposits, setIsPrintingDeposits] = useState(false);
+  const {loggedInUser} = useLoggedInUser();
+
+  const handlePrintTripTickets = async () => {
+    setIsPrintingTickets(true);
+    try {
+      const currentUserId = loggedInUser?.id; 
+      await TripTicketsReportApiService.getReport(trip.id, currentUserId ?? 0);
+    } finally {
+      setIsPrintingTickets(false);
+    }
+  };
+
+  const handlePrintTripDeposits = async (commission: number) => {
+    setIsPrintingDeposits(true);
+    try {
+      const currentUserId = loggedInUser?.id; 
+      await TripDepositsReportApiService.getReport(trip.id, commission, currentUserId ?? 0);
+      setIsDialogOpen(false);
+    } finally {
+      setIsPrintingDeposits(false);
+    }
+  };
 
   return (
     <div className={cn(
@@ -61,14 +102,14 @@ export default function TripAmountSummary({
       "px-4 py-4 mb-6",
       className
     )}>
-      <div className="mx-auto max-w-2xl flex items-center justify-between gap-8 overflow-x-auto no-scrollbar">
+      <div className="mx-auto max-w-5xl flex items-center justify-between gap-8 overflow-x-auto no-scrollbar">
         
         <div className="flex items-center gap-10">
           {/* Tickets Count */}
           <div className="flex flex-col min-w-fit">
             <span className="text-[10px] text-muted-foreground font-medium uppercase mb-0.5">عدد التذاكر</span>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-bold tracking-tight"><AnimatedNumber value={tickets.length} /></span>
+              <span className="text-xl font-bold tracking-tight"><AnimatedNumber value={trip.tickets.length} /></span>
               <TicketIcon className="w-4 h-4 text-muted-foreground/50" />
             </div>
           </div>
@@ -77,7 +118,7 @@ export default function TripAmountSummary({
           <div className="flex flex-col min-w-fit">
             <span className="text-[10px] text-muted-foreground font-medium uppercase mb-0.5">عدد الأمانات</span>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-bold tracking-tight"><AnimatedNumber value={deposits.length} /></span>
+              <span className="text-xl font-bold tracking-tight"><AnimatedNumber value={trip.deposits.length} /></span>
               <Archive className="w-4 h-4 text-muted-foreground/50" />
             </div>
           </div>
@@ -137,6 +178,70 @@ export default function TripAmountSummary({
             </div>
         </div>
 
+        <div className="flex gap-3">
+            {SystemPermissions.hasAuth(loggedInUser?.role?.permissions ?? [], SystemPermissionsResources.TripTicketsReport, SystemPermissionsActions.Get) && (
+              <Button 
+                disabled={isPrintingTickets} 
+                className="h-9 gap-2 text-xs min-w-[110px]" 
+                onClick={handlePrintTripTickets}
+              >
+                {isPrintingTickets ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Printer className="w-3.5 h-3.5" />
+                )}
+                طباعة التذاكر
+              </Button>
+            )}
+            {SystemPermissions.hasAuth(loggedInUser?.role?.permissions ?? [], SystemPermissionsResources.TripDepositsReport, SystemPermissionsActions.Get) && (
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button disabled={isPrintingDeposits} className="h-9 gap-2 text-xs min-w-27.5">
+                    <Receipt className="w-3.5 h-3.5" />
+                    طباعة الأمانات
+                  </Button>
+                </DialogTrigger>
+                <DialogContent dir="rtl" className="sm:max-w-81.25">
+                  <DialogHeader>
+                    <DialogTitle className="text-right">طباعة تقرير الأمانات</DialogTitle>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid gap-2 text-right">
+                      <Label htmlFor="commission" className="text-xs">
+                        نسبة العمولة (%)
+                      </Label>
+                      <Input
+                        id="commission"
+                        type="number"
+                        placeholder="0"
+                        min={0}
+                        max={100}
+                        className="text-right"
+                        value={commission}
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          if (val < 0) setCommission(0);
+                          else if (val > 100) setCommission(100);
+                          else setCommission(val);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button 
+                      disabled={isPrintingDeposits}
+                      type="button" 
+                      className="w-full gap-2" 
+                      onClick={() => handlePrintTripDeposits(commission)}
+                    >
+                      {isPrintingDeposits && <Loader2 className="w-4 h-4 animate-spin" />}
+                      تأكيد وطباعة
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
+        </div>
       </div>
     </div>
   );

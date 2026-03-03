@@ -34,7 +34,7 @@ const ArabicLabels: Record<string, string> = {
   [SystemPermissionsResources.Roles]: "الأدوار",
   [SystemPermissionsResources.Dashboard]: "لوحة التحكم",
   [SystemPermissionsResources.TicketReport]: "تقارير التذاكر",
-  [SystemPermissionsResources.DepositReport]: "تقارير الإيداعات",
+  [SystemPermissionsResources.DepositReport]: "تقارير الأمانات",
   [SystemPermissionsResources.TripTicketsReport]: "تقارير تذاكر الرحلة",
   [SystemPermissionsResources.TripDepositsReport]: "تقارير إيداعات الرحلة",
   [SystemPermissionsActions.Add]: "إضافة",

@@ -1,9 +1,13 @@
+import { SystemPermissions } from "@/app/core/auth/systemPermissions";
+import { SystemPermissionsActions } from "@/app/core/auth/systemPermissionsActions";
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
+import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
+import DepositReportApiService from "@/app/core/networking/services/reports/depositReportApiService";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Archive, ArrowLeft, Banknote, Box, Edit, PackagePlus, Printer, Trash2 } from "lucide-react";
+import { Archive, ArrowLeft, Banknote, Box, Edit, Loader2, PackagePlus, Printer, Trash2 } from "lucide-react";
+import { useState } from "react";
 import type { Deposit } from "../data/deposit";
-import DepositReportApiService from "@/app/core/networking/services/reports/depositReportApiService";
-import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 
 type TripDepositsParams = {
   deposits: Deposit[];
@@ -14,10 +18,16 @@ type TripDepositsParams = {
 export default function TripDeposits({ deposits, onDepositDeleted, onDepositDialogOpened }: TripDepositsParams) {
 
   const {loggedInUser} = useLoggedInUser();
+  const [printingId, setPrintingId] = useState<number | null>(null);
 
   const handlePrintDeposit = async (depositId: number) => {
-    const currentUserId = loggedInUser?.id; 
-    await DepositReportApiService.getDepositReport(depositId, currentUserId ?? 0);
+    setPrintingId(depositId);
+    try {
+      const currentUserId = loggedInUser?.id; 
+      await DepositReportApiService.getReport(depositId, currentUserId ?? 0);
+    } finally {
+      setPrintingId(null);
+    }
   };
 
   return (
@@ -53,6 +63,7 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
               const paid = dep.paidAmount || 0;
               const remaining = amount - paid;
               const isFullyPaid = remaining <= 0;
+              const isPrinting = printingId === dep.id;
               
               return (
                 <div dir="rtl" key={i} className="group relative flex items-center gap-2 p-2 hover:bg-muted/30 transition-colors">
@@ -105,17 +116,25 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
 
                   {/* Hover Actions */}
                   <div className="flex items-center gap-0.5 ml-1 shrink-0">
+                    {SystemPermissions.hasAuth(loggedInUser?.role?.permissions ?? [], SystemPermissionsResources.DepositReport, SystemPermissionsActions.Get) && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={isPrinting}
+                        onClick={() => dep.id? handlePrintDeposit(dep.id) : undefined}
+                        className="w-7 h-7 rounded-md hover:bg-primary/10 hover:text-primary transition-colors"
+                      >
+                        {isPrinting ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+                        ) : (
+                          <Printer className="w-3.5 h-3.5" />
+                        )}
+                      </Button>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => dep.id? handlePrintDeposit(dep.id) : undefined}
-                      className="w-7 h-7 rounded-md hover:bg-primary/10 hover:text-primary transition-colors"
-                    >
-                      <Printer className="w-3.5 h-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
+                      disabled={isPrinting}
                       onClick={() => onDepositDialogOpened(dep)}
                       className="w-7 h-7 rounded-md hover:bg-primary/10 hover:text-primary transition-colors"
                     >
@@ -124,6 +143,7 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
                     <Button
                       variant="ghost"
                       size="icon"
+                      disabled={isPrinting}
                       onClick={() => onDepositDeleted(i)}
                       className="w-7 h-7 rounded-md hover:bg-destructive/30 hover:text-destructive transition-colors"
                     >

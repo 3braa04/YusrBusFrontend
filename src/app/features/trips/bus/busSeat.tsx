@@ -11,6 +11,9 @@ import { MoveHorizontal, Printer, Trash2 } from "lucide-react";
 import type { SeatProps } from "./busTypes";
 import TicketReportApiService from "@/app/core/networking/services/reports/ticketReportApiService";
 import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
+import { SystemPermissions } from "@/app/core/auth/systemPermissions";
+import { SystemPermissionsActions } from "@/app/core/auth/systemPermissionsActions";
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 
 export default function BusSeat({
   seat,
@@ -33,7 +36,7 @@ export default function BusSeat({
 
   const handlePrintTicket = async (ticketId: number) => {
     const currentUserId = loggedInUser?.id; 
-    await TicketReportApiService.getTicketReport(ticketId, currentUserId ?? 0);
+    await TicketReportApiService.getReport(ticketId, currentUserId ?? 0);
   };
 
   return (
@@ -186,17 +189,19 @@ export default function BusSeat({
               <span className="flex-1">نقل المقعد</span>
             </ContextMenuItem>
 
-            <ContextMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-                if (ticket?.id) 
-                  handlePrintTicket(ticket.id);
-              }}
-              className="gap-2"
-            >
-              <Printer className="h-4 w-4 text-muted-foreground" />
-              <span className="flex-1">طباعة التذكرة</span>
-            </ContextMenuItem>
+            {SystemPermissions.hasAuth(loggedInUser?.role?.permissions ?? [], SystemPermissionsResources.TicketReport, SystemPermissionsActions.Get) && (
+              <ContextMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (ticket?.id) 
+                    handlePrintTicket(ticket.id);
+                }}
+                className="gap-2"
+              >
+                <Printer className="h-4 w-4 text-muted-foreground" />
+                <span className="flex-1">طباعة التذكرة</span>
+              </ContextMenuItem>
+            )}
           </ContextMenuGroup>
 
           <ContextMenuSeparator />
