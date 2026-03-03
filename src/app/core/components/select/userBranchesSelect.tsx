@@ -12,7 +12,7 @@ export default function UserBranchesSelect()
             <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="w-full justify-start gap-3">
                     <Building2 className="h-4 w-4" />
-                    <span className="truncate text-base">
+                    <span className="truncate text-[16px] font-medium">
                         {activeBranch?.branchName || "اختر الفرع"}
                     </span>
                     <ChevronsUpDown className="h-2 w-2 shrink-0 opacity-50 ltr:ml-2 rtl:mr-2" />

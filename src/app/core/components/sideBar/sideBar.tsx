@@ -11,9 +11,10 @@ import {
   BusFrontIcon,
   LayoutDashboardIcon,
   MapPinnedIcon,
-  Settings2Icon,
+  SettingsIcon,
+  ShieldCheck,
   UserCogIcon,
-  UsersIcon,
+  UsersIcon
 } from "lucide-react";
 import * as React from "react";
 import { useLoggedInUser } from "../../contexts/loggedInUserContext";
@@ -21,13 +22,13 @@ import { useSetting } from "../../contexts/settingContext";
 import ApplicationLang from "../../services/langService/applicationLang";
 import SidebarLogo from "./sidebarLogo";
 
+import { SystemPermissions } from "../../auth/systemPermissions";
+import { SystemPermissionsActions } from "../../auth/systemPermissionsActions";
+import { SystemPermissionsResources } from "../../auth/systemPermissionsResources";
 import { SideBarCompanyData } from "./sideBarCompanyData";
 import { SideBarMainMenu } from "./sideBarMainMenu";
 import { SideBarSecondaryMenu } from "./sideBarSecondaryMenu";
 import { SideBarUserData } from "./sideBarUserData";
-import { SystemPermissionsResources } from "../../auth/systemPermissionsResources";
-import { SystemPermissions } from "../../auth/systemPermissions";
-import { SystemPermissionsActions } from "../../auth/systemPermissionsActions";
 
 const appLang = ApplicationLang.getAppLangText();
 const appLangSections = appLang.sections;
@@ -102,7 +103,7 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: appLangSections.roles,
         url: "/roles",
-        icon: <Settings2Icon />,
+        icon: <ShieldCheck />,
         hasAuth: SystemPermissions.hasAuth(
           permissions,
           SystemPermissionsResources.Roles,
@@ -114,7 +115,7 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: appLangSections.settings,
         url: "/settings",
-        icon: <Settings2Icon />,
+        icon: <SettingsIcon />,
       },
     ],
   };
