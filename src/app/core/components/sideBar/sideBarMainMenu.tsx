@@ -19,7 +19,7 @@ export function SideBarMainMenu({
   return (
     <SidebarGroup className="mt-5">
       <SidebarGroupContent>
-        <SidebarMenu className="gap-2">
+        <SidebarMenu>
           {items.map(
             (item) =>
               item.hasAuth && (
