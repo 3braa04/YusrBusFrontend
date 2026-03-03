@@ -17,6 +17,7 @@ import { TripFilterColumns, type Trip } from "../data/trip";
 import ChangeTripDialog from "./changeTripDialog";
 import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
+import useUserPermissions from "@/app/core/hooks/useUserPermissions";
 
 export default function TripsPage() {
   const { activeBranch } = useLoggedInUser();

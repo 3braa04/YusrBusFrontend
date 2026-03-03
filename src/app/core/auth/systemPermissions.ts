@@ -15,4 +15,10 @@ export class SystemPermissions {
   public hasAuth(action: string): boolean {
     return SystemPermissions.hasAuth(this.permissions, this.resource, action);
   }
+  public static getFirstPermissionPath(permissions: string[]): string {
+    if (!permissions?.length) return "";
+
+    const [resource] = permissions[0].split(":");
+    return `/${resource.toLowerCase()}`;
+  }
 }

@@ -2,7 +2,10 @@ import { useAuth } from "@/app/core/auth/authContext";
 import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 import { useSetting } from "@/app/core/contexts/settingContext";
 import { LoginRequest } from "@/app/core/data/loginRequest";
-import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/hooks/useFormValidation";
 import ApiConstants from "@/app/core/networking/apiConstants";
 import SettingsApiService from "@/app/core/networking/services/settingsApiService";
 import YusrApiHelper from "@/app/core/networking/yusrApiHelper";
@@ -23,12 +26,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import type User from "../users/data/user";
 
 import placeholderImg from "@/assets/placeholder.svg";
+import { SystemPermissions } from "@/app/core/auth/systemPermissions";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-
   const navigate = useNavigate();
   const [formData, setFormData] = useState<Partial<LoginRequest>>({});
   const [loading, setLoading] = useState(false);
@@ -58,9 +61,7 @@ export function LoginForm({
     useFormValidation(formData, validationRules);
 
   const Login = async () => {
-
-    if(!validate())
-      return;
+    if (!validate()) return;
 
     const request = new LoginRequest({
       companyEmail: formData.companyEmail,
@@ -79,7 +80,7 @@ export function LoginForm({
       login(result.data);
 
       const settingPromise = new SettingsApiService().Get();
-      settingPromise.then(setting => {
+      settingPromise.then((setting) => {
         if (setting.data) updateSetting(setting.data);
       });
 
@@ -87,15 +88,18 @@ export function LoginForm({
         updateLoggedInUser(result.data);
       }
 
-      const origin = location.state?.from?.pathname || "/dashboard";
-      
+      const origin =
+        location.state?.from?.pathname ||
+        SystemPermissions.getFirstPermissionPath(
+          result.data?.role.permissions || [],
+        );
+
       setLoading(false);
 
       setTimeout(() => {
         navigate(origin, { replace: true });
       }, 10);
-    }
-    else{
+    } else {
       setLoading(false);
     }
   };
@@ -127,7 +131,9 @@ export function LoginForm({
                   required
                 />
                 {isInvalid("email") && (
-                  <span className="text-xs text-red-500">{getError("email")}</span>
+                  <span className="text-xs text-red-500">
+                    {getError("email")}
+                  </span>
                 )}
               </Field>
               <Field>
@@ -146,7 +152,9 @@ export function LoginForm({
                   required
                 />
                 {isInvalid("username") && (
-                  <span className="text-xs text-red-500">{getError("username")}</span>
+                  <span className="text-xs text-red-500">
+                    {getError("username")}
+                  </span>
                 )}
               </Field>
               <Field>
@@ -165,7 +173,9 @@ export function LoginForm({
                   required
                 />
                 {isInvalid("password") && (
-                  <span className="text-xs text-red-500">{getError("password")}</span>
+                  <span className="text-xs text-red-500">
+                    {getError("password")}
+                  </span>
                 )}
               </Field>
 

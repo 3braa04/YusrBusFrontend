@@ -5,13 +5,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { useLoggedInUser } from "../../contexts/loggedInUserContext";
-import { SystemPermissions } from "../../auth/systemPermissions";
-import { SystemPermissionsResources } from "../../auth/systemPermissionsResources";
-import { SystemPermissionsActions } from "../../auth/systemPermissionsActions";
-
 export function SideBarMainMenu({
   items,
 }: {

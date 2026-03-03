@@ -33,6 +33,8 @@ import ChangeDepositDialog from "./changeDepositDialog";
 import ChangeTicketDialog from "./changeTicketDialog";
 import TripDeposits from "./tripDeposits";
 import TripHeader from "./tripHeader";
+import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
+import TicketReportApiService from "@/app/core/networking/services/reports/ticketReportApiService";
 
 export default function ChangeTripDialog({
   entity,
