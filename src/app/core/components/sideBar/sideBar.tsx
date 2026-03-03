@@ -25,59 +25,98 @@ import { SideBarCompanyData } from "./sideBarCompanyData";
 import { SideBarMainMenu } from "./sideBarMainMenu";
 import { SideBarSecondaryMenu } from "./sideBarSecondaryMenu";
 import { SideBarUserData } from "./sideBarUserData";
+import { SystemPermissionsResources } from "../../auth/systemPermissionsResources";
+import { SystemPermissions } from "../../auth/systemPermissions";
+import { SystemPermissionsActions } from "../../auth/systemPermissionsActions";
 
 const appLang = ApplicationLang.getAppLangText();
 const appLangSections = appLang.sections;
-const data = {
-  navMain: [
-    {
-      title: appLangSections.dashboard,
-      url: "/dashboard",
-      icon: <LayoutDashboardIcon />,
-    },
-    {
-      title: appLangSections.trips,
-      url: "/trips",
-      icon: <BusFrontIcon />,
-    },
-    {
-      title: appLangSections.passengers,
-      url: "/passengers",
-      icon: <UsersIcon />,
-    },
-    {
-      title: appLangSections.routes,
-      url: "/routes",
-      icon: <MapPinnedIcon />,
-    },
-    {
-      title: appLangSections.branches,
-      url: "/branches",
-      icon: <Building2Icon />,
-    },
-    {
-      title: appLangSections.users,
-      url: "/users",
-      icon: <UserCogIcon />,
-    },
-    {
-      title: appLangSections.roles,
-      url: "/roles",
-      icon: <Settings2Icon />,
-    },
-  ],
-  navSecondary: [
-    {
-      title: appLangSections.settings,
-      url: "/settings",
-      icon: <Settings2Icon />,
-    },
-  ],
-};
 
 export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { setting } = useSetting();
   const { loggedInUser } = useLoggedInUser();
+  const permissions: string[] = loggedInUser?.role?.permissions;
+  const data = {
+    navMain: [
+      {
+        title: appLangSections.dashboard,
+        url: "/dashboard",
+        icon: <LayoutDashboardIcon />,
+        hasAuth: SystemPermissions.hasAuth(
+          permissions,
+          SystemPermissionsResources.Dashboard,
+          SystemPermissionsActions.Get,
+        ),
+      },
+      {
+        title: appLangSections.trips,
+        url: "/trips",
+        icon: <BusFrontIcon />,
+        hasAuth: SystemPermissions.hasAuth(
+          permissions,
+          SystemPermissionsResources.Trips,
+          SystemPermissionsActions.Get,
+        ),
+      },
+      {
+        title: appLangSections.passengers,
+        url: "/passengers",
+        icon: <UsersIcon />,
+        hasAuth: SystemPermissions.hasAuth(
+          permissions,
+          SystemPermissionsResources.Passengers,
+          SystemPermissionsActions.Get,
+        ),
+      },
+      {
+        title: appLangSections.routes,
+        url: "/routes",
+        icon: <MapPinnedIcon />,
+        hasAuth: SystemPermissions.hasAuth(
+          permissions,
+          SystemPermissionsResources.Routes,
+          SystemPermissionsActions.Get,
+        ),
+      },
+      {
+        title: appLangSections.branches,
+        url: "/branches",
+        icon: <Building2Icon />,
+        hasAuth: SystemPermissions.hasAuth(
+          permissions,
+          SystemPermissionsResources.Branches,
+          SystemPermissionsActions.Get,
+        ),
+      },
+      {
+        title: appLangSections.users,
+        url: "/users",
+        icon: <UserCogIcon />,
+        hasAuth: SystemPermissions.hasAuth(
+          permissions,
+          SystemPermissionsResources.Users,
+          SystemPermissionsActions.Get,
+        ),
+      },
+      {
+        title: appLangSections.roles,
+        url: "/roles",
+        icon: <Settings2Icon />,
+        hasAuth: SystemPermissions.hasAuth(
+          permissions,
+          SystemPermissionsResources.Roles,
+          SystemPermissionsActions.Get,
+        ),
+      },
+    ],
+    navSecondary: [
+      {
+        title: appLangSections.settings,
+        url: "/settings",
+        icon: <Settings2Icon />,
+      },
+    ],
+  };
 
   const displayCompany = {
     name: setting?.companyName || "Default Name",
