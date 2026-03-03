@@ -131,7 +131,7 @@ export default function RolesPage() {
           >
             <DialogContent dir="rtl" className="sm:max-w-sm">
               <DeleteDialog
-                entityName="الفرع"
+                entityName="الدور"
                 id={selectedRow?.id ?? 0}
                 service={new BranchesApiService()}
                 onSuccess={() => {
