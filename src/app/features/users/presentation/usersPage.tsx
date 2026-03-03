@@ -16,6 +16,7 @@ import { Table, TableBody } from "@/components/ui/table";
 import { User2Icon } from "lucide-react";
 import User, { UserFilterColumns } from "../data/user";
 import ChangeUserDialog from "./changeUserDialog";
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 
 export default function UsersPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<User>(
@@ -91,6 +92,7 @@ export default function UsersPage() {
                   ]}
                   dropdownMenu={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Users}
                       type="dropdown"
                       onEditClicked={() => openEditDialog(user)}
                       onDeleteClicked={() => openDeleteDialog(user)}
@@ -98,6 +100,7 @@ export default function UsersPage() {
                   }
                   contextMenuContent={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Users}
                       type="context"
                       onEditClicked={() => openEditDialog(user)}
                       onDeleteClicked={() => openDeleteDialog(user)}

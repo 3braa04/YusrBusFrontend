@@ -15,6 +15,7 @@ import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
 import { RouteFilterColumns, type Route } from "../data/route";
 import ChangeRouteDialog from "./changeRouteDialog";
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 
 export default function RoutesPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Route>(
@@ -95,6 +96,7 @@ export default function RoutesPage() {
                   ]}
                   dropdownMenu={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Routes}
                       type="dropdown"
                       onEditClicked={() => openEditDialog(route)}
                       onDeleteClicked={() => openDeleteDialog(route)}
@@ -102,6 +104,7 @@ export default function RoutesPage() {
                   }
                   contextMenuContent={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Routes}
                       type="context"
                       onEditClicked={() => openEditDialog(route)}
                       onDeleteClicked={() => openDeleteDialog(route)}

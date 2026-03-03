@@ -17,6 +17,7 @@ import TableBodyRow from "@/app/core/components/table/tableBodyRow";
 import type { Role } from "../data/role";
 import ChangeRoleDialog from "./changeRoleDialog";
 import { RouteFilterColumns } from "../../routes/data/route";
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 
 export default function RolesPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
@@ -88,6 +89,7 @@ export default function RolesPage() {
                   dropdownMenu={
                     <TableRowActionsMenu
                       type="dropdown"
+                      permissionsResource={SystemPermissionsResources.Roles}
                       onEditClicked={() => openEditDialog(role)}
                       onDeleteClicked={() => openDeleteDialog(role)}
                     />
@@ -95,6 +97,7 @@ export default function RolesPage() {
                   contextMenuContent={
                     <TableRowActionsMenu
                       type="context"
+                      permissionsResource={SystemPermissionsResources.Roles}
                       onEditClicked={() => openEditDialog(role)}
                       onDeleteClicked={() => openDeleteDialog(role)}
                     />

@@ -16,6 +16,7 @@ import TablePagination from "../../../core/components/table/tablePagination";
 import { TripFilterColumns, type Trip } from "../data/trip";
 import ChangeTripDialog from "./changeTripDialog";
 import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 
 export default function TripsPage() {
   const {activeBranch} = useLoggedInUser();
@@ -111,6 +112,7 @@ export default function TripsPage() {
                   ]}
                   dropdownMenu={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Trips}
                       type="dropdown"
                       onEditClicked={() => openEditDialog(trip)}
                       onDeleteClicked={() => openDeleteDialog(trip)}
@@ -118,6 +120,7 @@ export default function TripsPage() {
                   }
                   contextMenuContent={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Trips}
                       type="context"
                       onEditClicked={() => openEditDialog(trip)}
                       onDeleteClicked={() => openDeleteDialog(trip)}

@@ -101,6 +101,7 @@ export default function BranchesPage() {
                   ]}
                   dropdownMenu={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Branches}
                       type="dropdown"
                       onEditClicked={() => openEditDialog(branch)}
                       onDeleteClicked={() => openDeleteDialog(branch)}
@@ -108,6 +109,7 @@ export default function BranchesPage() {
                   }
                   contextMenuContent={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Branches}
                       type="context"
                       onEditClicked={() => openEditDialog(branch)}
                       onDeleteClicked={() => openDeleteDialog(branch)}

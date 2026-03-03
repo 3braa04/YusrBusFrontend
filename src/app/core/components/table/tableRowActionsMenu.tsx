@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import useUserPermissions from "../../hooks/useUserPermissions";
-import { SystemPermissionsResources } from "../../auth/systemPermissionsResources";
 
 type ListType = "dropdown" | "context";
 
@@ -24,15 +23,17 @@ interface Props {
   onEditClicked: () => void;
   onDeleteClicked: () => void;
   type: ListType;
+  permissionsResource: string;
 }
 
 export default function TableRowActionsMenu({
   onEditClicked,
   onDeleteClicked,
   type,
+  permissionsResource
 }: Props) {
   const { updatePermission, deletePermission } = useUserPermissions(
-    SystemPermissionsResources.Branches,
+    permissionsResource,
   );
   return (
     <>

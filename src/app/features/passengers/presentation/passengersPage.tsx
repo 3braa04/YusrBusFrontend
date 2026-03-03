@@ -15,6 +15,7 @@ import TablePagination from "../../../core/components/table/tablePagination";
 import { Passenger, PassengerFilterColumns } from "../data/passenger";
 import ChangePassengerDialog from "./changePassengerDialog";
 import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 
 export default function PassengersPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Passenger>(
@@ -98,6 +99,7 @@ export default function PassengersPage() {
                   ]}
                   dropdownMenu={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Passengers}
                       type="dropdown"
                       onEditClicked={() => openEditDialog(passenger)}
                       onDeleteClicked={() => openDeleteDialog(passenger)}
@@ -105,6 +107,7 @@ export default function PassengersPage() {
                   }
                   contextMenuContent={
                     <TableRowActionsMenu
+                      permissionsResource={SystemPermissionsResources.Passengers}
                       type="context"
                       onEditClicked={() => openEditDialog(passenger)}
                       onDeleteClicked={() => openDeleteDialog(passenger)}
