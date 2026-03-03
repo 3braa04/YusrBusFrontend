@@ -2,7 +2,10 @@ import SaveButton from "@/app/core/components/buttons/saveButton";
 import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
 import Loading from "@/app/core/components/loading/loading";
 import useEntities from "@/app/core/hooks/useEntities";
-import { useFormValidation, type ValidationRule } from "@/app/core/hooks/useFormValidation";
+import {
+  useFormValidation,
+  type ValidationRule,
+} from "@/app/core/hooks/useFormValidation";
 import { useTripForm } from "@/app/core/hooks/useTripForm";
 import PassengersApiService from "@/app/core/networking/services/passengersApiService";
 import TripsApiService from "@/app/core/networking/services/tripsApiService";
@@ -14,7 +17,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
@@ -52,7 +55,8 @@ export default function ChangeTripDialog({
   const [selectedDeposit, setSelectedDeposit] = useState<Deposit | undefined>(
     undefined,
   );
-  
+  const { loggedInUser } = useLoggedInUser();
+
   const [isTicketDialogOpen, setIsTicketDialogOpen] = useState(false);
   const [selectedPassenger, setSelectedPassenger] = useState<
     Passenger | undefined
@@ -61,6 +65,11 @@ export default function ChangeTripDialog({
     useState(false);
   const [isChangeDepositDialogOpen, setIsChangeDepositDialogOpen] =
     useState(false);
+
+  const handlePrintTicket = async (ticketId: number) => {
+    const currentUserId = loggedInUser?.id;
+    await TicketReportApiService.getTicketReport(ticketId, currentUserId ?? 0);
+  };
 
   // APIs
   const {
@@ -147,7 +156,6 @@ export default function ChangeTripDialog({
   };
 
   const handleDepositOpen = (deposit: Deposit | undefined) => {
-
     if (deposit == undefined) {
       deposit = new Deposit({
         fromCityId: formData.route?.fromCityId,
@@ -177,22 +185,20 @@ export default function ChangeTripDialog({
     >
       <DialogHeader className="p-4 border-b flex flex-row items-center justify-between">
         <div>
-          <DialogTitle>{mode === "create" ? "إضافة" : "تعديل"} رحلة</DialogTitle>
+          <DialogTitle>
+            {mode === "create" ? "إضافة" : "تعديل"} رحلة
+          </DialogTitle>
           <DialogDescription></DialogDescription>
         </div>
       </DialogHeader>
 
       <div className="flex flex-1 overflow-hidden">
-
-        <aside 
-          className="w-100 transition-all duration-300 border-l bg-muted/10 shrink-0 shadow-inner flex flex-col overflow-hidden"
-        >
+        <aside className="w-100 transition-all duration-300 border-l bg-muted/10 shrink-0 shadow-inner flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto custom-scrollbar p-4 flex flex-col gap-6">
-
             <section>
               <h3 className="font-bold tracking-widest mb-3">
                 تفاصيل الرحلة
-                <Separator className="mt-1 mb-3"/>
+                <Separator className="mt-1 mb-3" />
               </h3>
               <TripHeader
                 formData={formData}
@@ -207,20 +213,19 @@ export default function ChangeTripDialog({
             <section>
               <h3 className="font-bold tracking-widest">
                 الأمانات
-                <Separator className="mt-1 mb-3"/>
+                <Separator className="mt-1 mb-3" />
               </h3>
-              <TripDeposits 
-                deposits={formData.deposits ?? []} 
+              <TripDeposits
+                deposits={formData.deposits ?? []}
                 onDepositDeleted={(i) =>
                   setFormData((prev) => ({
                     ...prev,
                     deposits: prev.deposits?.filter((_, idx) => idx !== i),
                   }))
-                } 
+                }
                 onDepositDialogOpened={(deposit) => handleDepositOpen(deposit)}
               />
             </section>
-
           </div>
 
           <section className="p-4 border-t bg-background/50 backdrop-blur-sm flex flex-col gap-2">
@@ -237,15 +242,17 @@ export default function ChangeTripDialog({
               </Button>
             </DialogClose>
           </section>
-
         </aside>
 
         <main className="flex-1 overflow-hidden flex flex-col bg-background relative">
-          
+          <TripAmountSummary
+            tickets={formData.tickets ?? []}
+            deposits={formData.deposits ?? []}
+          />
+
           <TripAmountSummary trip={formData as Trip} />
 
           <div className="flex-1 overflow-auto custom-scrollbar flex flex-col items-center justify-start p-4">
-            
             <Bus
               isLoading={initLoading}
               seats={Array.from({ length: 44 }, (_, i) => ({ id: i + 1 }))}
@@ -253,6 +260,9 @@ export default function ChangeTripDialog({
               onSeatClick={handleSeatClick}
               onMoveTicket={(t) => setMovingTicket(t || undefined)}
               movingTicketId={movingTicket?.id || movingTicket?.chairNo}
+              onReportPrint={(ticketId) => {
+                handlePrintTicket(ticketId);
+              }}
               onDeleteTicket={(id) =>
                 setFormData((p) => ({
                   ...p,
@@ -260,12 +270,9 @@ export default function ChangeTripDialog({
                 }))
               }
               lastRowFull
-            />      
-
+            />
           </div>
-
         </main>
-        
       </div>
 
       {/* Nested Ticket Dialog */}
@@ -308,17 +315,21 @@ export default function ChangeTripDialog({
       </Dialog>
 
       {/* Nested Deposit Dialog */}
-      <Dialog open={isChangeDepositDialogOpen} onOpenChange={setIsChangeDepositDialogOpen}>
+      <Dialog
+        open={isChangeDepositDialogOpen}
+        onOpenChange={setIsChangeDepositDialogOpen}
+      >
         {isChangeDepositDialogOpen && (
-          <ChangeDepositDialog 
+          <ChangeDepositDialog
             entity={selectedDeposit}
             onSuccess={(dep) => {
               setFormData((prev) => {
                 const existingDeposits = prev.deposits ?? [];
-                const isExisting = dep.id && existingDeposits.some((d) => d.id === dep.id);
+                const isExisting =
+                  dep.id && existingDeposits.some((d) => d.id === dep.id);
 
                 const updatedDeposits = isExisting
-                  ? existingDeposits.map((d) => (d.id === dep.id ? dep : d)) 
+                  ? existingDeposits.map((d) => (d.id === dep.id ? dep : d))
                   : [...existingDeposits, dep];
 
                 return {
@@ -326,13 +337,12 @@ export default function ChangeTripDialog({
                   deposits: updatedDeposits,
                 };
               });
-              
+
               setIsChangeDepositDialogOpen(false);
             }}
           />
         )}
       </Dialog>
-
     </DialogContent>
   );
 }

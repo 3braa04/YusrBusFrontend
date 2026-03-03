@@ -19,18 +19,23 @@ import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 
 export default function TripsPage() {
-  const {activeBranch} = useLoggedInUser();
-  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Trip>(
-    new TripsApiService(),
-    (pageNumber, rowsPerPage, condition) => {
-      if(activeBranch?.branchId == undefined)
-        return undefined
+  const { activeBranch } = useLoggedInUser();
+  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
+    useEntities<Trip>(
+      new TripsApiService(),
+      (pageNumber, rowsPerPage, condition) => {
+        if (activeBranch?.branchId == undefined) return undefined;
 
-      return new TripsApiService().FilterInBranch(pageNumber, rowsPerPage, activeBranch?.branchId, condition)
-    },
-    [activeBranch?.branchId]
-  );
-  
+        return new TripsApiService().FilterInBranch(
+          pageNumber,
+          rowsPerPage,
+          activeBranch?.branchId,
+          condition,
+        );
+      },
+      [activeBranch?.branchId],
+    );
+
   const {
     selectedRow,
     isEditDialogOpen,
@@ -40,6 +45,8 @@ export default function TripsPage() {
     openEditDialog,
     openDeleteDialog,
   } = useDialog<Trip>();
+  const { addPermission, updatePermission, deletePermission } =
+    useUserPermissions(SystemPermissionsResources.Trips);
 
   return (
     <div className="px-5 py-3">
@@ -53,6 +60,7 @@ export default function TripsPage() {
             onSuccess={(newData) => refreash(newData)}
           />
         }
+        isButtonVisible={addPermission}
       />
 
       <TableCard
@@ -138,7 +146,7 @@ export default function TripsPage() {
           onPageChanged={setCurrentPage}
         />
 
-        {isEditDialogOpen && (
+        {isEditDialogOpen && updatePermission && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <ChangeTripDialog
               entity={selectedRow || undefined}
@@ -151,7 +159,7 @@ export default function TripsPage() {
           </Dialog>
         )}
 
-        {isDeleteDialogOpen && (
+        {isDeleteDialogOpen && deletePermission && (
           <Dialog
             open={isDeleteDialogOpen}
             onOpenChange={setIsDeleteDialogOpen}
