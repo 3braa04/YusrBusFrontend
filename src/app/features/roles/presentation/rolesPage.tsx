@@ -1,23 +1,22 @@
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
 import SearchInput from "@/app/core/components/input/searchInput";
 import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
+import TableBodyRow from "@/app/core/components/table/tableBodyRow";
 import TableCard from "@/app/core/components/table/tableCard";
 import TableHeader from "@/app/core/components/table/tableHeader";
+import TableHeaderRows from "@/app/core/components/table/tableHeaderRows";
+import TablePagination from "@/app/core/components/table/tablePagination";
 import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
 import useDialog from "@/app/core/hooks/useDialog";
 import useEntities from "@/app/core/hooks/useEntities";
-import BranchesApiService from "@/app/core/networking/services/branchesApiService";
+import RolesApiService from "@/app/core/networking/services/rolesApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
 import { Settings2 } from "lucide-react";
-import TableHeaderRows from "@/app/core/components/table/tableHeaderRows";
-import TablePagination from "@/app/core/components/table/tablePagination";
-import RolesApiService from "@/app/core/networking/services/rolesApiService";
-import TableBodyRow from "@/app/core/components/table/tableBodyRow";
+import { RouteFilterColumns } from "../../routes/data/route";
 import type { Role } from "../data/role";
 import ChangeRoleDialog from "./changeRoleDialog";
-import { RouteFilterColumns } from "../../routes/data/route";
-import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 
 export default function RolesPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
@@ -119,9 +118,10 @@ export default function RolesPage() {
             <ChangeRoleDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
-              onSuccess={(data) => {
+              onSuccess={(data, mode) => {
                 refreash(data);
-                setIsEditDialogOpen(false);
+                if(mode === 'create')
+                  setIsEditDialogOpen(false);
               }}
             />
           </Dialog>
@@ -136,7 +136,7 @@ export default function RolesPage() {
               <DeleteDialog
                 entityName="الدور"
                 id={selectedRow?.id ?? 0}
-                service={new BranchesApiService()}
+                service={new RolesApiService()}
                 onSuccess={() => {
                   refreash(undefined, selectedRow?.id);
                   setIsDeleteDialogOpen(false);

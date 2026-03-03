@@ -1,8 +1,11 @@
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
 import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
+import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 import useDialog from "@/app/core/hooks/useDialog";
 import useEntities from "@/app/core/hooks/useEntities";
+import useUserPermissions from "@/app/core/hooks/useUserPermissions";
 import TripsApiService from "@/app/core/networking/services/tripsApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
@@ -15,9 +18,6 @@ import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
 import { TripFilterColumns, type Trip } from "../data/trip";
 import ChangeTripDialog from "./changeTripDialog";
-import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
-import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
-import useUserPermissions from "@/app/core/hooks/useUserPermissions";
 
 export default function TripsPage() {
   const { activeBranch } = useLoggedInUser();
@@ -152,9 +152,10 @@ export default function TripsPage() {
             <ChangeTripDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
-              onSuccess={(data) => {
+              onSuccess={(data, mode) => {
                 refreash(data);
-                setIsEditDialogOpen(false);
+                if(mode === 'create')
+                  setIsEditDialogOpen(false);
               }}
             />
           </Dialog>

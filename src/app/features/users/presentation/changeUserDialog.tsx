@@ -310,7 +310,7 @@ export default function ChangeUserDialog({
           formData={formData as User}
           dialogMode={mode}
           service={new UsersApiService()}
-          onSuccess={onSuccess}
+          onSuccess={(data) => onSuccess?.(data, mode)}
           validation={validate}
         />
       </DialogFooter>

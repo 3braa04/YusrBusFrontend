@@ -132,9 +132,10 @@ export default function UsersPage() {
             <ChangeUserDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
-              onSuccess={(data) => {
+              onSuccess={(data, mode) => {
                 refreash(data);
-                setIsEditDialogOpen(false);
+                if(mode === 'create')
+                  setIsEditDialogOpen(false);
                 if (data.id === loggedInUser?.id) {
                   updateLoggedInUser(data);
                   if (data.userBranches && data.userBranches.length > 0) {

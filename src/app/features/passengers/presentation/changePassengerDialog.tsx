@@ -304,7 +304,7 @@ export default function ChangePassengerDialog({
           dialogMode={mode}
           service={new PassengersApiService()}
           disable={() => fetchingCountries}
-          onSuccess={onSuccess}
+          onSuccess={(data) => onSuccess?.(data, mode)}
           validation={validate}
         />
       </DialogFooter>

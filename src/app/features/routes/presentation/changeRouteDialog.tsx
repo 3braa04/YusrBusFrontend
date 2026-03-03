@@ -293,7 +293,7 @@ export default function ChangeRouteDialog({
           dialogMode={mode}
           service={new RoutesApiService()}
           disable={() => fetchingCities}
-          onSuccess={onSuccess}
+          onSuccess={(data) => onSuccess?.(data, mode)}
           validation={validate}
         />
       </DialogFooter>

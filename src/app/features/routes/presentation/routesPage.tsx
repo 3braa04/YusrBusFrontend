@@ -122,9 +122,10 @@ export default function RoutesPage() {
             <ChangeRouteDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
-              onSuccess={(data) => {
+              onSuccess={(data, mode) => {
                 refreash(data);
-                setIsEditDialogOpen(false);
+                if(mode === 'create')
+                  setIsEditDialogOpen(false);
               }}
             />
           </Dialog>

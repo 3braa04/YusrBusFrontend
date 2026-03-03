@@ -1,8 +1,10 @@
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
 import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
 import useDialog from "@/app/core/hooks/useDialog";
 import useEntities from "@/app/core/hooks/useEntities";
+import useUserPermissions from "@/app/core/hooks/useUserPermissions";
 import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
@@ -15,8 +17,6 @@ import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
 import Branch, { BranchFilterColumns } from "../data/branch";
 import ChangeBranchDialog from "./changeBranchDialog";
-import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
-import useUserPermissions from "@/app/core/hooks/useUserPermissions";
 
 export default function BranchesPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
@@ -132,9 +132,10 @@ export default function BranchesPage() {
             <ChangeBranchDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
-              onSuccess={(data) => {
+              onSuccess={(data, mode) => {
                 refreash(data);
-                setIsEditDialogOpen(false);
+                if(mode === 'create')
+                  setIsEditDialogOpen(false);
               }}
             />
           </Dialog>

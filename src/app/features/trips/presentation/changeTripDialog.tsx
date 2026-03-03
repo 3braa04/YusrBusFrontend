@@ -232,7 +232,7 @@ export default function ChangeTripDialog({
               formData={formData as Trip}
               dialogMode={mode}
               service={new TripsApiService()}
-              onSuccess={(trip) => onSuccess?.(trip)}
+              onSuccess={(trip) => onSuccess?.(trip, mode)}
               validation={validate}
             />
             <DialogClose asChild>

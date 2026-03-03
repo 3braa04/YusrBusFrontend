@@ -245,7 +245,7 @@ export default function ChangeRoleDialog({ entity, mode, onSuccess }: CummonChan
 
       <DialogFooter className="gap-2">
         <DialogClose asChild><Button variant="outline">إلغاء</Button></DialogClose>
-        <SaveButton formData={formData as Role} dialogMode={mode} service={new RolesApiService()} onSuccess={onSuccess} validation={validate} />
+        <SaveButton formData={formData as Role} dialogMode={mode} service={new RolesApiService()} onSuccess={(data) => onSuccess?.(data, mode)} validation={validate} />
       </DialogFooter>
     </DialogContent>
   );

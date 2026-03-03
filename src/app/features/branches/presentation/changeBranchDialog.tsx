@@ -167,7 +167,7 @@ export default function ChangeBranchDialog({
           dialogMode={mode}
           service={new BranchesApiService()}
           disable={() => fetchingCities}
-          onSuccess={onSuccess}
+          onSuccess={(data) => onSuccess?.(data, mode)}
           validation={validate}
         />
       </DialogFooter>
