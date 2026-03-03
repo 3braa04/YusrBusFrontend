@@ -59,11 +59,11 @@ export default function TripAmountSummary({
   className,
 }: TripAmountSummaryProps) {
   // Aggregate Calculations (Tickets + Deposits)
-  const ticketTotal = trip?.tickets?.reduce((s, t) => s + (t.amount ?? 0), 0);
-  const ticketPaid = trip?.tickets?.reduce((s, t) => s + (t.paidAmount ?? 0), 0);
+  const ticketTotal = trip?.tickets?.reduce((s, t) => s + (Number(t.amount) || 0), 0) || 0;
+  const ticketPaid = trip?.tickets?.reduce((s, t) => s + (Number(t.paidAmount) || 0), 0) || 0;
   
-  const depositTotal = trip?.deposits?.reduce((s, d) => s + (d.amount ?? 0), 0);
-  const depositPaid = trip?.deposits?.reduce((s, d) => s + (d.paidAmount ?? 0), 0);
+  const depositTotal = trip?.deposits?.reduce((s, d) => s + (Number(d.amount) || 0), 0) || 0;
+  const depositPaid = trip?.deposits?.reduce((s, d) => s + (Number(d.paidAmount) || 0), 0) || 0;
 
   const grandTotal = ticketTotal + depositTotal;
   const grandPaid = ticketPaid + depositPaid;
