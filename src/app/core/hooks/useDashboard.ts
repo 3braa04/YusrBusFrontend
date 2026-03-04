@@ -4,7 +4,7 @@ import DashboardApiService from "../networking/services/dashboardApiService";
 
 export default function useDashbaord()
 {
-    const [data, setData] = useState<Dashboard | null>(null);
+    const [data, setData] = useState<Dashboard | undefined>(undefined);
     const [loading, setLoading] = useState(false);
     useEffect(()=>{
         const dashboardFetch = async ()=>{
