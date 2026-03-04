@@ -139,17 +139,19 @@ export default function SettingPage() {
               </h3>
 
               <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Upload className="h-4 w-4 ml-2" />
-                  رفع صورة
-                </Button>
+                {(formData.logo?.url == undefined || formData.logo.status === StorageFileStatus.Delete) && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="h-4 w-4 ml-2" />
+                    رفع صورة
+                  </Button>
+                )}
 
-                {formData.logo?.url && (
+                {formData.logo?.url && formData.logo.status !== StorageFileStatus.Delete && (
                   <Button
                     type="button"
                     variant="destructive"
