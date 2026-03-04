@@ -22,32 +22,32 @@ import LandingSystemPreview from './landingSystemPreview';
 import LandingWhyUs from './landingWhyUs';
 
 // Trips
-import tripsDark from '@/assets/system/yusrBus_Trips_Dark.webp';
-import tripsLight from '@/assets/system/yusrBus_Trips_Light.webp';
 import changeTripDark from '@/assets/system/yusrBus_ChangeTrip_Dark.webp';
 import changeTripLight from '@/assets/system/yusrBus_ChangeTrip_Light.webp';
+import tripsDark from '@/assets/system/yusrBus_Trips_Dark.webp';
+import tripsLight from '@/assets/system/yusrBus_Trips_Light.webp';
 
 // Passengers
-import passengersDark from '@/assets/system/yusrBus_Passengers_Dark.webp';
-import passengersLight from '@/assets/system/yusrBus_Passengers_Light.webp';
 import changePassengerDark from '@/assets/system/yusrBus_ChangePassenger_Dark.webp';
 import changePassengerLight from '@/assets/system/yusrBus_ChangePassenger_Light.webp';
+import passengersDark from '@/assets/system/yusrBus_Passengers_Dark.webp';
+import passengersLight from '@/assets/system/yusrBus_Passengers_Light.webp';
 
 // Routes
-import routesDark from '@/assets/system/yusrBus_Routes_Dark.webp';
-import routesLight from '@/assets/system/yusrBus_Routes_Light.webp';
 import changeRouteDark from '@/assets/system/yusrBus_ChangeRoute_Dark.webp';
 import changeRouteLight from '@/assets/system/yusrBus_ChangeRoute_Light.webp';
+import routesDark from '@/assets/system/yusrBus_Routes_Dark.webp';
+import routesLight from '@/assets/system/yusrBus_Routes_Light.webp';
 
 // Settings
 import settingDark from '@/assets/system/yusrBus_Setting_Dark.webp';
 import settingLight from '@/assets/system/yusrBus_Setting_Light.webp';
 
 // Users
-import usersDark from '@/assets/system/yusrBus_Users_Dark.webp';
-import usersLight from '@/assets/system/yusrBus_Users_Light.webp';
 import changeUserDark from '@/assets/system/yusrBus_ChangeUser_Dark.webp';
 import changeUserLight from '@/assets/system/yusrBus_ChangeUser_Light.webp';
+import usersDark from '@/assets/system/yusrBus_Users_Dark.webp';
+import usersLight from '@/assets/system/yusrBus_Users_Light.webp';
 
 // Dashboard
 import dashboardDark from '@/assets/system/yusrBus_Dashboard_Dark.webp';
@@ -82,10 +82,10 @@ const features = [
   },
   {
     icon: Map,
-    title: 'إدارة المسارات',
-    desc: 'صمّم مسارات الحافلات بين المحطات، حدد التسلسل والمسافات، وعدّل المسارات بمرونة.',
+    title: 'إدارة الخطوط',
+    desc: 'صمّم مسارات الحافلات بين المحطات، حدد التسلسل والمسافات، وعدّل الخطوط بمرونة.',
     details: ['إضافة محطات متعددة', 'ترتيب التسلسل', 'مسارات قابلة لإعادة الاستخدام'],
-    cta: 'استعراض المسارات',
+    cta: 'استعراض الخطوط',
     to: '/routes',
     screenshotDark: routesDark,
     screenshotLight: routesLight,
@@ -143,7 +143,7 @@ const whyUs = [
   {
     icon: Layers,
     title: 'نظام متكامل في مكان واحد',
-    desc: 'الرحلات، التذاكر، الركاب، المسارات، والمستخدمين — كل شيء تحت سقف واحد.',
+    desc: 'الرحلات، التذاكر، الركاب، الخطوط، والمستخدمين — كل شيء تحت سقف واحد.',
   },
   {
     icon: Clock,
