@@ -69,7 +69,7 @@ export function SideBarSecondaryMenu({
 
           <SidebarMenuItem key="logout">
               <SidebarMenuButton asChild onClick={LogoutHandler}>
-                <div className="flex items-center justify-start gap-3 w-full px-3 text-destructive">
+                <div className="flex items-center justify-start gap-3 w-full px-3 text-destructive cursor-pointer">
                   <span className="flex items-center justify-center shrink-0 size-4">
                     <LogOutIcon />
                   </span>
