@@ -20,13 +20,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type User from "../users/data/user";
 
 import { SystemPermissions } from "@/app/core/auth/systemPermissions";
 import type { Setting } from "@/app/core/data/setting";
 import placeholderImg from "@/assets/placeholder.svg";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function LoginForm({
   className,
@@ -35,6 +36,7 @@ export function LoginForm({
   const navigate = useNavigate();
   const [formData, setFormData] = useState<Partial<LoginRequest>>({});
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
   const location = useLocation();
   const { updateSetting } = useSetting();
@@ -60,8 +62,32 @@ export function LoginForm({
   const { getError, isInvalid, validate, clearError, errorInputClass } =
     useFormValidation(formData, validationRules);
 
+  const emailStorageItemName = "remembered_email";
+  const usernameStorageItemName = "remembered_username";
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem(emailStorageItemName);
+    const savedUsername = localStorage.getItem(usernameStorageItemName);
+    if (savedEmail || savedUsername) {
+      setFormData((prev) => ({
+        ...prev,
+        companyEmail: savedEmail || "",
+        username: savedUsername || "",
+      }));
+      setRememberMe(true);
+    }
+  }, []);
+
   const Login = async () => {
     if (!validate()) return;
+
+    if (rememberMe) {
+      localStorage.setItem(emailStorageItemName, formData.companyEmail || "");
+      localStorage.setItem(usernameStorageItemName, formData.username || "");
+    } else {
+      localStorage.removeItem(emailStorageItemName);
+      localStorage.removeItem(usernameStorageItemName);
+    }
 
     const request = new LoginRequest({
       companyEmail: formData.companyEmail,
@@ -169,6 +195,20 @@ export function LoginForm({
                   </span>
                 )}
               </Field>
+
+              <div className="flex items-center gap-3">
+                <Checkbox 
+                  id="rememberMe" 
+                  checked={rememberMe} 
+                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                />
+                <label
+                  htmlFor="rememberMe"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                >
+                  تذكرني
+                </label>
+              </div>
 
               <Field>
                 <Button type="button" disabled={loading} onClick={Login}>
