@@ -34,6 +34,7 @@ const ArabicLabels: Record<string, string> = {
   [SystemPermissionsResources.Users]: "المستخدمين",
   [SystemPermissionsResources.Roles]: "الأدوار",
   [SystemPermissionsResources.Dashboard]: "لوحة التحكم",
+  [SystemPermissionsResources.TripUnblock]: "التعديل على الرحلات بعد 24 ساعة من انطلاقها",
   [SystemPermissionsResources.TicketReport]: "تقارير التذاكر",
   [SystemPermissionsResources.DepositReport]: "تقارير الأمانات",
   [SystemPermissionsResources.TripTicketsReport]: "تقارير تذاكر الرحلة",
@@ -93,7 +94,8 @@ export default function ChangeRoleDialog({ entity, mode, onSuccess }: CummonChan
     
     const systemOrder = [
         SystemPermissionsResources.Settings, 
-        SystemPermissionsResources.Dashboard
+        SystemPermissionsResources.Dashboard,
+        SystemPermissionsResources.TripUnblock
     ];
     
     const reportOrder = [
