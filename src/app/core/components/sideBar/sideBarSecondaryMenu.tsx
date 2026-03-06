@@ -15,7 +15,6 @@ import { useAuth } from "../../auth/authContext"
 import ApiConstants from "../../networking/apiConstants"
 import YusrApiHelper from "../../networking/yusrApiHelper"
 import ApplicationLang from "../../services/langService/applicationLang"
-import UserBranchesSelect from "../select/userBranchesSelect"
 import { ThemeToggle } from "../theme/themeToggle"
 
 export function SideBarSecondaryMenu({
@@ -58,10 +57,6 @@ export function SideBarSecondaryMenu({
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
-
-          <SidebarMenuItem>
-              <UserBranchesSelect/>
-          </SidebarMenuItem>
 
           <SidebarMenuItem>
               <ThemeToggle variant="sidebar"/>

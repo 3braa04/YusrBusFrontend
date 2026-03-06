@@ -2,7 +2,6 @@ import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsRes
 import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
 import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
-import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 import useDialog from "@/app/core/hooks/useDialog";
 import useEntities from "@/app/core/hooks/useEntities";
 import useUserPermissions from "@/app/core/hooks/useUserPermissions";
@@ -20,21 +19,17 @@ import { TripFilterColumns, type Trip } from "../data/trip";
 import ChangeTripDialog from "./changeTripDialog";
 
 export default function TripsPage() {
-  const { activeBranch } = useLoggedInUser();
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
     useEntities<Trip>(
       new TripsApiService(),
       (pageNumber, rowsPerPage, condition) => {
-        if (activeBranch?.branchId == undefined) return undefined;
-
-        return new TripsApiService().FilterInBranch(
+        return new TripsApiService().Filter(
           pageNumber,
           rowsPerPage,
-          activeBranch?.branchId,
           condition,
         );
       },
-      [activeBranch?.branchId],
+      [],
     );
 
   const {

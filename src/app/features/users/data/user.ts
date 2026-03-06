@@ -1,26 +1,16 @@
 import { BaseEntity } from "@/app/core/data/baseEntity";
 import type { ColumnName } from "@/app/core/types/ColumnName";
 import type { Role } from "@/app/features/roles/data/role";
-
-export class UserBranch extends BaseEntity {
-  public userId!: number;
-  public branchId!: number;
-  public username!: string;
-  public branchName!: string;
-
-  constructor(init?: Partial<UserBranch>) {
-    super();
-    Object.assign(this, init);
-  }
-}
+import type Branch from "../../branches/data/branch";
 
 export default class User extends BaseEntity {
   public username!: string;
   public password!: string;
   public isActive!: boolean;
+  public branchId!: number;
   public roleId!: number;
+  public branch!: Branch;
   public role!: Role;
-  public userBranches!: UserBranch[];
 
   constructor(init?: Partial<User>) {
     super();

@@ -11,7 +11,7 @@ export function useTripForm(entity: Trip | undefined, mode: string) {
   );
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
   const [initLoading, setInitLoading] = useState(false);
-  const {activeBranch} = useLoggedInUser();
+  const {loggedInUser} = useLoggedInUser();
 
   useEffect(() => {
     if (mode === "update" && entity?.id) {
@@ -29,7 +29,7 @@ export function useTripForm(entity: Trip | undefined, mode: string) {
         });
     }
     else{
-      setFormData({branchId: activeBranch?.branchId});
+      setFormData({branchId: loggedInUser?.branchId});
     }
   }, [entity?.id, mode]);
 

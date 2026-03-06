@@ -1,3 +1,4 @@
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
 import SearchInput from "@/app/core/components/input/searchInput";
 import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
@@ -10,20 +11,19 @@ import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu
 import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
 import useDialog from "@/app/core/hooks/useDialog";
 import useEntities from "@/app/core/hooks/useEntities";
+import useUserPermissions from "@/app/core/hooks/useUserPermissions";
 import UsersApiService from "@/app/core/networking/services/usersApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Table, TableBody } from "@/components/ui/table";
 import { User2Icon } from "lucide-react";
 import User, { UserFilterColumns } from "../data/user";
 import ChangeUserDialog from "./changeUserDialog";
-import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
-import useUserPermissions from "@/app/core/hooks/useUserPermissions";
 
 export default function UsersPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
     useEntities<User>(new UsersApiService());
 
-  const { loggedInUser, updateLoggedInUser, setActiveBranch } =
+  const { loggedInUser, updateLoggedInUser } =
     useLoggedInUser();
 
   const {
@@ -138,9 +138,6 @@ export default function UsersPage() {
                   setIsEditDialogOpen(false);
                 if (data.id === loggedInUser?.id) {
                   updateLoggedInUser(data);
-                  if (data.userBranches && data.userBranches.length > 0) {
-                    setActiveBranch(data.userBranches[0]);
-                  }
                 }
               }}
             />

@@ -1,9 +1,8 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { AuthConstants } from "./authConstants";
-import { useSetting } from "../contexts/settingContext";
-import { useLoggedInUser } from "../contexts/loggedInUserContext";
 import type User from "@/app/features/users/data/user";
-import { ContextConstants } from "../contexts/contextConstants";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useLoggedInUser } from "../contexts/loggedInUserContext";
+import { useSetting } from "../contexts/settingContext";
+import { AuthConstants } from "./authConstants";
 
 const AuthContext = createContext<{
   isAuthenticated: boolean;
@@ -50,7 +49,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem(AuthConstants.AuthCheckStorageItemName);
-    localStorage.removeItem(ContextConstants.ActiveBranchStorageItemName);
     setIsAuthenticated(false);
     clearSetting();
     clearUser();
