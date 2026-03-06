@@ -27,7 +27,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
-import { ChevronDownIcon, Edit, PlusCircle } from "lucide-react";
+import { ChevronDownIcon, Edit, PlusCircle, PrinterCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { arSA as arSADayPicker } from "react-day-picker/locale";
 import { PassengerFilterColumns, type Passenger } from "../../passengers/data/passenger";
@@ -359,6 +359,42 @@ export default function ChangeTicketDialog({
           />
         </Field>
       </FieldGroup>
+
+      <Separator className="my-4" />
+      
+      <div className="mt-4 rounded-lg border bg-muted/40 p-3 text-xs shadow-sm">
+        <div className="grid grid-cols-2 gap-8">
+          
+          {/* الجهة اليمنى: المنشئ */}
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-green-700">
+              <PlusCircle className="h-4 w-4" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-semibold text-foreground">أضيفت بواسطة: {entity?.createdBy?.username || "—"}</span>
+              <span className="text-muted-foreground">الفرع: {entity?.createdBy?.branch?.name || "—"}</span>
+            </div>
+          </div>
+
+          {/* الجهة اليسرى: الطابعة */}
+          <div className="flex items-center gap-2 border-r pr-8">
+            <div className={`flex h-8 w-8 items-center justify-center rounded-full ${entity?.printedBy ? 'bg-primary/10 text-green-700' : 'bg-primary/10 text-orange-700'}`}>
+              <PrinterCheck className="h-4 w-4" />
+            </div>
+            <div className="flex flex-col">
+              {entity?.printedBy ? (
+                <>
+                  <span className="font-semibold text-foreground">طُبعت بواسطة: {entity.printedBy.username}</span>
+                  <span className="text-muted-foreground text-[10px]">الفرع: {entity.printedBy.branch?.name}</span>
+                </>
+              ) : (
+                <span className="text-orange-600 font-medium italic">لم تُطبع بعد</span>
+              )}
+            </div>
+          </div>
+
+        </div>
+      </div>
 
       <DialogFooter>
         <DialogClose asChild>
