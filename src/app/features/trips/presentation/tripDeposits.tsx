@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Archive, ArrowLeft, Banknote, Box, Edit, Loader2, PackagePlus, Printer, Share2, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import type { Deposit } from "../data/deposit";
 
 type TripDepositsParams = {
@@ -22,7 +23,12 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
   const [printingId, setPrintingId] = useState<number | null>(null);
   const [sharingId, setSharingId] = useState<number | null>(null); // Added state
 
-  const handlePrintDeposit = async (depositId: number) => {
+  const handlePrintDeposit = async (depositId?: number) => {
+    if(depositId == undefined){
+      toast.error("لم يتم حفظ التغييرات بعد");
+      return;
+    }
+
     setPrintingId(depositId);
     try {
       const currentUserId = loggedInUser?.id; 
@@ -32,7 +38,12 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
     }
   };
 
-  const handleShareDeposit = async (depositId: number) => {
+  const handleShareDeposit = async (depositId?: number) => {
+    if(depositId == undefined){
+      toast.error("لم يتم حفظ التغييرات بعد");
+      return;
+    }
+
     setSharingId(depositId);
     try {
       const currentUserId = loggedInUser?.id;
@@ -154,7 +165,7 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
                           variant="ghost"
                           size="icon"
                           disabled={isPrinting || sharingId === dep.id}
-                          onClick={() => dep.id && handlePrintDeposit(dep.id)}
+                          onClick={() => handlePrintDeposit(dep.id)}
                           className="w-7 h-7 rounded-md hover:bg-primary/10 hover:text-primary transition-colors"
                         >
                           {isPrinting ? (
@@ -168,7 +179,7 @@ export default function TripDeposits({ deposits, onDepositDeleted, onDepositDial
                           variant="ghost"
                           size="icon"
                           disabled={isPrinting || sharingId === dep.id}
-                          onClick={() => dep.id && handleShareDeposit(dep.id)}
+                          onClick={() => handleShareDeposit(dep.id)}
                           className="w-7 h-7 rounded-md hover:bg-blue-500/10 hover:text-blue-600 transition-colors"
                         >
                           {sharingId === dep.id ? (

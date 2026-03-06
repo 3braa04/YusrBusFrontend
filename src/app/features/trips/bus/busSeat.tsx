@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/context-menu";
 import { cn } from "@/lib/utils";
 import { MoveHorizontal, Printer, Share2, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import type { SeatProps } from "./busTypes";
 
 export default function BusSeat({
@@ -34,12 +35,22 @@ export default function BusSeat({
     if (!isOccupied) e.preventDefault();
   };
 
-  const handlePrintTicket = async (ticketId: number) => {
+  const handlePrintTicket = async (ticketId?: number) => {
+    if(ticketId == undefined){
+      toast.error("لم يتم حفظ التغييرات بعد");
+      return;
+    }
+
     const currentUserId = loggedInUser?.id; 
     await TicketReportApiService.getReport(ticketId, currentUserId ?? 0);
   };
 
-  const handleShareTicket = async (ticketId: number) => {
+  const handleShareTicket = async (ticketId?: number) => {
+    if(ticketId == undefined){
+      toast.error("لم يتم حفظ التغييرات بعد");
+      return;
+    }
+
     const currentUserId = loggedInUser?.id;
     await TicketReportApiService.getReport(ticketId, currentUserId ?? 0, "share", `ticket_${ticketId}`);
   };
@@ -199,8 +210,7 @@ export default function BusSeat({
                 <ContextMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (ticket?.id) 
-                      handlePrintTicket(ticket.id);
+                    handlePrintTicket(ticket.id);
                   }}
                   className="gap-2"
                 >
@@ -211,7 +221,7 @@ export default function BusSeat({
                 <ContextMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (ticket?.id) handleShareTicket(ticket.id);
+                    handleShareTicket(ticket.id);
                   }}
                   className="gap-2"
                 >
