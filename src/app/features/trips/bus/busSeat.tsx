@@ -77,7 +77,7 @@ export default function BusSeat({
       toast.error("لم يتم حفظ التغييرات بعد أو بيانات التذكرة غير مكتملة");
       return;
     }
-    if (ticket?.passenger?.phoneNumber == undefined) {
+    if (!ticket?.passenger?.phoneNumber) {
       toast.error("المسافر ليس لديه رقم جوال مسجل");
       return;
     }
@@ -99,6 +99,8 @@ export default function BusSeat({
         const footer = `شكراً لاختياركم ${setting?.companyName}، رحلة سعيدة!`;
 
         WhatsappService.SendMessage(header, body, footer, ticket.passenger.phoneNumber);
+
+        toast.dismiss(loadingToast);
       } 
       else {
         toast.error("فشل في تجهيز الرابط، يرجى المحاولة مرة أخرى");
@@ -115,11 +117,11 @@ export default function BusSeat({
       toast.error("لم يتم حفظ التغييرات بعد أو بيانات التذكرة غير مكتملة");
       return;
     }
-    if (ticket?.passenger?.phoneNumber == undefined) {
+    if (!ticket?.passenger?.phoneNumber) {
       toast.error("المسافر ليس لديه رقم جوال مسجل");
       return;
     }
-    if (ticket?.passenger?.email == undefined) {
+    if (!ticket?.passenger?.email) {
       toast.error("المسافر ليس لديه بريد إلكتروني مسجل");
       return;
     }
@@ -135,6 +137,7 @@ export default function BusSeat({
             id: loadingToast,
             description: `تم إرسال ملف PDF إلى ${ticket.passenger.email}` 
         });
+        toast.dismiss(loadingToast);
       } 
       else {
         toast.dismiss(loadingToast);
