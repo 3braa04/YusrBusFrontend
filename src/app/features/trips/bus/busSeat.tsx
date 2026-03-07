@@ -82,18 +82,31 @@ export default function BusSeat({
       return;
     }
 
-    const shortUrl = `${window.location.origin}/t/${ticket.accessKey}`;
+    try 
+    {
+      const loadingToast = toast.loading("جاري تجهيز رابط التذكرة...");
 
-    const header = `تأكيد حجز - ${setting?.companyName}`;
-      
-    const body = 
-      `عزيزي المسافر، تم تأكيد حجزك بنجاح.\n` +
-      `رقم التذكرة: ${ticket.id}\n` +
-      `يمكنك تحميل التذكرة من الرابط التالي:\n\n${shortUrl}`; 
-          
-    const footer = `شكراً لاختياركم ${setting?.companyName}، رحلة سعيدة!`;
-      
-    WhatsappService.SendMessage(header, body, footer, ticket.passenger.phoneNumber);
+      const response = await TicketReportApiService.addToStorage(ticket.accessKey);
+
+      if (response.status === 200) {
+        toast.success("تم تجهيز الرابط بنجاح، جاري فتح واتساب...", { id: loadingToast });
+        const shortUrl = `${window.location.origin}/t/${ticket.accessKey}`;
+        const header = `تأكيد حجز - ${setting?.companyName}`;
+        const body = 
+            `عزيزي المسافر، تم تأكيد حجزك بنجاح.\n` +
+            `رقم التذكرة: ${ticket.id}\n` +
+            `يمكنك تحميل التذكرة من الرابط التالي:\n\n${shortUrl}`;
+        const footer = `شكراً لاختياركم ${setting?.companyName}، رحلة سعيدة!`;
+
+        WhatsappService.SendMessage(header, body, footer, ticket.passenger.phoneNumber);
+      } 
+      else {
+        toast.error("فشل في تجهيز الرابط، يرجى المحاولة مرة أخرى");
+      }
+    } 
+    catch (error) {
+      toast.error("حدث خطأ أثناء الاتصال بالسيرفر");
+    }
   };
 
   return (

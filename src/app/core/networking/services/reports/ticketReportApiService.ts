@@ -28,9 +28,13 @@ export default class TicketReportApiService
         return true;
     }  
 
-    static async getReportUrl(accessKey: string) : Promise<RequestResult<{url: string}>>
-    {
+    static async addToStorage(accessKey: string): Promise<RequestResult<{ url: string }>> {
+        const url = `${ApiConstants.baseUrl}/Reports/AddToStorage/${accessKey}`;
+        return await YusrApiHelper.Post<{ url: string }>(url, {});
+    }
+
+    static async getReportUrl(accessKey: string): Promise<RequestResult<{ url: string }>> {
         const url = `${ApiConstants.baseUrl}/Reports/TicketUrl/${accessKey}`;
-        return await YusrApiHelper.Get<{url: string}>(url);
+        return await YusrApiHelper.Get<{ url: string }>(url);
     }  
 }

@@ -11,28 +11,33 @@ export default function TicketRedirect() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const redirectToTicket = async () => {
       if (!accessKey) return;
 
       try {
         const response = await TicketReportApiService.getReportUrl(accessKey);
         
-        if (response.status === 200 && response.data) {
-          const finalUrl = typeof response.data === 'string' 
-                           ? response.data 
-                           : (response.data as any).url;
-          
-          window.location.replace(finalUrl);
-        } else {
+        if (response.status === 200 && response.data?.url) {
+          window.location.replace(response.data.url);
+          return;
+        } 
+        
+        if (isMounted) {
           setError(response.errorTitle || "عذراً، لم نتمكن من العثور على هذه التذكرة.");
         }
       } catch (err) {
         console.error("Redirect Error:", err);
-        setError("حدث خطأ تقني أثناء محاولة جلب التذكرة. يرجى المحاولة لاحقاً.");
+        if (isMounted) {
+          setError("حدث خطأ تقني أثناء محاولة جلب التذكرة.");
+        }
       }
     };
 
     redirectToTicket();
+
+    return () => { isMounted = false; };
   }, [accessKey]);
 
   return (
@@ -54,7 +59,7 @@ export default function TicketRedirect() {
                   جاري تجهيز تذكرتكم...
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  سيتم تحويلكم تلقائياً إلى ملف التذكرة (PDF)
+                  سيتم فتح ملف التذكرة (PDF) تلقائياً
                 </p>
               </div>
             </div>
@@ -62,7 +67,7 @@ export default function TicketRedirect() {
             <div className="space-y-4">
               <Alert variant="destructive" className="text-right">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>خطأ في التحميل</AlertTitle>
+                <AlertTitle>تنبيه</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
               
