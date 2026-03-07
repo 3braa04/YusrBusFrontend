@@ -1,3 +1,4 @@
+import type { RequestResult } from "@/app/core/data/requestResult";
 import ApiConstants from "../../apiConstants";
 import YusrApiHelper from "../../yusrApiHelper";
 import { ReportHelper } from "./reportHelper";
@@ -25,5 +26,11 @@ export default class TicketReportApiService
         }
 
         return true;
+    }  
+
+    static async getReportUrl(accessKey: string) : Promise<RequestResult<{url: string}>>
+    {
+        const url = `${ApiConstants.baseUrl}/Reports/TicketUrl/${accessKey}`;
+        return await YusrApiHelper.Get<{url: string}>(url);
     }  
 }

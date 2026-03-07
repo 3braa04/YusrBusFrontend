@@ -1,7 +1,9 @@
 import { SystemPermissions } from "@/app/core/auth/systemPermissions";
 import { SystemPermissionsActions } from "@/app/core/auth/systemPermissionsActions";
 import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
+import WhatsappService from "@/app/core/chat/whatsappService";
 import { useLoggedInUser } from "@/app/core/contexts/loggedInUserContext";
+import { useSetting } from "@/app/core/contexts/settingContext";
 import TicketReportApiService from "@/app/core/networking/services/reports/ticketReportApiService";
 import {
   ContextMenu,
@@ -12,7 +14,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, MoveHorizontal, Printer, Share2, Trash2 } from "lucide-react";
+import { CheckCircle2, Mail, MoveHorizontal, Printer, Share2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { SeatProps } from "./busTypes";
 
@@ -31,6 +33,7 @@ export default function BusSeat({
   const isOccupied = !!ticket;
   const isCheckedIn = ticket?.checkedIn;
   const { loggedInUser } = useLoggedInUser();
+  const { setting } = useSetting();
 
   const handleContextMenuAction = (e: React.MouseEvent) => {
     if (!isOccupied) e.preventDefault();
@@ -66,6 +69,31 @@ export default function BusSeat({
     if (checkIn) {
         onCheckInUpdate?.(ticket?.id);
     }
+  };
+
+  const handleSendTicket = async () => {
+
+    if (!ticket?.id || !ticket?.accessKey) {
+      toast.error("لم يتم حفظ التغييرات بعد أو بيانات التذكرة غير مكتملة");
+      return;
+    }
+    if (ticket?.passenger?.phoneNumber == undefined) {
+      toast.error("المسافر ليس لديه رقم جوال مسجل");
+      return;
+    }
+
+    const shortUrl = `${window.location.origin}/t/${ticket.accessKey}`;
+
+    const header = `تأكيد حجز - ${setting?.companyName}`;
+      
+    const body = 
+      `عزيزي المسافر، تم تأكيد حجزك بنجاح.\n` +
+      `رقم التذكرة: ${ticket.id}\n` +
+      `يمكنك تحميل التذكرة من الرابط التالي:\n\n${shortUrl}`; 
+          
+    const footer = `شكراً لاختياركم ${setting?.companyName}، رحلة سعيدة!`;
+      
+    WhatsappService.SendMessage(header, body, footer, ticket.passenger.phoneNumber);
   };
 
   return (
@@ -239,7 +267,7 @@ export default function BusSeat({
             onClick={() => onMoveTicket?.(ticket)}
             className="gap-2"
           >
-            <MoveHorizontal className="h-4 w-4 text-muted-foreground" />
+            <MoveHorizontal className="h-4 w-4" />
             <span className="flex-1">نقل المقعد</span>
           </ContextMenuItem>
 
@@ -255,7 +283,7 @@ export default function BusSeat({
                   }}
                   className="gap-2"
                 >
-                  <Printer className="h-4 w-4 text-muted-foreground" />
+                  <Printer className="h-4 w-4" />
                   <span className="flex-1">طباعة التذكرة</span>
                 </ContextMenuItem>
 
@@ -266,7 +294,7 @@ export default function BusSeat({
                   }}
                   className="gap-2"
                 >
-                  <Share2 className="h-4 w-4 text-muted-foreground" />
+                  <Share2 className="h-4 w-4" />
                   <span className="flex-1">مشاركة التذكرة</span>
                 </ContextMenuItem>
               </>
@@ -298,6 +326,36 @@ export default function BusSeat({
                 >
                   <Share2 className="h-4 w-4" />
                   <span className="flex-1 font-semibold">تحضير ومشاركة التذكرة</span>
+                </ContextMenuItem>
+              </>
+            )}
+          </ContextMenuGroup>
+
+          <ContextMenuSeparator />
+
+          <ContextMenuGroup>
+            {SystemPermissions.hasAuth(loggedInUser?.role?.permissions ?? [], SystemPermissionsResources.TicketReport, SystemPermissionsActions.Get) && (
+              <>
+                <ContextMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSendTicket();
+                  }}
+                  className="gap-2"
+                >
+                  <i className="bi bi-whatsapp h-4 w-4"></i>
+                  <span className="flex-1 font-semibold">إرسال التذكرة عبر واتساب</span>
+                </ContextMenuItem>
+
+                <ContextMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrintTicket(true);
+                  }}
+                  className="gap-2"
+                >
+                  <Mail className="h-4 w-4" />
+                  <span className="flex-1 font-semibold">إرسال التذكرة عبر الإيميل</span>
                 </ContextMenuItem>
               </>
             )}

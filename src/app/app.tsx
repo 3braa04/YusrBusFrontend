@@ -17,11 +17,12 @@ import MainPage from "./features/main/mainPage";
 import NotFoundPage from "./features/notFound/notFoundPage";
 import PassengersPage from "./features/passengers/presentation/passengersPage";
 import PrfilePage from "./features/profile/prfilePage";
+import TicketRedirect from "./features/redirection/ticketRedirect";
+import RolesPage from "./features/roles/presentation/rolesPage";
 import RoutesPage from "./features/routes/presentation/routesPage";
 import SettingPage from "./features/setting/settingPage";
 import TripsPage from "./features/trips/presentation/tripsPage";
 import UsersPage from "./features/users/presentation/usersPage";
-import RolesPage from "./features/roles/presentation/rolesPage";
 
 function App() {
   const { isLoading } = useAppInitialization();
@@ -64,6 +65,8 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+
+        <Route path="/t/:accessKey" element={<TicketRedirect />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<MainPage />}>

@@ -20,6 +20,7 @@ export class Ticket extends BaseEntity
     public createdById! : number;
     public printedById? : number;
     public checkedIn! : boolean;
+    public accessKey!: string;
 
     public passenger? : Passenger;
     public createdBy? : User;
