@@ -85,8 +85,8 @@ export default function BusSeat({
     try 
     {
       const loadingToast = toast.loading("جاري تجهيز رابط التذكرة...");
-
-      const response = await TicketReportApiService.addToStorage(ticket.accessKey);
+      const last4 = ticket.passenger.phoneNumber.slice(-4);
+      const response = await TicketReportApiService.addToStorage(ticket.accessKey, last4);
 
       if (response.status === 200) {
         toast.success("تم تجهيز الرابط بنجاح، جاري فتح واتساب...", { id: loadingToast });
