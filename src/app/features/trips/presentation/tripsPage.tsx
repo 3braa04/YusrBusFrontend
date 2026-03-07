@@ -23,11 +23,7 @@ export default function TripsPage() {
     useEntities<Trip>(
       new TripsApiService(),
       (pageNumber, rowsPerPage, condition) => {
-        return new TripsApiService().Filter(
-          pageNumber,
-          rowsPerPage,
-          condition,
-        );
+        return new TripsApiService().Filter(pageNumber, rowsPerPage, condition);
       },
       [],
     );
@@ -44,6 +40,16 @@ export default function TripsPage() {
   const { addPermission, updatePermission, deletePermission } =
     useUserPermissions(SystemPermissionsResources.Trips);
 
+  // function allowToProcess(trip: Trip): boolean {
+  //   const now = new Date().getTime();
+  //   const start = new Date(trip.startDate).getTime();
+  //   const oneDay = 24 * 60 * 60 * 1000;
+  //   const allow = start > now - oneDay;
+  //   if (!allow) {
+  //     toast.error("لا يمكن تعديل او حذف اي رحلة بعد مرور اكثر من 24 ساعة");
+  //   }
+  //   return start > now - oneDay;
+  // }
   return (
     <div className="px-5 py-3">
       <TableHeader
@@ -90,6 +96,7 @@ export default function TripsPage() {
                 { rowName: "اسم قائد الحافلة", rowStyles: "" },
                 { rowName: "اسم مساعد قائد الحافلة", rowStyles: "" },
                 { rowName: "اسم الحافلة (اذا توفر)", rowStyles: "" },
+                { rowName: "تاريخ بدء الرحلة", rowStyles: "" },
               ]}
             />
 
@@ -110,6 +117,20 @@ export default function TripsPage() {
                     },
                     {
                       rowName: trip.busName ?? "",
+                      rowStyles:
+                        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
+                    },
+                    {
+                      rowName: new Date(trip.startDate).toLocaleString(
+                        "en-GB",
+                        {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      ),
                       rowStyles:
                         "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
                     },
@@ -149,8 +170,7 @@ export default function TripsPage() {
               mode={selectedRow ? "update" : "create"}
               onSuccess={(data, mode) => {
                 refreash(data);
-                if(mode === 'create')
-                  setIsEditDialogOpen(false);
+                if (mode === "create") setIsEditDialogOpen(false);
               }}
             />
           </Dialog>
