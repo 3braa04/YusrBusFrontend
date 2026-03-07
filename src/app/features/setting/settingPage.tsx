@@ -62,7 +62,7 @@ export default function SettingPage() {
   const [formData, setFormData] = useState<Setting>(new Setting());
   const { currencies, fetchingCurrencies } = useCurrencies();
   const { fileInputRef, handleFileChange, handleRemoveFile } =
-    useStorageFile<Setting>(setFormData, 'logo');
+    useStorageFile<Setting>(setFormData, "logo");
   const { isInvalid, validate, clearError, errorInputClass, getError } =
     useFormValidation(formData, validationRules);
   const { updateSetting } = useSetting();
@@ -125,7 +125,11 @@ export default function SettingPage() {
           <div className="flex flex-col md:flex-row items-center gap-6 p-4 rounded-lg border bg-muted/30">
             <Avatar className="h-28 w-28 border-4 border-background shadow">
               <AvatarImage
-                src={formData.logo?.status !== StorageFileStatus.Delete? formData.logo?.url || "" : ""}
+                src={
+                  formData.logo?.status !== StorageFileStatus.Delete
+                    ? formData.logo?.url || ""
+                    : ""
+                }
                 className="object-cover"
               />
               <AvatarFallback className="bg-secondary">
@@ -139,7 +143,8 @@ export default function SettingPage() {
               </h3>
 
               <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                {(formData.logo?.url == undefined || formData.logo.status === StorageFileStatus.Delete) && (
+                {(formData.logo?.url == undefined ||
+                  formData.logo.status === StorageFileStatus.Delete) && (
                   <Button
                     type="button"
                     variant="secondary"
@@ -151,17 +156,18 @@ export default function SettingPage() {
                   </Button>
                 )}
 
-                {formData.logo?.url && formData.logo.status !== StorageFileStatus.Delete && (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    onClick={handleRemoveFile}
-                  >
-                    <Trash2 className="h-4 w-4 ml-2" />
-                    حذف
-                  </Button>
-                )}
+                {formData.logo?.url &&
+                  formData.logo.status !== StorageFileStatus.Delete && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleRemoveFile}
+                    >
+                      <Trash2 className="h-4 w-4 ml-2" />
+                      حذف
+                    </Button>
+                  )}
               </div>
 
               <p className="text-xs text-muted-foreground">
@@ -234,6 +240,18 @@ export default function SettingPage() {
                   {getError("email")}
                 </span>
               )}
+            </Field>
+
+            <Field>
+              <Label>رمز البريد الالكتروني الخاص بخدمة الارسال</Label>
+              <Input
+                type="emailKey"
+                style={{ direction: "ltr", textAlign: "right" }}
+                value={formData.emailKey || ""}
+                onChange={(e) => {
+                  setFormData({ ...formData, emailKey: e.target.value });
+                }}
+              />
             </Field>
 
             <Field>
