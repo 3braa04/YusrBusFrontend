@@ -3,7 +3,6 @@ import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
 import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
 import useDialog from "@/app/core/hooks/useDialog";
-import useEntities from "@/app/core/hooks/useEntities";
 import useUserPermissions from "@/app/core/hooks/useUserPermissions";
 import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -17,10 +16,14 @@ import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
 import Branch, { BranchFilterColumns } from "../data/branch";
 import ChangeBranchDialog from "./changeBranchDialog";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/app/core/state/store";
+import { refresh, setCurrentPage } from "../logic/branchSlice";
 
 export default function BranchesPage() {
-  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } =
-    useEntities<Branch>(new BranchesApiService());
+  const dispatch = useDispatch();
+  const branchState = useSelector((state: RootState) => state.branch);
+
   const {
     selectedRow,
     isEditDialogOpen,
@@ -43,7 +46,7 @@ export default function BranchesPage() {
           <ChangeBranchDialog
             entity={undefined}
             mode="create"
-            onSuccess={(newData) => refreash(newData)}
+            onSuccess={(newData) => dispatch(refresh({ newData: newData }))}
           />
         }
       />
@@ -52,7 +55,7 @@ export default function BranchesPage() {
         cards={[
           {
             title: "إجمالي الفروع",
-            data: (entities?.count ?? 0).toString(),
+            data: (branchState.entities?.count ?? 0).toString(),
             icon: <Building className="h-4 w-4 text-muted-foreground" />,
           },
           {
@@ -69,11 +72,11 @@ export default function BranchesPage() {
       />
 
       <div className="rounded-b-xl border shadow-sm overflow-hidden">
-        {isLoading ? (
+        {branchState.isLoading ? (
           <EmptyTablePreview mode="loading" />
-        ) : entities?.count == 0 ? (
+        ) : branchState.entities?.count == 0 ? (
           <EmptyTablePreview mode="empty" />
-        ) : entities == undefined ? (
+        ) : branchState.entities == undefined ? (
           <EmptyTablePreview mode="error" />
         ) : (
           <Table>
@@ -87,7 +90,7 @@ export default function BranchesPage() {
             />
 
             <TableBody>
-              {entities?.data?.map((branch, i) => (
+              {branchState.entities?.data?.map((branch, i) => (
                 <BranchRow
                   key={i}
                   tableRows={[
@@ -122,9 +125,9 @@ export default function BranchesPage() {
         )}
         <TablePagination
           pageSize={100}
-          totalNumber={entities?.count ?? 0}
-          currentPage={currentPage || 1}
-          onPageChanged={setCurrentPage}
+          totalNumber={branchState.entities?.count ?? 0}
+          currentPage={branchState.currentPage || 1}
+          onPageChanged={(newPage) => dispatch(setCurrentPage(newPage))}
         />
 
         {isEditDialogOpen && updatePermission && (
@@ -133,9 +136,8 @@ export default function BranchesPage() {
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
               onSuccess={(data, mode) => {
-                refreash(data);
-                if(mode === 'create')
-                  setIsEditDialogOpen(false);
+                dispatch(refresh({ newData: data }));
+                if (mode === "create") setIsEditDialogOpen(false);
               }}
             />
           </Dialog>
@@ -152,7 +154,7 @@ export default function BranchesPage() {
                 id={selectedRow?.id ?? 0}
                 service={new BranchesApiService()}
                 onSuccess={() => {
-                  refreash(undefined, selectedRow?.id);
+                  dispatch(refresh({ deletedId: selectedRow?.id }));
                   setIsDeleteDialogOpen(false);
                 }}
               />

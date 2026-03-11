@@ -1,6 +1,1 @@
-
-
-export default class BranchEvents
-{
-    
-}
+export default class BranchEvents {}
