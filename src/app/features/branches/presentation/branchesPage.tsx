@@ -16,24 +16,30 @@ import TableHeader from "../../../core/components/table/tableHeader";
 import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
 import { BranchFilterColumns } from "../data/branch";
-import { openBranchDeleteDialog, openBranchEditDialog, setIsBranchDeleteDialogOpen, setIsBranchEditDialogOpen } from "../logic/branchDialogSlice";
+import {
+  openBranchDeleteDialog,
+  openBranchEditDialog,
+  setIsBranchDeleteDialogOpen,
+  setIsBranchEditDialogOpen,
+} from "../logic/branchDialogSlice";
 import { filter, refresh, setCurrentPage } from "../logic/branchSlice";
 import ChangeBranchDialog from "./changeBranchDialog";
+import { ss } from "../logic/branchSlice";
 
 export default function BranchesPage() {
-  const dispatch = useAppDispatch(); 
+  const dispatch = useAppDispatch();
   const branchState = useAppSelector((state) => state.branch);
-  const { 
-    selectedRow, 
-    isEditDialogOpen, 
-    isDeleteDialogOpen 
-  } = useAppSelector((state) => state.branchDialog);
-  const perm = useAppSelector((state) => selectPermissionsByResource(state, SystemPermissionsResources.Branches));
+  const { selectedRow, isEditDialogOpen, isDeleteDialogOpen } = useAppSelector(
+    (state) => state.branchDialog,
+  );
+  const perm = useAppSelector((state) =>
+    selectPermissionsByResource(state, SystemPermissionsResources.Branches),
+  );
 
   useEffect(() => {
     dispatch(filter(undefined));
+    dispatch(ss());
   }, [dispatch]);
-
 
   return (
     <div className="px-5 py-3">
@@ -105,16 +111,24 @@ export default function BranchesPage() {
                     <TableRowActionsMenu
                       permissionsResource={SystemPermissionsResources.Branches}
                       type="dropdown"
-                      onEditClicked={() => dispatch(openBranchEditDialog(branch))}
-                      onDeleteClicked={() => dispatch(openBranchDeleteDialog(branch))}
+                      onEditClicked={() =>
+                        dispatch(openBranchEditDialog(branch))
+                      }
+                      onDeleteClicked={() =>
+                        dispatch(openBranchDeleteDialog(branch))
+                      }
                     />
                   }
                   contextMenuContent={
                     <TableRowActionsMenu
                       permissionsResource={SystemPermissionsResources.Branches}
                       type="context"
-                      onEditClicked={() => dispatch(openBranchEditDialog(branch))}
-                      onDeleteClicked={() => dispatch(openBranchDeleteDialog(branch))}
+                      onEditClicked={() =>
+                        dispatch(openBranchEditDialog(branch))
+                      }
+                      onDeleteClicked={() =>
+                        dispatch(openBranchDeleteDialog(branch))
+                      }
                     />
                   }
                 />
@@ -130,13 +144,16 @@ export default function BranchesPage() {
         />
 
         {isEditDialogOpen && perm.updatePermission && (
-          <Dialog open={isEditDialogOpen} onOpenChange={(open) => dispatch(setIsBranchEditDialogOpen(open))}>
+          <Dialog
+            open={isEditDialogOpen}
+            onOpenChange={(open) => dispatch(setIsBranchEditDialogOpen(open))}
+          >
             <ChangeBranchDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
               onSuccess={(data, mode) => {
                 dispatch(refresh({ newData: data }));
-                if (mode === "create") 
+                if (mode === "create")
                   dispatch(setIsBranchEditDialogOpen(false));
               }}
             />
