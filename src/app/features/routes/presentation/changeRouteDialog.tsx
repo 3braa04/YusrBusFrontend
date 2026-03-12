@@ -1,13 +1,13 @@
 import SaveButton from "@/app/core/components/buttons/saveButton";
 import DynamicListContainer from "@/app/core/components/containers/dynamicListContainer";
-import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import type { CommonChangeDialogProps } from "@/app/core/components/dialogs/commonChangeDialogProps";
 import Loading from "@/app/core/components/loading/loading";
 import SearchableSelect from "@/app/core/components/select/searchableSelect";
 import { CityFilterColumns } from "@/app/core/data/city";
 import { useDynamicList } from "@/app/core/hooks/useDynamicList";
 import {
-  useFormValidation,
-  type ValidationRule,
+    useFormValidation,
+    type ValidationRule,
 } from "@/app/core/hooks/useFormValidation";
 import RoutesApiService from "@/app/core/networking/services/routesApiService";
 import { useAppDispatch, useAppSelector } from "@/app/core/state/hooks";
@@ -15,12 +15,12 @@ import { filterCities } from "@/app/core/state/shared/citySlice";
 import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import {
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -34,7 +34,7 @@ export default function ChangeRouteDialog({
   entity,
   mode,
   onSuccess,
-}: CummonChangeDialogProps<Route>) {
+}: CommonChangeDialogProps<Route>) {
   const [formData, setFormData] = useState<Partial<Route>>({
     routeStations: [],
   });

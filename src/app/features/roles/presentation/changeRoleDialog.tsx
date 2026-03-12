@@ -1,7 +1,7 @@
 import { SystemPermissionsActions } from "@/app/core/auth/systemPermissionsActions";
 import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 import SaveButton from "@/app/core/components/buttons/saveButton";
-import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import type { CommonChangeDialogProps } from "@/app/core/components/dialogs/commonChangeDialogProps";
 import { useFormValidation } from "@/app/core/hooks/useFormValidation";
 import RolesApiService from "@/app/core/networking/services/rolesApiService";
 import SystemApiService from "@/app/core/networking/services/systemApiService";
@@ -10,11 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
+    DialogClose,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
 } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -50,7 +50,7 @@ const ActionIcons: Record<string, any> = {
   [SystemPermissionsActions.Delete]: <Trash2 className="w-4 h-4 text-red-500" />,
 };
 
-export default function ChangeRoleDialog({ entity, mode, onSuccess }: CummonChangeDialogProps<Role>) 
+export default function ChangeRoleDialog({ entity, mode, onSuccess }: CommonChangeDialogProps<Role>) 
 {
   const [formData, setFormData] = useState<Partial<Role>>({
     id: entity?.id,

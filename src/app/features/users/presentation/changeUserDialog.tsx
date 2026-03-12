@@ -1,10 +1,10 @@
 import SaveButton from "@/app/core/components/buttons/saveButton";
-import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import type { CommonChangeDialogProps } from "@/app/core/components/dialogs/commonChangeDialogProps";
 import SearchableSelect from "@/app/core/components/select/searchableSelect";
 import useEntities from "@/app/core/hooks/useEntities";
 import {
-  useFormValidation,
-  type ValidationRule,
+    useFormValidation,
+    type ValidationRule,
 } from "@/app/core/hooks/useFormValidation";
 import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import RolesApiService from "@/app/core/networking/services/rolesApiService";
@@ -12,22 +12,22 @@ import UsersApiService from "@/app/core/networking/services/usersApiService";
 import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import {
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
@@ -38,7 +38,7 @@ export default function ChangeUserDialog({
   entity,
   mode,
   onSuccess,
-}: CummonChangeDialogProps<User>) {
+}: CommonChangeDialogProps<User>) {
   const [formData, setFormData] = useState<Partial<User>>({
     id: entity?.id,
     username: entity?.username || "",

@@ -1,10 +1,10 @@
 import SaveButton from "@/app/core/components/buttons/saveButton";
-import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import type { CommonChangeDialogProps } from "@/app/core/components/dialogs/commonChangeDialogProps";
 import SearchableSelect from "@/app/core/components/select/searchableSelect";
 import { CountryFilterColumns } from "@/app/core/data/country";
 import {
-  useFormValidation,
-  type ValidationRule,
+    useFormValidation,
+    type ValidationRule,
 } from "@/app/core/hooks/useFormValidation";
 import PassengersApiService from "@/app/core/networking/services/passengersApiService";
 import { useAppSelector } from "@/app/core/state/hooks";
@@ -13,27 +13,27 @@ import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
@@ -47,7 +47,7 @@ export default function ChangePassengerDialog({
   entity,
   mode,
   onSuccess,
-}: CummonChangeDialogProps<Passenger>) {
+}: CommonChangeDialogProps<Passenger>) {
   const [formData, setFormData] = useState<Partial<Passenger>>(entity || {});
   const countryState = useAppSelector((state) => state.country);
 

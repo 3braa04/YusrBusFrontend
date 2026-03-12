@@ -1,5 +1,5 @@
 import SaveButton from "@/app/core/components/buttons/saveButton";
-import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import type { CommonChangeDialogProps } from "@/app/core/components/dialogs/commonChangeDialogProps";
 import Loading from "@/app/core/components/loading/loading";
 import useEntities from "@/app/core/hooks/useEntities";
 import {
@@ -37,7 +37,7 @@ export default function ChangeTripDialog({
   entity,
   mode,
   onSuccess,
-}: CummonChangeDialogProps<Trip>) {
+}: CommonChangeDialogProps<Trip>) {
   const {
     formData,
     setFormData,

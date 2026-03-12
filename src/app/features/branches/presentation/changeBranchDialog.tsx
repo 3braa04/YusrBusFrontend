@@ -1,12 +1,12 @@
-import type { CummonChangeDialogProps } from "@/app/core/components/dialogs/cummonChangeDialogProps";
+import type { CommonChangeDialogProps } from "@/app/core/components/dialogs/commonChangeDialogProps";
 import { FieldsSection } from "@/app/core/components/fields/fieldsSection";
 import { FormField } from "@/app/core/components/fields/formField";
 import { TextField } from "@/app/core/components/fields/textField";
 import SearchableSelect from "@/app/core/components/select/searchableSelect";
 import { CityFilterColumns } from "@/app/core/data/city";
+import { useEntityForm } from "@/app/core/hooks/useEntityForm";
 import {
-  useFormValidation,
-  type ValidationRule,
+  type ValidationRule
 } from "@/app/core/hooks/useFormValidation";
 import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import { useAppDispatch, useAppSelector } from "@/app/core/state/hooks";
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { FieldGroup } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import SaveButton from "../../../core/components/buttons/saveButton";
 import type Branch from "../data/branch";
 
@@ -31,24 +31,16 @@ export default function ChangeBranchDialog({
   entity,
   mode,
   onSuccess,
-}: CummonChangeDialogProps<Branch>) 
+}: CommonChangeDialogProps<Branch>) 
 {
-  const [formData, setFormData] = useState<Partial<Branch>>({...entity});
-
   const cityState = useAppSelector((state) => state.city);
   const dispatch = useAppDispatch();
-
+  const branchService = useMemo(() => new BranchesApiService(), []);
   const validationRules: ValidationRule<Partial<Branch>>[] = useMemo(() => [
     { field: "name", selector: (d) => d.name, validators: [Validators.required("اسم الفرع مطلوب")] },
     { field: "cityId", selector: (d) => d.cityId, validators: [Validators.required("يرجى اختيار المدينة")] },
   ], []);
-
-  const { getError, isInvalid, validate, clearError } = useFormValidation(formData, validationRules);
-
-  const handleChange = (field: keyof Branch, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    clearError(field as string);
-  };
+  const { formData, handleChange, getError, isInvalid, validate } = useEntityForm<Branch>(entity, validationRules);
 
   useEffect(() => {
     dispatch(filterCities(undefined));
@@ -122,7 +114,7 @@ export default function ChangeBranchDialog({
         <SaveButton
           formData={formData as Branch}
           dialogMode={mode}
-          service={new BranchesApiService()}
+          service={branchService}
           disable={() => cityState.isLoading}
           onSuccess={(data) => onSuccess?.(data, mode)}
           validation={validate}
