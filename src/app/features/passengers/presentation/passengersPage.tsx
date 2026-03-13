@@ -26,7 +26,7 @@ export default function PassengersPage() {
 
   return (
     <CrudPage<Passenger>
-      title="ادارة الركاب"
+      title="إدارة الركاب"
       entityName="الراكب"
       addNewItemTitle="إضافة راكب جديد"
       permissionResource={SystemPermissionsResources.Passengers}
@@ -78,7 +78,7 @@ export default function PassengersPage() {
         <ChangePassengerDialog
           entity={passengerDialogState.selectedRow || undefined}
           mode={passengerDialogState.selectedRow ? "update" : "create"}
-          service={new PassengersApiService()}
+          service={service}
           onSuccess={(data, mode) => {
             dispatch(refreshPassengers({ data }));
             if (mode === "create")

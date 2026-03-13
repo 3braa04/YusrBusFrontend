@@ -8,7 +8,7 @@ export default function EntityTable({state, children}: {state: IEntityState<any>
         return <EmptyTablePreview mode="loading" />
 
     if(state.entities?.count == 0)
-        <EmptyTablePreview mode="empty" />
+        return <EmptyTablePreview mode="empty" />
 
     if(state.entities == undefined)
         return <EmptyTablePreview mode="loading" />
