@@ -1,19 +1,10 @@
-import { Textarea } from "@/components/ui/textarea";
+import { TextAreaInput, type TextAreaInputProps } from "../input/textAreaInput";
 import { FormField } from "./formField";
 
-export interface TextAreaFieldProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  label: string;
-  error?: string;
-  isInvalid?: boolean;
-}
-
-export function TextAreaField({ label, error, isInvalid, className, ...props }: TextAreaFieldProps) {
+export function TextAreaField({ label, error, isInvalid, required, ...props }: TextAreaInputProps & { label: string; error?: string; required?: boolean }) {
   return (
-    <FormField label={label} error={error} isInvalid={isInvalid}>
-      <Textarea
-        {...props}
-        className={`${className} ${isInvalid ? "border-red-500 focus-visible:ring-red-500" : ""}`}
-      />
+    <FormField label={label} error={error} isInvalid={isInvalid} required={required}>
+      <TextAreaInput {...props} isInvalid={isInvalid} />
     </FormField>
   );
 }

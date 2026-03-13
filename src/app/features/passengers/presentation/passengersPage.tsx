@@ -1,4 +1,6 @@
+import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
+import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
 import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
 import useDialog from "@/app/core/hooks/useDialog";
 import useEntities from "@/app/core/hooks/useEntities";
@@ -14,8 +16,6 @@ import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
 import TablePagination from "../../../core/components/table/tablePagination";
 import { Passenger, PassengerFilterColumns } from "../data/passenger";
 import ChangePassengerDialog from "./changePassengerDialog";
-import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
-import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
 
 export default function PassengersPage() {
   const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Passenger>(
@@ -40,6 +40,7 @@ export default function PassengersPage() {
           <ChangePassengerDialog
             entity={undefined}
             mode="create"
+            service={new PassengersApiService()}
             onSuccess={(newData) => refreash(newData)}
           />
         }
@@ -125,6 +126,7 @@ export default function PassengersPage() {
             <ChangePassengerDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
+              service={new PassengersApiService()}
               onSuccess={(data, mode) => {
                 refreash(data);
                 if(mode === 'create')

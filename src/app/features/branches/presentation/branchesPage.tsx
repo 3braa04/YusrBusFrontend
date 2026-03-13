@@ -16,15 +16,15 @@ import {
   setCurrentBranchesPage,
 } from "@/app/features/branches/logic/branchSlice";
 import { Building, MapPin } from "lucide-react";
+import { useMemo } from "react";
 import CrudPage from "../../../core/components/crudPage";
 import ChangeBranchDialog from "./changeBranchDialog";
 
-const branchesService = new BranchesApiService();
-
-export default function SampleBranchPage() {
+export default function BranchesPage() {
   const dispatch = useAppDispatch();
   const branchState = useAppSelector((state) => state.branch);
   const branchDialogState = useAppSelector((state) => state.branchDialog);
+  const service = useMemo(() => new BranchesApiService(), []);
 
   return (
     <CrudPage<Branch>
@@ -34,7 +34,7 @@ export default function SampleBranchPage() {
       permissionResource={SystemPermissionsResources.Branches}
       entityState={branchState}
       useSlice={() => branchDialogState}
-      service={branchesService}
+      service={service}
       cards={[
         {
           title: "إجمالي الفروع",
@@ -75,6 +75,7 @@ export default function SampleBranchPage() {
         <ChangeBranchDialog
           entity={branchDialogState.selectedRow || undefined}
           mode={branchDialogState.selectedRow ? "update" : "create"}
+          service={service}
           onSuccess={(data, mode) => {
             dispatch(refreshBranches({ data: data }));
             if (mode === "create")

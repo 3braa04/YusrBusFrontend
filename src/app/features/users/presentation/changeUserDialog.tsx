@@ -12,7 +12,6 @@ import {
 } from "@/app/core/hooks/useFormValidation";
 import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import RolesApiService from "@/app/core/networking/services/rolesApiService";
-import UsersApiService from "@/app/core/networking/services/usersApiService";
 import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,10 +31,10 @@ import type User from "../data/user";
 export default function ChangeUserDialog({
   entity,
   mode,
+  service,
   onSuccess,
 }: CommonChangeDialogProps<User>) 
 {
-  const userService = useMemo(() => new UsersApiService(), []);
   const validationRules: ValidationRule<Partial<User>>[] = useMemo(() => [
     { field: "username", selector: (d) => d.username, validators: [Validators.required("يرجى إدخال اسم المستخدم")] },
     { field: "password", selector: (d) => d.password, validators: [Validators.required("يرجى إدخال كلمة مرور")] },
@@ -151,7 +150,7 @@ export default function ChangeUserDialog({
         <SaveButton
           formData={formData as User}
           dialogMode={mode}
-          service={userService}
+          service={service}
           onSuccess={(data) => onSuccess?.(data, mode)}
           validation={validate}
         />

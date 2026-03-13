@@ -8,7 +8,6 @@ import { useEntityForm } from "@/app/core/hooks/useEntityForm";
 import {
   type ValidationRule
 } from "@/app/core/hooks/useFormValidation";
-import BranchesApiService from "@/app/core/networking/services/branchesApiService";
 import { useAppDispatch, useAppSelector } from "@/app/core/state/hooks";
 import { filterCities } from "@/app/core/state/shared/citySlice";
 import { Validators } from "@/app/core/utils/validators";
@@ -30,12 +29,12 @@ import type Branch from "../data/branch";
 export default function ChangeBranchDialog({
   entity,
   mode,
+  service,
   onSuccess,
 }: CommonChangeDialogProps<Branch>) 
 {
   const cityState = useAppSelector((state) => state.city);
   const dispatch = useAppDispatch();
-  const branchService = useMemo(() => new BranchesApiService(), []);
   const validationRules: ValidationRule<Partial<Branch>>[] = useMemo(() => [
     { field: "name", selector: (d) => d.name, validators: [Validators.required("اسم الفرع مطلوب")] },
     { field: "cityId", selector: (d) => d.cityId, validators: [Validators.required("يرجى اختيار المدينة")] },
@@ -114,7 +113,7 @@ export default function ChangeBranchDialog({
         <SaveButton
           formData={formData as Branch}
           dialogMode={mode}
-          service={branchService}
+          service={service}
           disable={() => cityState.isLoading}
           onSuccess={(data) => onSuccess?.(data, mode)}
           validation={validate}

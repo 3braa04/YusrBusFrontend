@@ -50,6 +50,7 @@ export default function TripsPage() {
           <ChangeTripDialog
             entity={undefined}
             mode="create"
+            service={new TripsApiService()}
             onSuccess={(newData) => refreash(newData)}
           />
         }
@@ -159,6 +160,7 @@ export default function TripsPage() {
             <ChangeTripDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
+              service={new TripsApiService()}
               onSuccess={(data, mode) => {
                 refreash(data);
                 if (mode === "create") setIsEditDialogOpen(false);

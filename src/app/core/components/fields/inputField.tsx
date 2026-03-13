@@ -1,19 +1,16 @@
-import { Input } from "@/components/ui/input";
+import { BaseInput, type BaseInputProps } from "../input/baseInput";
 import { FormField } from "./formField";
 
-export interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputFieldProps extends BaseInputProps {
   label: string;
   error?: string;
-  isInvalid?: boolean;
+  required?: boolean;
 }
 
-export function InputField({ label, error, isInvalid, className, required, ...props }: InputFieldProps) {
+export function InputField({ label, error, isInvalid, required, ...props }: InputFieldProps) {
   return (
     <FormField label={label} error={error} isInvalid={isInvalid} required={required}>
-      <Input
-        {...props}
-        className={`${className} ${isInvalid ? "border-red-500 ring-red-500 text-red-900" : ""}`}
-      />
+      <BaseInput {...props} isInvalid={isInvalid} />
     </FormField>
   );
 }

@@ -10,5 +10,5 @@ export function useEntityForm<T>(initialData: Partial<T> | undefined, rules: Val
     validation.clearError(field as string);
   }, [validation]);
 
-  return { formData, handleChange, ...validation };
+  return { formData, setFormData, handleChange, ...validation };
 }

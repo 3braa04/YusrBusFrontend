@@ -1,155 +1,79 @@
-import DeleteDialog from "@/app/core/components/dialogs/deleteDialog";
-import EmptyTablePreview from "@/app/core/components/table/emptyTablePreview";
-import TableRowActionsMenu from "@/app/core/components/table/tableRowActionsMenu";
-import useDialog from "@/app/core/hooks/useDialog";
-import useEntities from "@/app/core/hooks/useEntities";
-import RoutesApiService from "@/app/core/networking/services/routesApiService";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Table, TableBody } from "@/components/ui/table";
-import { Building } from "lucide-react";
-import SearchInput from "../../../core/components/input/searchInput";
-import BranchRow from "../../../core/components/table/tableBodyRow";
-import TableCard from "../../../core/components/table/tableCard";
-import TableHeader from "../../../core/components/table/tableHeader";
-import TableHeaderRows from "../../../core/components/table/tableHeaderRows";
-import TablePagination from "../../../core/components/table/tablePagination";
-import { RouteFilterColumns, type Route } from "../data/route";
-import ChangeRouteDialog from "./changeRouteDialog";
 import { SystemPermissionsResources } from "@/app/core/auth/systemPermissionsResources";
+import CrudPage from "@/app/core/components/crudPage";
+import RoutesApiService from "@/app/core/networking/services/routesApiService";
+import { useAppDispatch, useAppSelector } from "@/app/core/state/hooks";
+import { Building } from "lucide-react";
+import { useMemo } from "react";
+import { RouteFilterColumns, type Route } from "../data/route";
+import { openRouteChangeDialog, openRouteDeleteDialog, setIsRouteChangeDialogOpen, setIsRouteDeleteDialogOpen } from "../logic/routeDialogSlice";
+import { filterRoutes, refreshRoutes, setCurrentRoutesPage } from "../logic/routeSlice";
+import ChangeRouteDialog from "./changeRouteDialog";
 
 export default function RoutesPage() {
-  const { entities, refreash, filter, isLoading, currentPage, setCurrentPage } = useEntities<Route>(
-    new RoutesApiService(),
-  );
-  const {
-    selectedRow,
-    isEditDialogOpen,
-    isDeleteDialogOpen,
-    setIsEditDialogOpen,
-    setIsDeleteDialogOpen,
-    openEditDialog,
-    openDeleteDialog,
-  } = useDialog<Route>();
+  const dispatch = useAppDispatch();
+  const routeState = useAppSelector((state) => state.route);
+  const routeDialogState = useAppSelector((state) => state.routeDialog);
+  const service = useMemo(() => new RoutesApiService(), []);
 
-  return (
-    <div className="px-5 py-3">
-      <TableHeader
-        title="إدارة الخطوط"
-        buttonTitle="إضافة خط جديد"
-        createComp={
-          <ChangeRouteDialog
-            entity={undefined}
-            mode="create"
-            onSuccess={(newData) => refreash(newData)}
-          />
-        }
-      />
-
-      <TableCard
-        cards={[
-          {
-            title: "إجمالي الخطوط",
-            data: (entities?.count ?? 0).toString(),
-            icon: <Building className="h-4 w-4 text-muted-foreground" />,
-          },
-        ]}
-      />
-
-      <SearchInput columnsNames={RouteFilterColumns.columnsNames} onSearch={(condition) => filter(condition)}/>
-
-      <div className="rounded-b-xl border shadow-sm overflow-hidden">
-        {isLoading ? (
-          <EmptyTablePreview mode="loading" />
-        ) : entities?.count == 0 ? (
-          <EmptyTablePreview mode="empty" />
-        ) : entities == undefined ? (
-          <EmptyTablePreview mode="error" />
-        ) : (
-          <Table>
-            <TableHeaderRows
-              tableHeadRows={[
-                { rowName: "", rowStyles: "text-left w-12.5" },
-                { rowName: "رقم الخط", rowStyles: "w-30" },
-                { rowName: "اسم الخط", rowStyles: "" },
-                { rowName: "من المدينة", rowStyles: "" },
-                { rowName: "إلى المدينة", rowStyles: "" },
-              ]}
-            />
-
-            <TableBody>
-              {entities?.data?.map((route, i) => (
-                <BranchRow
-                  key={i}
-                  tableRows={[
-                    { rowName: `#${route.id}`, rowStyles: "" },
-                    { rowName: route.name, rowStyles: "font-semibold" },
-                    {
-                      rowName: route.fromCityName,
-                      rowStyles:
-                        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
-                    },
-                    {
-                      rowName: route.toCityName,
-                      rowStyles:
-                        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
-                    },
-                  ]}
-                  dropdownMenu={
-                    <TableRowActionsMenu
-                      permissionsResource={SystemPermissionsResources.Routes}
-                      type="dropdown"
-                      onEditClicked={() => openEditDialog(route)}
-                      onDeleteClicked={() => openDeleteDialog(route)}
-                    />
-                  }
-                  contextMenuContent={
-                    <TableRowActionsMenu
-                      permissionsResource={SystemPermissionsResources.Routes}
-                      type="context"
-                      onEditClicked={() => openEditDialog(route)}
-                      onDeleteClicked={() => openDeleteDialog(route)}
-                    />
-                  }
-                />
-              ))}
-            </TableBody>
-          </Table>
-        )}
-        <TablePagination pageSize={10} totalNumber={entities?.count ?? 0} currentPage={currentPage || 1} onPageChanged={setCurrentPage} />
-
-        {isEditDialogOpen && (
-          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-            <ChangeRouteDialog
-              entity={selectedRow || undefined}
-              mode={selectedRow ? "update" : "create"}
-              onSuccess={(data, mode) => {
-                refreash(data);
-                if(mode === 'create')
-                  setIsEditDialogOpen(false);
-              }}
-            />
-          </Dialog>
-        )}
-
-        {isDeleteDialogOpen && (
-          <Dialog
-            open={isDeleteDialogOpen}
-            onOpenChange={setIsDeleteDialogOpen}
-          >
-            <DialogContent dir="rtl" className="sm:max-w-sm">
-              <DeleteDialog
-                entityName="الخط"
-                id={selectedRow?.id ?? 0}
-                service={new RoutesApiService()}
-                onSuccess={() => {
-                  refreash(undefined, selectedRow?.id);
-                  setIsDeleteDialogOpen(false);
-                }}
-              />
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
-    </div>
+   return (
+    <CrudPage<Route>
+      title="إدارة الخطوط"
+      entityName="الخط"
+      addNewItemTitle="إضافة خط جديد"
+      permissionResource={SystemPermissionsResources.Routes}
+      entityState={routeState}
+      useSlice={() => routeDialogState}
+      service={service}
+      cards={[
+        {
+          title: "إجمالي الخطوط",
+          data: (routeState.entities?.count ?? 0).toString(),
+          icon: <Building className="h-4 w-4 text-muted-foreground" />,
+        },
+      ]}
+      columnsToFilter={RouteFilterColumns.columnsNames}
+      tableHeadRows={[
+        { rowName: "", rowStyles: "text-left w-12.5" },
+        { rowName: "رقم الخط", rowStyles: "w-30" },
+        { rowName: "اسم الخط", rowStyles: "" },
+        { rowName: "من المدينة", rowStyles: "" },
+        { rowName: "إلى المدينة", rowStyles: "" },
+      ]}
+      tableRowMapper={(route: Route) => [
+        { rowName: `#${route.id}`, rowStyles: "" },
+        { rowName: route.name, rowStyles: "font-semibold" },
+        {
+          rowName: route.fromCityName,
+          rowStyles:
+            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
+        },
+        {
+          rowName: route.toCityName,
+          rowStyles:
+            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800",
+        },
+      ]}
+      actions={{
+        filter: filterRoutes,
+        openChangeDialog: (entity) => openRouteChangeDialog(entity),
+        openDeleteDialog: (entity) => openRouteDeleteDialog(entity),
+        setIsChangeDialogOpen: (open) => setIsRouteChangeDialogOpen(open),
+        setIsDeleteDialogOpen: (open) => setIsRouteDeleteDialogOpen(open),
+        refresh: refreshRoutes,
+        setCurrentPage: (page) => setCurrentRoutesPage(page),
+      }}
+      ChangeDialog={
+        <ChangeRouteDialog
+          entity={routeDialogState.selectedRow || undefined}
+          mode={routeDialogState.selectedRow ? "update" : "create"}
+          service={service}
+          onSuccess={(data, mode) => {
+            dispatch(refreshRoutes({ data: data }));
+            if (mode === "create")
+              dispatch(setIsRouteChangeDialogOpen(false));
+          }}
+        />
+      }
+    />
   );
 }

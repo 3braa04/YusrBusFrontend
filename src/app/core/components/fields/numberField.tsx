@@ -1,33 +1,16 @@
-import { InputField, type InputFieldProps } from "./inputField";
+import { NumberInput, type NumberInputProps } from "../input/numberInput";
+import { FormField } from "./formField";
 
-export function NumberField({ onChange, min, max, ...props }: InputFieldProps) {
+interface NumberFieldProps extends NumberInputProps {
+  label: string;
+  error?: string;
+  required?: boolean;
+}
+
+export function NumberField({ label, error, isInvalid, required, ...props }: NumberFieldProps) {
   return (
-    <InputField
-      {...props}
-      type="number"
-      min={min}
-      max={max}
-      onChange={(e) => {
-        const rawValue = e.target.value;
-        
-        if (rawValue === "") {
-          onChange?.({ ...e, target: { ...e.target, value: "" } } as any);
-          return;
-        }
-
-        let val = Number(rawValue);
-
-        if (min !== undefined && val < Number(min)) {
-          val = Number(min);
-        }
-
-        if (max !== undefined && val > Number(max)) {
-          val = Number(max);
-        }
-
-        e.target.value = val.toString();
-        onChange?.({ ...e, target: { ...e.target, value: val } } as any);
-      }}
-    />
+    <FormField label={label} error={error} isInvalid={isInvalid} required={required}>
+      <NumberInput {...props} isInvalid={isInvalid} />
+    </FormField>
   );
 }

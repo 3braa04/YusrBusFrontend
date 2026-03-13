@@ -1,45 +1,65 @@
 import SaveButton from "@/app/core/components/buttons/saveButton";
 import DynamicListContainer from "@/app/core/components/containers/dynamicListContainer";
 import type { CommonChangeDialogProps } from "@/app/core/components/dialogs/commonChangeDialogProps";
+import { FormField } from "@/app/core/components/fields/formField";
+import { TextField } from "@/app/core/components/fields/textField";
+import { NumberInput } from "@/app/core/components/input/numberInput";
 import Loading from "@/app/core/components/loading/loading";
 import SearchableSelect from "@/app/core/components/select/searchableSelect";
 import { CityFilterColumns } from "@/app/core/data/city";
 import { useDynamicList } from "@/app/core/hooks/useDynamicList";
+import { useEntityForm } from "@/app/core/hooks/useEntityForm";
 import {
-    useFormValidation,
-    type ValidationRule,
+  type ValidationRule
 } from "@/app/core/hooks/useFormValidation";
-import RoutesApiService from "@/app/core/networking/services/routesApiService";
 import { useAppDispatch, useAppSelector } from "@/app/core/state/hooks";
 import { filterCities } from "@/app/core/state/shared/citySlice";
 import { Validators } from "@/app/core/utils/validators";
 import { Button } from "@/components/ui/button";
 import {
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FieldGroup } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
 import { Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Route, RouteStation } from "../data/route";
 
 export default function ChangeRouteDialog({
   entity,
   mode,
+  service,
   onSuccess,
-}: CommonChangeDialogProps<Route>) {
-  const [formData, setFormData] = useState<Partial<Route>>({
-    routeStations: [],
-  });
+}: CommonChangeDialogProps<Route>) 
+{
+  const cityState = useAppSelector((state) => state.city);
+  const dispatch = useAppDispatch();
 
+  const validationRules: ValidationRule<Partial<Route>>[] = useMemo(() => [
+    { field: "name", selector: (d) => d.name, validators: [Validators.required("يرجى إدخال اسم الخط")] },
+    { field: "fromCityId", selector: (d) => d.fromCityId, validators: [Validators.required("يرجى اختيار مدينة الانطلاق")] },
+    { field: "toCityId", selector: (d) => d.toCityId, validators: [Validators.required("يرجى اختيار مدينة الوصول")] },
+    {
+      field: "stations",
+      selector: (d) => d.routeStations,
+      validators: [
+        Validators.custom<RouteStation[]>((stations) => {
+          return stations.every((s) => s.cityId && (s.period ?? 0) > 0);
+        }, "يجب تحديد المدينة والمدة لجميع المحطات"),
+      ],
+    },
+  ], []);
+
+  const { formData, setFormData, handleChange, getError, isInvalid, validate, clearError } = useEntityForm<Route>(entity, validationRules);
   const [initLoading, setInitLoading] = useState(false);
+  const { addRow, removeRow, updateRow } = useDynamicList("routeStations", setFormData, clearError);
+
+  const handleAdd = () => addRow({ index: (formData.routeStations?.length || 0) + 1, period: 0, cityName: "" });
 
   useEffect(() => {
     if (mode === "update" && entity?.id) {
@@ -47,19 +67,8 @@ export default function ChangeRouteDialog({
       setInitLoading(true);
 
       const getRoute = async () => {
-        const service = new RoutesApiService();
         const res = await service.Get(entity.id);
-
-        setFormData({
-          id: res.data?.id,
-          name: res.data?.name,
-          fromCityId: res.data?.fromCityId,
-          toCityId: res.data?.toCityId,
-          fromCityName: res.data?.fromCityName,
-          toCityName: res.data?.toCityName,
-          routeStations: res.data?.routeStations || [],
-        });
-
+        setFormData({...res.data});
         setInitLoading(false);
       };
 
@@ -70,44 +79,9 @@ export default function ChangeRouteDialog({
     }
   }, [entity?.id, mode]);
 
-  const cityState = useAppSelector((state) => state.city);
-  const dispatch = useAppDispatch();
-
-  const validationRules: ValidationRule<Partial<Route>>[] = [
-    {
-      field: "name",
-      selector: (d) => d.name,
-      validators: [Validators.required("يرجى إدخال اسم الخط")],
-    },
-    {
-      field: "fromCityId",
-      selector: (d) => d.fromCityId,
-      validators: [Validators.required("يرجى اختيار مدينة الانطلاق")],
-    },
-    {
-      field: "toCityId",
-      selector: (d) => d.toCityId,
-      validators: [Validators.required("يرجى اختيار مدينة الوصول")],
-    },
-    {
-      field: "stations",
-      selector: (d) => d.routeStations,
-      validators: [
-        Validators.custom<RouteStation[]>((stations) => {
-          return stations.every((s) => s.cityId && (s.period ?? 0) > 0);
-        }, "يجب تحديد المدينة والمدة (أكبر من 0) لجميع المحطات"),
-      ],
-    },
-  ];
-
-  const { getError, isInvalid, validate, clearError, errorInputClass } = useFormValidation(
-    formData,
-    validationRules,
-  );
-
-  const { addRow, removeRow, updateRow } = useDynamicList("routeStations", setFormData, clearError);
-
-  const handleAdd = () => addRow({ index: (formData.routeStations?.length || 0) + 1, period: 0, cityName: "" });
+  useEffect(() => {
+    dispatch(filterCities(undefined));
+  }, [dispatch]);
 
   if (initLoading) {
     return (
@@ -131,84 +105,58 @@ export default function ChangeRouteDialog({
       <Separator />
 
       <FieldGroup>
-        <Field>
-          <Label>رقم الخط</Label>
-          <Input disabled value={entity?.id?.toString() || ""} />
-        </Field>
-
-        <Field>
-          <Label>اسم الخط</Label>
-          <Input
-            value={formData.name || ""}
-            onChange={(e) => {
-              setFormData((prev) => ({ ...prev, name: e.target.value }));
-              clearError("name");
-            }}
-            className={errorInputClass("name")}
-          />
-          {isInvalid("name") && (
-            <span className="text-xs text-red-500">{getError("name")}</span>
-          )}
-        </Field>
+       
+        <TextField
+          label="اسم الخط"
+          required
+          value={formData.name || ""}
+          onChange={(e) => handleChange("name", e.target.value)}
+          isInvalid={isInvalid("name")}
+          error={getError("name")}
+        />
 
         <div className="flex gap-3">
-          <Field>
-            <Label>من المدينة</Label>
-            <SearchableSelect 
-              items={cityState.entities.data ?? []} 
-              itemLabelKey="name" 
-              itemValueKey="id" 
+
+          <FormField label="من المدينة" required isInvalid={isInvalid("fromCityId")} error={getError("fromCityId")}>
+            <SearchableSelect
+              items={cityState.entities.data ?? []}
+              itemLabelKey="name"
+              itemValueKey="id"
               placeholder="اختر المدينة"
-              value={formData.fromCityId?.toString() || ""} 
+              value={formData.fromCityId?.toString() || ""}
               onValueChange={(val) => {
-                const selectedCity = cityState.entities.data?.find((c) => c.id.toString() === val);
-                if (selectedCity) {
-                  setFormData((prev) => ({
-                    ...prev,
-                    fromCityId: selectedCity.id,
-                    fromCityName: selectedCity.name,
-                  }));
+                const city = cityState.entities.data?.find((c) => c.id.toString() === val);
+                if (city) {
+                  setFormData(prev => ({ ...prev, fromCityId: city.id, fromCityName: city.name }));
                   clearError("fromCityId");
                 }
               }}
               columnsNames={CityFilterColumns.columnsNames}
-              onSearch={(condition) => dispatch(filterCities(condition))} 
-              errorInputClass={errorInputClass("fromCityId")}
+              onSearch={(condition) => dispatch(filterCities(condition))}
               disabled={cityState.isLoading}
             />
-            {isInvalid("fromCityId") && (
-              <span className="text-xs text-red-500">
-                {getError("fromCityId")}
-              </span>
-            )}
-          </Field>
+          </FormField>
 
-          <Field>
-            <Label>إلى المدينة</Label>
-            <SearchableSelect 
-              items={cityState.entities.data ?? []} 
-              itemLabelKey="name" 
-              itemValueKey="id" 
+          <FormField label="إلى المدينة" required isInvalid={isInvalid("toCityId")} error={getError("toCityId")}>
+            <SearchableSelect
+              items={cityState.entities.data ?? []}
+              itemLabelKey="name"
+              itemValueKey="id"
               placeholder="اختر المدينة"
-              value={formData.toCityId?.toString() || ""} 
+              value={formData.toCityId?.toString() || ""}
               onValueChange={(val) => {
-                const selectedCity = cityState.entities.data?.find((c) => c.id.toString() === val);
-                if (selectedCity) {
-                  setFormData((prev) => ({
-                    ...prev,
-                    toCityId: selectedCity.id,
-                    toCityName: selectedCity.name,
-                  }));
+                const city = cityState.entities.data?.find((c) => c.id.toString() === val);
+                if (city) {
+                  setFormData(prev => ({ ...prev, toCityId: city.id, toCityName: city.name }));
                   clearError("toCityId");
                 }
               }}
               columnsNames={CityFilterColumns.columnsNames}
-              onSearch={(condition) => dispatch(filterCities(condition))} 
-              errorInputClass={errorInputClass("toCityId")}
+              onSearch={(condition) => dispatch(filterCities(condition))}
               disabled={cityState.isLoading}
             />
-            {isInvalid("toCityId") && <span className="text-xs text-red-500">{getError("toCityId")}</span>}
-          </Field>
+          </FormField>
+
         </div>
 
         <Separator />
@@ -256,18 +204,14 @@ export default function ChangeRouteDialog({
                 </div>
 
                 <div className="w-24">
-                  <Input
-                    type="number"
+                  <NumberInput
                     step="0.1"
+                    placeholder="0.0"
                     value={station.period ?? ""}
+                    isInvalid={hasGlobalError && isPeriodInvalid}
                     onChange={(e) => {
-                      updateRow(index, "period", parseFloat(e.target.value) || 0);
+                      updateRow(index, "period", e.target.value);
                     }}
-                    className={
-                      hasGlobalError && isPeriodInvalid
-                        ? "border-red-500 ring-red-500 text-red-900"
-                        : ""
-                    }
                   />
                 </div>
 
@@ -293,7 +237,7 @@ export default function ChangeRouteDialog({
         <SaveButton
           formData={formData as Route}
           dialogMode={mode}
-          service={new RoutesApiService()}
+          service={service}
           disable={() => cityState.isLoading}
           onSuccess={(data) => onSuccess?.(data, mode)}
           validation={validate}

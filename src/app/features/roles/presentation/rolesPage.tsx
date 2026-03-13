@@ -40,6 +40,7 @@ export default function RolesPage() {
           <ChangeRoleDialog
             entity={undefined}
             mode="create"
+            service={new RolesApiService()}
             onSuccess={(newData) => refreash(newData)}
           />
         }
@@ -118,6 +119,7 @@ export default function RolesPage() {
             <ChangeRoleDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
+              service={new RolesApiService()}
               onSuccess={(data, mode) => {
                 refreash(data);
                 if(mode === 'create')

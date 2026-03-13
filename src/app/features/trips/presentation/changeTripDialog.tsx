@@ -311,6 +311,7 @@ export default function ChangeTripDialog({
           <ChangePassengerDialog
             entity={selectedPassenger}
             mode={selectedPassenger ? "update" : "create"}
+            service={new PassengersApiService()}
             onSuccess={(data) => {
               refreshPassengers(data);
               setSelectedTicket((prev) =>

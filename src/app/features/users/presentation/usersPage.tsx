@@ -7,14 +7,14 @@ import User, { UserFilterColumns } from "../data/user";
 import { openUserChangeDialog, openUserDeleteDialog, setIsUserChangeDialogOpen, setIsUserDeleteDialogOpen } from "../logic/userDialogSlice";
 import { filterUsers, refreshUsers, setCurrentUsersPage } from "../logic/userSlice";
 import ChangeUserDialog from "./changeUserDialog";
-
-const usersService = new UsersApiService();
+import { useMemo } from "react";
 
 export default function UsersPage() 
 {
   const dispatch = useAppDispatch();
   const userState = useAppSelector((state) => state.user);
   const userDialogState = useAppSelector((state) => state.userDialog);
+  const service = useMemo(() => new UsersApiService(), []);
 
   return (
     <CrudPage<User>
@@ -24,7 +24,7 @@ export default function UsersPage()
       permissionResource={SystemPermissionsResources.Users}
       entityState={userState}
       useSlice={() => userDialogState}
-      service={usersService}
+      service={service}
       cards={[
         {
           title: "إجمالي المستخدمين",
@@ -60,6 +60,7 @@ export default function UsersPage()
         <ChangeUserDialog
           entity={userDialogState.selectedRow || undefined}
           mode={userDialogState.selectedRow ? "update" : "create"}
+          service={service}
           onSuccess={(data, mode) => {
             dispatch(refreshUsers({ data: data }));
             if (mode === "create")
