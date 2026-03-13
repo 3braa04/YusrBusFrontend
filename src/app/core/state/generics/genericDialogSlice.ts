@@ -4,7 +4,7 @@ import type { IDialogState } from "../interfaces/iDialogState";
 export function createGenericDialogSlice<T>(sliceName: string) {
   const initialState: IDialogState<T> = {
     selectedRow: null,
-    isEditDialogOpen: false,
+    isChangeDialogOpen: false,
     isDeleteDialogOpen: false,
   };
 
@@ -12,16 +12,16 @@ export function createGenericDialogSlice<T>(sliceName: string) {
     name: sliceName,
     initialState,
     reducers: {
-      openEditDialog: (state, action: PayloadAction<T>) => {
+      openChangeDialog: (state, action: PayloadAction<T>) => {
         state.selectedRow = action.payload as any; 
-        state.isEditDialogOpen = true;
+        state.isChangeDialogOpen = true;
       },
       openDeleteDialog: (state, action: PayloadAction<T>) => {
         state.selectedRow = action.payload as any; 
         state.isDeleteDialogOpen = true;
       },
-      setIsEditDialogOpen: (state, action: PayloadAction<boolean>) => {
-        state.isEditDialogOpen = action.payload;
+      setIsChangeDialogOpen: (state, action: PayloadAction<boolean>) => {
+        state.isChangeDialogOpen = action.payload;
         if (!action.payload) state.selectedRow = null as any;
       },
       setIsDeleteDialogOpen: (state, action: PayloadAction<boolean>) => {

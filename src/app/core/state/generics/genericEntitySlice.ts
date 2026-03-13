@@ -45,25 +45,25 @@ export function createGenericEntitySlice<
       },
       refresh: (
         state,
-        action: PayloadAction<{ newData?: T; deletedId?: number }>,
+        action: PayloadAction<{ data?: T; deletedId?: number }>,
       ) => {
-        const { newData, deletedId } = action.payload;
+        const { data, deletedId } = action.payload;
         if (deletedId) {
           state.entities.count -= 1;
           state.entities.data = state.entities.data?.filter(
             (b) => b.id !== deletedId,
           );
-        } else if (newData) {
+        } else if (data) {
           const index = state.entities.data?.findIndex(
-            (b) => b.id === newData.id,
+            (b) => b.id === data.id,
           );
           if (index !== undefined && index !== -1) {
             if (state.entities.data)
-              state.entities.data[index] = castDraft(newData);
+              state.entities.data[index] = castDraft(data);
           } else {
             state.entities.count += 1;
             state.entities.data = [
-              castDraft(newData),
+              castDraft(data),
               ...(state.entities.data ?? []),
             ];
           }

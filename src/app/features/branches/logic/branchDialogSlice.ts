@@ -4,9 +4,9 @@ import Branch from "../data/branch";
 export const branchDialogSlice = createGenericDialogSlice<Branch>("branchDialog");
 
 export const {
-  openEditDialog: openBranchEditDialog,
+  openChangeDialog: openBranchChangeDialog,
   openDeleteDialog: openBranchDeleteDialog,
-  setIsEditDialogOpen: setIsBranchEditDialogOpen,
+  setIsChangeDialogOpen: setIsBranchChangeDialogOpen,
   setIsDeleteDialogOpen: setIsBranchDeleteDialogOpen,
 } = branchDialogSlice.actions;
 

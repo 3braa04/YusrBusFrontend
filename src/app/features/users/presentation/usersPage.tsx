@@ -25,7 +25,7 @@ export default function UsersPage()
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.auth);
   const userState = useAppSelector((state) => state.user);
-  const { selectedRow, isEditDialogOpen, isDeleteDialogOpen } = useAppSelector((state) => state.userDialog);
+  const { selectedRow, isChangeDialogOpen, isDeleteDialogOpen } = useAppSelector((state) => state.userDialog);
   const perm = useAppSelector((state) => selectPermissionsByResource(state, SystemPermissionsResources.Users));
 
   return (
@@ -38,7 +38,7 @@ export default function UsersPage()
             entity={undefined}
             mode="create"
             onSuccess={(newData) => {
-              dispatch(refreshUsers({newData: newData}));
+              dispatch(refreshUsers({data: newData}));
             }}
           />
         }
@@ -116,15 +116,15 @@ export default function UsersPage()
           onPageChanged={(newPage) => dispatch(setCurrentUsersPage(newPage))}
         />
 
-        {isEditDialogOpen && perm.updatePermission && (
-          <Dialog open={isEditDialogOpen} onOpenChange={(open) => dispatch(setIsUserEditDialogOpen(open))}>
+        {isChangeDialogOpen && perm.updatePermission && (
+          <Dialog open={isChangeDialogOpen} onOpenChange={(open) => dispatch(setIsUserEditDialogOpen(open))}>
             <ChangeUserDialog
               entity={selectedRow || undefined}
               mode={selectedRow ? "update" : "create"}
               onSuccess={(data, mode) => {
-                dispatch(refreshUsers({newData: data}));
+                dispatch(refreshUsers({data: data}));
                 if(mode === 'create')
-                  dispatch(refreshUsers({ newData: data }));
+                  dispatch(refreshUsers({ data: data }));
                 if (data.id === authState.loggedInUser?.id) {
                   dispatch(updateLoggedInUser(data));
                 }
